@@ -6,7 +6,7 @@
 
 一个Hexo插件，在你的文章中插入b站的视频卡片，样式模仿和借鉴自b站。基于 [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card)
 
-[![NPM](https://nodei.co/npm/hexo-tag-bilibili-card.png)](https://nodei.co/npm/hexo-tag-bilibili-card/)
+[![NPM](https://nodei.co/npm/hexo-tag-bilibili-card.png)](https://nodei.co/npm/hexo-tag-bilibili-card)
 
 ## 安装
 

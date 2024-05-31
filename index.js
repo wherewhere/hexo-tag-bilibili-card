@@ -65,7 +65,7 @@ if (!bilibili_card?.enable) {
     return;
 }
 
-hexo.extend.generator.register("bili_asset", () => [
+hexo.extend.generator.register("bilibili_card_asset", () => [
     {
         path: "components/bilibili-card/bilibili-card.js",
         data: () => fs.createReadStream(path.resolve(__dirname, "./components/bilibili-card", "bilibili-card.js"))
