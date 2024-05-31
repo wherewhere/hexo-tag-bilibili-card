@@ -1,0 +1,42 @@
+{
+  "name": "hexo-tag-bilibili-card",
+  "version": "0.7.0",
+  "description": "A hexo plugin insert a bilibili video card into your page or article, some of css code is copy from bilibili.",
+  "main": "index.js",
+  "keywords": [
+    "hexo",
+    "bilibili",
+    "tag",
+    "generator",
+    "injector",
+    "components"
+  ],
+  "homepage": "https://github.com/wherewhere/hexo-tag-bilibili-card",
+  "bugs": {
+    "url": "https://github.com/wherewhere/hexo-tag-bilibili-card/issues"
+  },
+  "license": "MIT",
+  "author": "wherewhere7",
+  "contributors": [
+    "MaxChang3",
+    "wherewhere"
+  ],
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/wherewhere"
+    },
+    {
+      "type": "爱发电",
+      "url": "http://afdian.net/@wherewhere"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wherewhere/hexo-tag-bilibili-card.git"
+  },
+  "dependencies": {
+    "hexo-fs": "^4.1.3",
+    "node-fetch-native": "^1.4.0"
+  }
+}

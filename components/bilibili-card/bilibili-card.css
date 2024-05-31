@@ -1,0 +1,248 @@
+a {
+    text-decoration: none;
+    color: inherit;
+    outline: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+.default-flex {
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.view-flex {
+    -ms-flex: 1;
+    flex: 1;
+    min-width: 0;
+}
+
+.disable-event {
+    pointer-events: none;
+}
+
+.align-center {
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.double-ellipsis,
+.single-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.double-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+}
+
+.single-ellipsis {
+    white-space: nowrap;
+}
+
+.normal-card {
+    background: white;
+}
+
+.video-holder {
+    position: relative;
+    border: 1px solid #e7e7e7;
+    border-radius: 6px;
+}
+
+.video-holder a {
+    color: #fb7299;
+}
+
+.video-holder .cover-box {
+    width: 150px;
+    height: 92px;
+    position: relative;
+    border-radius: 4px 0 0 4px;
+    overflow: hidden;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+}
+
+.video-holder .cover-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 4px 4px 0 0;
+}
+
+.video-holder .video-mask {
+    display: -ms-flexbox;
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.video-holder .video-icon {
+    font-size: 32px;
+    color: #c9c9c9;
+}
+
+.video-holder .video-sub {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: #00000040;
+    border-radius: 2px;
+}
+
+.video-holder .video-duration {
+    padding: 1px 3px;
+    font-size: 10px;
+    line-height: 14px;
+    color: #fff;
+}
+
+.video-holder .video-content-container {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 8px 10px 0;
+    height: 92px;
+    text-align: left;
+    border-radius: 0 6px 6px 0;
+}
+
+.video-holder .video-title {
+    margin-bottom: 0;
+    height: 38px;
+    line-height: 19px;
+    font-size: 13px;
+    color: #505050;
+    transition: .3s;
+    padding-right: 10px;
+}
+
+.video-holder .video-card-info {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.video-holder .video-card-info .cover-info-item {
+    display: flex;
+    align-items: center;
+    height: 21px;
+    line-height: 21px;
+}
+
+.video-holder .cover-info-item {
+    display: inline-block;
+    height: 21px;
+    line-height: 21px;
+    text-align: left;
+    color: #999;
+    font-size: 12px;
+}
+
+.video-holder .num-info {
+    padding: 0px 3px;
+    display: inline-block;
+    min-width: 50px;
+    color: #999;
+}
+
+.video-holder .video-card-bottom {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.video-holder .slim-author-info {
+    margin-left: 4px;
+    padding-right: 12px;
+    color: #999;
+    line-height: 22px;
+}
+
+.video-holder .author-name {
+    margin-left: 2px;
+    display: inline-block;
+    font-size: 10px;
+}
+
+.iconfont {
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.card-text-label {
+    transform: scale(.87) translateY(1px);
+    transform-origin: left top;
+    position: relative;
+    display: inline-block;
+    padding: 0 3px 0 4px;
+    height: 17px;
+    line-height: 16px;
+    font-size: 10px;
+    color: #fb7299;
+    text-align: center;
+    border: #fb7299;
+}
+
+.card-text-label:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 16px;
+    border: .08em solid;
+    border-color: inherit;
+    border-radius: 2px;
+    box-sizing: content-box;
+}
+
+.icon-up {
+    transform: scale(0.8) translateY(1px);
+    transform-origin: left top;
+    position: relative;
+    display: inline-block;
+    padding: 0 1px 0 2px;
+    height: 15px;
+    line-height: 16px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.icon-up:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    border: .1em solid;
+    border-color: inherit;
+    border-radius: 2px;
+    box-sizing: content-box;
+}
