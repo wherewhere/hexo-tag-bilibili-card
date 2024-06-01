@@ -14,6 +14,19 @@ p {
     margin: 0;
 }
 
+.iconfont {
+    display: flex;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.iconfont svg {
+    width: 16px;
+    height: 16px;
+}
+
 .full-width {
     width: 100%;
 }
@@ -70,11 +83,36 @@ p {
 .video-holder .cover-box {
     width: 150px;
     height: 92px;
+    font-size: 42px;
     position: relative;
     border-radius: 4px 0 0 4px;
     overflow: hidden;
     -ms-flex-negative: 0;
     flex-shrink: 0;
+}
+
+.video-holder .default-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    font-size: inherit;
+    color: #c9c9c9;
+    fill: #c9c9c9;
+    background-color: #f4f4f4;
+    text-align: center;
+    border-radius: 4px 0 0 4px;
+}
+
+.video-holder .default-cover svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 42px;
+    height: 42px;
+    transform: translate(-50%, -50%);
 }
 
 .video-holder .cover-img {
@@ -86,19 +124,21 @@ p {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50%;
-    border-radius: 4px 4px 0 0;
+    border-radius: 4px 0 0 4px;
 }
 
-.video-holder .video-mask {
-    display: -ms-flexbox;
-    display: flex;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    -ms-flex-align: center;
-    align-items: center;
-    -ms-flex-pack: center;
-    justify-content: center;
+.video-holder .cover-img:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-18px, -13px);
+    width: 36px;
+    height: 26px;
+    background-image: url(https://s1.hdslb.com/bfs/static/jinkela/article-web/asserts/icon_video_logo.png);
+    background-size: 100%;
+    background-position: 50%;
+    z-index: 2;
 }
 
 .video-holder .video-icon {
@@ -106,7 +146,7 @@ p {
     color: #c9c9c9;
 }
 
-.video-holder .video-sub {
+.video-holder .video-subtitle {
     position: absolute;
     bottom: 4px;
     right: 4px;
@@ -122,6 +162,7 @@ p {
 }
 
 .video-holder .video-content-container {
+    width: 100%;
     display: inline-block;
     box-sizing: border-box;
     padding: 8px 10px 0;
@@ -160,11 +201,12 @@ p {
     line-height: 21px;
     text-align: left;
     color: #999;
+    fill: #999;
     font-size: 12px;
 }
 
 .video-holder .num-info {
-    padding: 0px 3px;
+    padding: 0px 4px;
     display: inline-block;
     min-width: 50px;
     color: #999;
@@ -177,27 +219,7 @@ p {
     align-items: center;
 }
 
-.video-holder .slim-author-info {
-    margin-left: 4px;
-    padding-right: 12px;
-    color: #999;
-    line-height: 22px;
-}
-
-.video-holder .author-name {
-    margin-left: 2px;
-    display: inline-block;
-    font-size: 10px;
-}
-
-.iconfont {
-    font-size: 14px;
-    font-style: normal;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.card-text-label {
+.video-holder .card-text-label {
     transform: scale(.87) translateY(1px);
     transform-origin: left top;
     position: relative;
@@ -211,7 +233,7 @@ p {
     border: #fb7299;
 }
 
-.card-text-label:before {
+.video-holder .card-text-label:before {
     content: "";
     position: absolute;
     bottom: 0;
@@ -225,28 +247,21 @@ p {
     box-sizing: content-box;
 }
 
-.icon-up {
-    transform: scale(0.8) translateY(1px);
-    transform-origin: left top;
-    position: relative;
-    display: inline-block;
-    padding: 0 1px 0 2px;
-    height: 15px;
-    line-height: 16px;
-    font-size: 10px;
-    text-align: center;
+.video-holder .author-info {
+    margin-left: 4px;
+    padding-right: 12px;
+    color: #999;
+    line-height: 22px;
 }
 
-.icon-up:before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    height: 12px;
-    border: .1em solid;
-    border-color: inherit;
-    border-radius: 2px;
-    box-sizing: content-box;
+.video-holder .up-icon svg {
+    width: 14px;
+    height: 14px;
+    fill: #999;
+}
+
+.video-holder .author-name {
+    margin-left: 2px;
+    display: inline-block;
+    font-size: 10px;
 }

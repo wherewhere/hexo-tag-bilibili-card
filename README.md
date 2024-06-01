@@ -4,7 +4,7 @@
 
 # hexo-tag-bilibili-card
 
-一个Hexo插件，在你的文章中插入b站的视频卡片，样式模仿和借鉴自b站。基于 [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card)
+一个Hexo插件，在你的文章中插入b站的视频卡片，样式模仿和借鉴自b站，基于 [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card)
 
 [![NPM](https://nodei.co/npm/hexo-tag-bilibili-card.png)](https://nodei.co/npm/hexo-tag-bilibili-card)
 
@@ -17,14 +17,14 @@ npm i hexo-tag-bilibili-card
 ## 预览
 
 <p>
-    <script src="https://cdn.jsdelivr.net/gh/wherewhere/hexo-tag-bilibili-card@main/components/bilibili-card/bilibili-card.js"></script>
+    <script src="https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.js"></script>
     <bilibili-card vid="BV1y54y1a768" title="【UWP】手把手教你安装 UWP 安装包" author="where-where" cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万" danmakus="4" image-proxy="https://images.weserv.nl/?url="></bilibili-card>
 </p>
 
 如果这里什么也没有，可以复制以下代码到 HTML 文件中查看效果
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/wherewhere/hexo-tag-bilibili-card@main/components/bilibili-card/bilibili-card.js"></script>
+<script src="https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.js"></script>
 <bilibili-card vid="BV1y54y1a768" title="【UWP】手把手教你安装 UWP 安装包" author="where-where" cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万" danmakus="4" image-proxy="https://images.weserv.nl/?url="></bilibili-card>
 ```
 
@@ -47,6 +47,6 @@ npm i hexo-tag-bilibili-card
 ```yaml
 bilibili_card:
     enable: true # 是否启用
-    imageProxy: https://images.weserv.nl/?url= # 图片代理
+    image_proxy: https://images.weserv.nl/?url= # 图片代理
     inject_layouts: [default] # 需要注入的布局
 ```
