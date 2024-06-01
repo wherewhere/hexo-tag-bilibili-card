@@ -63,6 +63,7 @@ class BilibiliCard extends HTMLElement {
 
         const cover = document.createElement("div");
         cover.className = "cover-img";
+        cover.style.display = "none";
         cover_box.appendChild(cover);
         this.contents.cover = cover;
 
@@ -164,10 +165,10 @@ class BilibiliCard extends HTMLElement {
     }
 
     get cover() {
-        return this.getAttribute("cover");
+        return this.getAttribute("cover").trimStart();
     }
     set cover(value) {
-        this.setAttribute("cover", value);
+        this.setAttribute("cover", value.trimStart());
     }
 
     get duration() {
@@ -192,15 +193,19 @@ class BilibiliCard extends HTMLElement {
     }
 
     get imageProxy() {
-        return this.getAttribute("image-proxy") ?? defaultProxy;
+        return (this.getAttribute("image-proxy") ?? defaultProxy).trimEnd();
     }
     set imageProxy(value) {
-        this.setAttribute("image-proxy", value);
+        this.setAttribute("image-proxy", value.trimEnd());
     }
 
     connectedCallback() {
         this.contents.link.href ??= `https://www.bilibili.com/video/${this.vid}`;
-        this.contents.cover.style.backgroundImage ??= `url(${this.imageProxy}${this.cover})`;
+        const cover = this.cover;
+        if (cover) {
+            this.contents.cover.style.display = "unset";
+            this.contents.cover.style.backgroundImage ??= `url(${this.imageProxy}${cover})`;
+        }
         this.contents.duration.textContent ??= this.duration;
         this.contents.title.textContent ??= this.title;
         this.contents.views.textContent ??= this.views;
@@ -221,7 +226,15 @@ class BilibiliCard extends HTMLElement {
                 this.contents.author.textContent = newValue ?? defaultAuthor;
                 break;
             case "cover":
-                this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${newValue})`;
+                var cover = newValue.trimStart();
+                if (cover) {
+                    this.contents.cover.style.display = "unset";
+                    this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${cover})`;
+                }
+                else {
+                    this.contents.cover.style.display = "none";
+                    this.contents.cover.style.backgroundImage = "unset";
+                }
                 break;
             case "duration":
                 this.contents.duration.textContent = newValue ?? defaultDuration;
@@ -233,7 +246,12 @@ class BilibiliCard extends HTMLElement {
                 this.contents.danmakus.textContent = newValue ?? defaultText;
                 break;
             case "image-proxy":
-                this.imageProxy = newValue ?? defaultProxy;
+                cover = this.cover;
+                if (cover) {
+                    const imageProxy = (newValue ?? defaultProxy).trimEnd();
+                    this.contents.cover.style.display = "unset";
+                    this.contents.cover.style.backgroundImage = `url(${imageProxy}${cover})`;
+                }
                 break;
         }
     }

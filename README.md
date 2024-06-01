@@ -4,9 +4,9 @@
 
 # hexo-tag-bilibili-card
 
-一个Hexo插件，在你的文章中插入b站的视频卡片，样式模仿和借鉴自b站，基于 [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card)
+一个 Hexo 插件，在你的文章中插入 B站 的视频卡片，样式模仿和借鉴自 B站，基于 [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card)
 
-[![NPM](https://nodei.co/npm/hexo-tag-bilibili-card.png)](https://nodei.co/npm/hexo-tag-bilibili-card)
+[![NPM](https://nodei.co/npm/hexo-tag-bilibili-card.png)](https://www.npmjs.com/package/hexo-tag-bilibili-card)
 
 ## 安装
 
@@ -16,21 +16,20 @@ npm i hexo-tag-bilibili-card
 
 ## 预览
 
-<p>
-    <script src="https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.js"></script>
-    <bilibili-card vid="BV1y54y1a768" title="【UWP】手把手教你安装 UWP 安装包" author="where-where" cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万" danmakus="4" image-proxy="https://images.weserv.nl/?url="></bilibili-card>
-</p>
-
-如果这里什么也没有，可以复制以下代码到 HTML 文件中查看效果
+复制以下代码到 HTML 文件中查看
 
 ```html
 <script src="https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.js"></script>
-<bilibili-card vid="BV1y54y1a768" title="【UWP】手把手教你安装 UWP 安装包" author="where-where" cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万" danmakus="4" image-proxy="https://images.weserv.nl/?url="></bilibili-card>
+<bilibili-card vid="BV1y54y1a768" title="【UWP】手把手教你安装 UWP 安装包" author="where-where"
+    cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万"
+    danmakus="4" image-proxy="https://images.weserv.nl/?url="></bilibili-card>
 ```
 
 ## 使用
 
-在你的 config 文件中插入以下片段
+### 使用插件
+
+在你的文章中插入以下片段
 
 ```md
 {% bilibili_card your_video_id %}
@@ -39,6 +38,35 @@ npm i hexo-tag-bilibili-card
 `your_video_id` 是 B站 的 BV号 或 AV号
 
 然后你就可以看见文章中的卡片了
+
+### 使用 Web Components
+
+你也可以直接使用 Web Components
+
+在 Head 中引入
+
+```html
+<script src="https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.js"></script>
+```
+
+在文章中插入
+
+```html
+<bilibili-card ...></bilibili-card>
+```
+
+其中
+
+| 属性名 | 描述 | 默认值 |
+|-------|------|-------|
+| vid | 视频 BV 号或 AV 号 | 空 |
+| title | 视频标题 | "哔哩哔哩 (゜-゜)つロ 干杯~" |
+| author | 作者 | "2233" |
+| cover | 封面图片地址 | 空 |
+| duration | 视频时长 | "??:??" |
+| views | 播放量 | "???" |
+| danmakus | 弹幕数 | "???" |
+| image-proxy | 图片代理地址 | "https://images.weserv.nl/?url=" |
 
 ## 配置
 
