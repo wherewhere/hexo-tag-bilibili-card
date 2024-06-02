@@ -60,13 +60,13 @@ npm i hexo-tag-bilibili-card
 | 属性名 | 描述 | 默认值 |
 |-------|------|-------|
 | vid | 视频 BV 号或 AV 号 | 空 |
-| title | 视频标题 | "哔哩哔哩 (゜-゜)つロ 干杯~" |
-| author | 作者 | "2233" |
+| title | 视频标题 | 哔哩哔哩 (゜-゜)つロ 干杯~ |
+| author | 作者 | 2233 |
 | cover | 封面图片地址 | 空 |
-| duration | 视频时长 | "??:??" |
-| views | 播放量 | "???" |
-| danmakus | 弹幕数 | "???" |
-| image-proxy | 图片代理地址 | "https://images.weserv.nl/?url=" |
+| duration | 视频时长 | ??:?? |
+| views | 播放量 | 0 |
+| danmakus | 弹幕数 | 0 |
+| image-proxy | 图片代理地址 | https://images.weserv.nl/?url= |
 
 ## 配置
 
