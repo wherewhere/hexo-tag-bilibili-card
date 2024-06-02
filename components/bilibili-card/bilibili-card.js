@@ -10,6 +10,22 @@ function getScript(scriptName) {
     }
 }
 
+function getVid(id) {
+    const type = id.slice(0, 2).toUpperCase();
+    if (type === "BV" || type === "AV") {
+        return id;
+    }
+    else {
+        const num = Number(id);
+        if (isNaN(num)) {
+            return `BV${id}`;
+        }
+        else {
+            return `av${num}`;
+        }
+    }
+}
+
 const defaultTitle = "哔哩哔哩 (゜-゜)つロ 干杯~";
 const defaultAuthor = "2233";
 const defaultDuration = "??:??";
@@ -143,10 +159,10 @@ class BilibiliCard extends HTMLElement {
     }
 
     get vid() {
-        return this.getAttribute("vid");
+        return getVid(this.getAttribute("vid"));
     }
     set vid(value) {
-        this.setAttribute("vid", value);
+        this.setAttribute("vid", getVid(value));
     }
 
     get title() {
@@ -216,7 +232,7 @@ class BilibiliCard extends HTMLElement {
         if (oldValue === newValue) { return; }
         switch (name) {
             case "vid":
-                this.contents.link.href = `https://www.bilibili.com/video/${newValue}`;
+                this.contents.link.href = `https://www.bilibili.com/video/${getVid(newValue)}`;
                 break;
             case "title":
                 this.contents.title.textContent = newValue || defaultTitle;

@@ -4,7 +4,7 @@
 
 # hexo-tag-bilibili-card
 
-一个 Hexo 插件，在你的文章中插入 B站 的视频卡片，样式模仿和借鉴自 B站，基于 [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card)
+一个 Hexo 插件，在你的文章中插入哔哩哔哩的视频卡片，样式模仿和借鉴自 B站，基于 [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card)
 
 [![NPM](https://nodei.co/npm/hexo-tag-bilibili-card.png)](https://www.npmjs.com/package/hexo-tag-bilibili-card)
 
@@ -35,7 +35,7 @@ npm i hexo-tag-bilibili-card
 {% bilibili_card your_video_id %}
 ```
 
-`your_video_id` 是 B站 的 BV号 或 AV号
+`your_video_id` 是视频的 BV号 或 AV号，如果未加前缀，则自动识别数字为 AV号，字符串为 BV号
 
 然后你就可以看见文章中的卡片了
 
@@ -70,7 +70,7 @@ npm i hexo-tag-bilibili-card
 
 ## 配置
 
-由于 B站 图片地址的跨域限制，因此需要配置图片代理，目前未找到大陆地区较为稳定的服务，默认使用的 `https://images.weserv.nl/?url=`，部分地区受到了 DNS 污染及反应过慢。建议参考 [rsstt-img-relay](https://github.com/Rongronggg9/rsstt-img-relay) 自建服务
+由于哔哩哔哩图片地址的跨域限制，因此需要配置图片代理，目前未找到大陆地区较为稳定的服务，默认使用的 `https://images.weserv.nl/?url=`，部分地区受到了 DNS 污染及反应过慢。建议参考 [rsstt-img-relay](https://github.com/Rongronggg9/rsstt-img-relay) 自建服务
 
 ```yaml
 bilibili_card:
