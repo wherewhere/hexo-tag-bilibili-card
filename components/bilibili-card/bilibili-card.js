@@ -31,7 +31,7 @@ const defaultAuthor = "2233";
 const defaultDuration = "??:??";
 const defaultProxy = "https://images.weserv.nl/?url=";
 
-class BilibiliCard extends HTMLElement {
+class BiliBiliCard extends HTMLElement {
     static get observedAttributes() {
         return ["vid", "title", "author", "cover", "duration", "views", "danmakus", "image-proxy"];
     }
@@ -241,10 +241,10 @@ class BilibiliCard extends HTMLElement {
                 this.contents.author.textContent = newValue || defaultAuthor;
                 break;
             case "cover":
-                var cover = newValue.trimStart();
-                if (cover) {
+                const value = newValue.trimStart();
+                if (value) {
                     this.contents.cover.style.display = "unset";
-                    this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${cover})`;
+                    this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${value})`;
                 }
                 else {
                     this.contents.cover.style.display = "none";
@@ -261,7 +261,7 @@ class BilibiliCard extends HTMLElement {
                 this.contents.danmakus.textContent = newValue || 0;
                 break;
             case "image-proxy":
-                cover = this.cover;
+                const cover = this.cover;
                 if (cover) {
                     const imageProxy = (newValue || defaultProxy).trimEnd();
                     this.contents.cover.style.display = "unset";
@@ -273,5 +273,5 @@ class BilibiliCard extends HTMLElement {
 }
 
 if (!customElements.get("bilibili-card")) {
-    customElements.define("bilibili-card", BilibiliCard);
+    customElements.define("bilibili-card", BiliBiliCard);
 }

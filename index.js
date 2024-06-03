@@ -55,7 +55,7 @@ function setSettings(obj, set) {
 
 const bilibili_card = {
     enable: true,
-    image_proxy: "https://images.weserv.nl/?url=",
+    image_proxy: undefined,
     inject_layouts: ["default"]
 };
 

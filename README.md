@@ -41,7 +41,7 @@ npm i hexo-tag-bilibili-card
 
 ### 使用 Web Components
 
-你也可以直接使用 Web Components
+你也可以直接使用 Web Component 控件
 
 在 Head 中引入
 
