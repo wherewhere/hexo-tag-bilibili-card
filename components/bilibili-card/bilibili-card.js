@@ -56,12 +56,15 @@ class BiliBiliCard extends HTMLElement {
         shadowRoot.appendChild(css);
 
         const card = document.createElement("div");
-        card.className = "default-flex video-holder normal-card";
+        card.className = "video-holder";
         shadowRoot.appendChild(card);
 
         const link = document.createElement('a');
         link.className = "default-flex full-width";
         link.target = "_blank";
+        link.style.maxHeight = "92px";
+        link.style.display = "flex";
+        link.style.alignItems = "center";
         card.appendChild(link);
         this.contents.link = link;
 
@@ -97,22 +100,25 @@ class BiliBiliCard extends HTMLElement {
 
         const title = document.createElement('p');
         title.className = "double-ellipsis video-title";
+        title.style.marginBottom = "0";
         content.appendChild(title);
         this.contents.title = title;
 
         const info = document.createElement("div");
         info.className = "video-card-info";
+        info.style.display = "flex";
         content.appendChild(info);
 
         const views_box = document.createElement("div");
         views_box.className = "cover-info-item";
         views_box.innerHTML =
         `<i class="iconfont">
-            <svg viewBox="0 0 896 768">
+            <svg viewBox="0 0 896 768" style="width: 16px; height: 16px;">
                 <path
                     d="M832 160V608C832 635.333 822.833 658.167 804.5 676.5C786.167 694.833 763.333 704 736 704H160C132.667 704 109.833 694.833 91.5 676.5C73.1667 658.167 64 635.333 64 608V160C64 132.667 73.1667 109.833 91.5 91.5C109.833 73.1667 132.667 64 160 64H736C763.333 64 786.167 73.1667 804.5 91.5C822.833 109.833 832 132.667 832 160ZM736 768C765.333 768 792.167 760.833 816.5 746.5C840.833 732.167 860.167 712.833 874.5 688.5C888.833 664.167 896 637.333 896 608V160C896 130.667 888.833 103.833 874.5 79.5C860.167 55.1667 840.833 35.8333 816.5 21.5C792.167 7.16667 765.333 0 736 0H160C130.667 0 103.833 7.16667 79.5 21.5C55.1667 35.8333 35.8333 55.1667 21.5 79.5C7.16667 103.833 0 130.667 0 160V608C0 637.333 7.16667 664.167 21.5 688.5C35.8333 712.833 55.1667 732.167 79.5 746.5C103.833 760.833 130.667 768 160 768H736ZM621 413C629 409.667 634.5 404 637.5 396C640.5 388 640.5 380 637.5 372C634.5 364 629 358.333 621 355L365 243C353.667 238.333 343.333 239.167 334 245.5C324.667 251.833 320 260.667 320 272V496C320 507.333 324.667 516.167 334 522.5C343.333 528.833 353.667 529.667 365 525L621 413Z" />
             </svg>
         </i>`;
+        views_box.style.display = "flex";
         info.appendChild(views_box);
 
         const views = document.createElement("span");
@@ -124,11 +130,12 @@ class BiliBiliCard extends HTMLElement {
         danmakus_box.className = "cover-info-item";
         danmakus_box.innerHTML =
         `<i class="iconfont">
-            <svg viewBox="0 0 896 768">
+            <svg viewBox="0 0 896 768" style="width: 16px; height: 16px;">
                 <path
                     d="M736 0C765.333 0 792.167 7.16667 816.5 21.5C840.833 35.8333 860.167 55.1667 874.5 79.5C888.833 103.833 896 130.667 896 160V608C896 637.333 888.833 664.167 874.5 688.5C860.167 712.833 840.833 732.167 816.5 746.5C792.167 760.833 765.333 768 736 768H160C130.667 768 103.833 760.833 79.5 746.5C55.1667 732.167 35.8333 712.833 21.5 688.5C7.16667 664.167 0 637.333 0 608V160C0 130.667 7.16667 103.833 21.5 79.5C35.8333 55.1667 55.1667 35.8333 79.5 21.5C103.833 7.16667 130.667 0 160 0H736ZM736 64H160C134.667 64 113 72.1667 95 88.5C77 104.833 66.6667 125.667 64 151V160V608C64 633.333 72.1667 655 88.5 673C104.833 691 125.667 701.333 151 704H160H736C761.333 704 783 695.833 801 679.5C819 663.167 829.333 642.333 832 617V608V160C832 132.667 822.833 109.833 804.5 91.5C786.167 73.1667 763.333 64 736 64ZM304 448V512H240V448H304ZM720 448V512H368V448H720ZM240 256V320H176V256H240ZM688 256V320H304V256H688Z" />
             </svg>
         </i>`;
+        danmakus_box.style.display = "flex";
         info.appendChild(danmakus_box);
 
         const danmakus = document.createElement("span");
@@ -139,17 +146,19 @@ class BiliBiliCard extends HTMLElement {
         const bottom = document.createElement("div");
         bottom.className = "video-card-bottom";
         bottom.innerHTML = `<label class="card-text-label">视频</label>`;
+        bottom.style.display = "flex";
         content.appendChild(bottom);
 
         const author_box = document.createElement("div");
         author_box.className = "view-flex default-flex align-center author-info";
         author_box.innerHTML =
         `<i class="iconfont up-icon">
-            <svg viewBox="0 0 896 768">
+            <svg viewBox="0 0 896 768" style="width: 14px; height: 14px;">
                 <path
                     d="M832 608V160C832 132.667 822.833 109.833 804.5 91.5C786.167 73.1667 763.333 64 736 64H160C132.667 64 109.833 73.1667 91.5 91.5C73.1667 109.833 64 132.667 64 160V608C64 635.333 73.1667 658.167 91.5 676.5C109.833 694.833 132.667 704 160 704H736C763.333 704 786.167 694.833 804.5 676.5C822.833 658.167 832 635.333 832 608ZM736 0C765.333 0 792.167 7.16667 816.5 21.5C840.833 35.8333 860.167 55.1667 874.5 79.5C888.833 103.833 896 130.667 896 160V608C896 637.333 888.833 664.167 874.5 688.5C860.167 712.833 840.833 732.167 816.5 746.5C792.167 760.833 765.333 768 736 768H160C130.667 768 103.833 760.833 79.5 746.5C55.1667 732.167 35.8333 712.833 21.5 688.5C7.16667 664.167 0 637.333 0 608V160C0 130.667 7.16667 103.833 21.5 79.5C35.8333 55.1667 55.1667 35.8333 79.5 21.5C103.833 7.16667 130.667 0 160 0H736ZM355 416V198H416V438C416 485.333 403 521.167 377 545.5C351 569.833 315 582 269 582C223 582 188 570.333 164 547C140 523.667 128 488.667 128 442V198H189V416C189 438 190.333 455 193 467C196.333 485 203.667 498.667 215 508C228.333 519.333 247.333 525 272 525C296.667 525 315.667 519.333 329 508C340.333 498.667 347.667 485 351 467C353.667 455 355 438 355 416ZM643 378C659.667 378 673.333 373.333 684 364C697.333 353.333 704 337.667 704 317C704 295 698 278.667 686 268C676 260 661.667 256 643 256H550V378H643ZM646 198C692 198 725.333 211.667 746 239C760.667 259 768 284.167 768 314.5C768 344.833 760.667 369.667 746 389C725.333 415.667 692 429 646 429H550V576H490V198H646Z" />
             </svg>
         </i>`;
+        author_box.style.display = "flex";
         bottom.appendChild(author_box);
 
         const author = document.createElement("span");
