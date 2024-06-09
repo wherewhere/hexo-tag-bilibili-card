@@ -121,7 +121,7 @@ function addInfoItem(info, type, text, isVideo = true) {
 function addInfoItems(info, types, card) {
     if (!Array.isArray(types)) { return; }
     if (!(card instanceof BiliBiliCard)) { return; }
-    const isVideo = hasDanmaku(card.type);
+    const isVideo = canPlay(card.type);
     types.forEach(type => addInfoItem(info, type, card.getInfo(type), isVideo));
 }
 
@@ -182,6 +182,18 @@ function getUrl(id, type) {
             return `https://h.bilibili.com/${id}`;
         default:
             return id;
+    }
+}
+
+function getDefaultInfoTypes(value) {
+    switch (value) {
+        case "video":
+            return ["views", "danmakus"];
+        case "user":
+            return ["views", "likes"];
+        case "article":
+        default:
+            return ["views", "comments"];
     }
 }
 
@@ -383,7 +395,7 @@ class BiliBiliCard extends HTMLElement {
 
     get infoTypes() {
         const types = this.getAttribute("info-types")?.split(/[,|\s+]/).filter(x => x != '');
-        return types?.length ? types : ["views", hasDanmaku(this.type) ? "danmakus" : "comments"];
+        return types?.length ? types : getDefaultInfoTypes(this.type);
     }
     set infoTypes(value) {
         this.setAttribute("info-types", Array.isArray(value) ? value.join(' ') : value);
@@ -449,7 +461,7 @@ class BiliBiliCard extends HTMLElement {
                 break;
             case "views":
                 if (this.infoTypes.includes("views")) {
-                    addInfoItem(this.contents.info, "views", newValue || 0);
+                    addInfoItem(this.contents.info, "views", newValue || 0, canPlay(this.type));
                 }
             case "danmakus":
                 if (this.infoTypes.includes("danmakus")) {
@@ -481,7 +493,7 @@ class BiliBiliCard extends HTMLElement {
                 info.innerHTML = '';
                 let types = newValue?.split(/[,|\s+]/).filter(x => x != '');
                 if (!types?.length) {
-                    types = ["views", hasDanmaku(this.type) ? "danmakus" : "comments"];
+                    types = getDefaultInfoTypes(this.type);
                 }
                 addInfoItems(this.contents.info, types, this);
                 break;
