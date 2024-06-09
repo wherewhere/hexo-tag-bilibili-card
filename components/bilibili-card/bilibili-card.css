@@ -39,6 +39,7 @@ p {
 }
 
 .iconfont {
+    display: -ms-flexbox;
     display: flex;
     font-size: 16px;
     font-style: normal;
@@ -93,6 +94,7 @@ p {
 .video-holder {
     position: relative;
     border-radius: 6px;
+    overflow: hidden;
 }
 
 .video-holder a {
@@ -182,7 +184,7 @@ p {
 
 .video-holder .video-content-container {
     width: 100%;
-    display: inline-block;
+    display: grid;
     box-sizing: border-box;
     padding: 8px 10px 0;
     height: 92px;
@@ -209,10 +211,13 @@ p {
     display: flex;
     -ms-flex-align: center;
     align-items: center;
+    overflow: hidden;
 }
 
 .video-holder .video-card-info .cover-info-item {
+    display: -ms-flexbox;
     display: flex;
+    -ms-flex-align: center;
     align-items: center;
     height: 21px;
     line-height: 21px;
