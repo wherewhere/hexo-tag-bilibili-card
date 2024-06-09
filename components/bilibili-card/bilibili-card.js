@@ -101,14 +101,26 @@ function addInfoItem(info, type, text, isVideo = true) {
     }
 }
 
-function isVideo(type) {
-    return type === "video" || type === "room";
+function canPlay(type) {
+    return type === "video" || type === "live" || type === "bangumi" || type === "audio";
+}
+
+function hasDuration(type) {
+    return type === "video" || type === "audio";
+}
+
+function hasDanmaku(type) {
+    return type === "video" || type === "bangumi";
 }
 
 function setCoverType(cover, type) {
     if (!(cover instanceof Element)) { return; }
-    const isVideo = isVideo(type);
-    cover.classList.toggle("video-cover-img", isVideo);
+    if (canPlay(type)) {
+        cover.classList.add("video-cover-img");
+    }
+    else {
+        cover.classList.remove("video-cover-img");
+    }
 }
 
 function getTypeName(type) {
@@ -117,8 +129,22 @@ function getTypeName(type) {
             return "视频";
         case "article":
             return "专栏";
-        case "room":
+        case "user":
+            return "用户";
+        case "live":
             return "直播";
+        case "bangumi":
+            return "番剧";
+        case "audio":
+            return "音频";
+        case "dynamic":
+            return "动态";
+        case "favorite":
+            return "收藏夹";
+        case "album":
+            return "相簿";
+        default:
+            return type;
     }
 }
 
@@ -128,8 +154,22 @@ function getUrl(id, type) {
             return `https://www.bilibili.com/video/${getVid(id)}`;
         case "article":
             return `https://www.bilibili.com/read/${id.slice(0, 2).toLowerCase() === "cv" ? id : `cv${id}`}`;
-        case "room":
+        case "user":
+            return `https://space.bilibili.com/${id}`;
+        case "live":
             return `https://live.bilibili.com/${id}`;
+        case "bangumi":
+            return `https://www.bilibili.com/bangumi/play/${id.slice(0, 2).toLowerCase() === "ss" ? id : `ss${id}`}`;
+        case "audio":
+            return `https://www.bilibili.com/audio/${id.slice(0, 2).toLowerCase() === "au" ? id : `au${id}`}`;
+        case "dynamic":
+            return `https://t.bilibili.com/${id}`;
+        case "favorite":
+            return `https://www.bilibili.com/medialist/detail/${id.slice(0, 2).toLowerCase() === "ml" ? id : `ml${id}`}`;
+        case "album":
+            return `https://h.bilibili.com/${id}`;
+        default:
+            return id;
     }
 }
 
@@ -331,7 +371,7 @@ class BiliBiliCard extends HTMLElement {
 
     get infoTypes() {
         const types = this.getAttribute("info-types")?.split(/[,|\s+]/).filter(x => x != '');
-        return types?.length ? types : ["views", this.type === "video" ? "danmakus" : "comments"];
+        return types?.length ? types : ["views", hasDanmaku(this.type) ? "danmakus" : "comments"];
     }
     set infoTypes(value) {
         this.setAttribute("info-types", value instanceof Array ? value.join(' ') : value);
@@ -346,21 +386,21 @@ class BiliBiliCard extends HTMLElement {
 
     connectedCallback() {
         const type = this.type;
-        this.contents.link.href ??= getUrl(this.vid, type);
+        this.contents.link.href ||= getUrl(this.vid, type);
         const cover = this.cover;
-        setCoverType(cover, type);
+        setCoverType(this.contents.cover, type);
         if (cover) {
             this.contents.cover.style.display = "unset";
-            this.contents.cover.style.backgroundImage ??= `url(${this.imageProxy}${cover})`;
+            this.contents.cover.style.backgroundImage ||= `url(${this.imageProxy}${cover})`;
         }
         const duration = this.contents.duration;
-        duration.textContent ??= this.duration;
-        duration.parentElement.style.display = type === "video" ? "unset" : "none";
-        this.contents.title.textContent ??= this.title;
+        duration.textContent ||= this.duration;
+        duration.parentElement.style.display = hasDuration(type) ? "unset" : "none";
+        this.contents.title.textContent ||= this.title;
         const info = this.contents.info;
         this.infoTypes.forEach(type => addInfoItem(info, type, this[type]));
-        this.contents.type.textContent ??= getTypeName(type);
-        this.contents.author.textContent ??= this.author;
+        this.contents.type.textContent ||= getTypeName(type);
+        this.contents.author.textContent ||= this.author;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -372,8 +412,8 @@ class BiliBiliCard extends HTMLElement {
             case "type":
                 const type = newValue || "video";
                 this.contents.link.href = getUrl(this.vid, type);
-                setCoverType(this.cover, type);
-                this.contents.duration.parentElement.style.display = type === "video" ? "unset" : "none";
+                setCoverType(this.contents.cover, type);
+                this.contents.duration.parentElement.style.display = hasDuration(type) ? "unset" : "none";
                 this.contents.type.textContent = getTypeName(type);
                 break;
             case "title":
@@ -430,7 +470,7 @@ class BiliBiliCard extends HTMLElement {
                 info.innerHTML = "";
                 let types = newValue?.split(/[,|\s+]/).filter(x => x != '');
                 if (!types?.length) {
-                    types = ["views", this.type === "video" ? "danmakus" : "comments"];
+                    types = ["views", hasDanmaku(this.type) ? "danmakus" : "comments"];
                 }
                 types.forEach(type => addInfoItem(info, type, this[type]));
                 break;
