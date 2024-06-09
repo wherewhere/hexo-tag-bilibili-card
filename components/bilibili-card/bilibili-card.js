@@ -26,6 +26,18 @@ function getVid(id) {
     }
 }
 
+function canPlay(type) {
+    return type === "video" || type === "live" || type === "bangumi" || type === "audio";
+}
+
+function hasDuration(type) {
+    return type === "video" || type === "audio";
+}
+
+function hasDanmaku(type) {
+    return type === "video" || type === "bangumi";
+}
+
 function getIcon(type, isVideo = true) {
     switch (type) {
         case "views":
@@ -68,6 +80,11 @@ function getIcon(type, isVideo = true) {
                 path: "M448 832C378.667 832 314.333 814.333 255 779C197 745 151 699 117 641C81.6667 581.667 64 517.333 64 448C64 378.667 81.6667 314.333 117 255C151 197 197 151 255 117C314.333 81.6667 378.667 64 448 64C517.333 64 581.667 81.6667 641 117C699 151 745 197 779 255C814.333 314.333 832 378.667 832 448C832 517.333 814.333 581.667 779 641C745 699 699 745 641 779C581.667 814.333 517.333 832 448 832ZM448 0C368.667 0 294 20.6667 224 62C156 102 102 156 62 224C20.6667 294 0 368.667 0 448C0 527.333 20.6667 602 62 672C102 740 156 794 224 834C294 875.333 368.833 896 448.5 896C528.167 896 602.667 875.667 672 835C740 795.667 794 742.333 834 675C875.333 605 896 529.167 896 447.5C896 365.833 875.667 290.333 835 221C795.667 153.667 742.333 100.333 675 61C605.667 20.3333 530 0 448 0ZM480 435V192C480 182.667 477 175 471 169C465 163 457.5 160 448.5 160C439.5 160 431.833 163.5 425.5 170.5C419.167 177.5 416 184.667 416 192V448C416 454 417.333 459 420 463C421.333 465.667 424.333 469.333 429 474L608 653C614.667 659 622.167 662 630.5 662C638.833 662 646.167 658.833 652.5 652.5C658.833 646.167 662 638 662 628C662 618 659 611.333 653 608L480 435Z",
                 viewBox: "0 0 896 896"
             }
+        default:
+            return {
+                path: "M581.25 293C581.25 271.667 589.083 253.167 604.75 237.5C620.417 221.833 639.25 214 661.25 214C683.25 214 702.083 221.833 717.75 237.5C733.417 253.167 741.25 271.833 741.25 293.5C741.25 315.167 733.417 333.833 717.75 349.5C702.083 365.167 683.25 373 661.25 373C639.25 373 620.417 365.167 604.75 349.5C589.083 333.833 581.25 315 581.25 293ZM578.25 0C550.917 0 523.583 5.33333 496.25 16C468.917 26.6667 446.25 41 428.25 59L42.25 443C23.5833 461 11.0833 482.333 4.75 507C-1.58333 531.667 -1.58333 556.167 4.75 580.5C11.0833 604.833 23.5833 626.333 42.25 645L307.25 909C321.25 922.333 336.917 932.667 354.25 940C371.583 947.333 389.917 951 409.25 951C428.583 951 447.083 947.333 464.75 940C482.417 932.667 497.917 922.333 511.25 909L897.25 526C946.583 476.667 965.583 417.667 954.25 349L926.25 169C920.917 135 904.917 104.833 878.25 78.5C851.583 52.1667 820.917 36.3333 786.25 31L605.25 2C596.583 0.666667 587.583 0 578.25 0ZM578.25 79C582.917 79 587.917 79.3333 593.25 80L774.25 109C791.583 111.667 807.417 120.167 821.75 134.5C836.083 148.833 844.583 164.667 847.25 182L875.25 362C878.583 381.333 878.25 399 874.25 415C868.917 434.333 857.583 452.667 840.25 470L455.25 853C442.583 865.667 427.417 872 409.75 872C392.083 872 376.917 865.667 364.25 853L98.25 589C86.25 576.333 80.25 561.333 80.25 544C80.25 526.667 86.25 511.667 98.25 499L484.25 115C494.917 104.333 509.083 95.6667 526.75 89C544.417 82.3333 561.583 79 578.25 79Z",
+                viewBox: "0 0 958 951"
+            }
     }
 }
 
@@ -101,16 +118,11 @@ function addInfoItem(info, type, text, isVideo = true) {
     }
 }
 
-function canPlay(type) {
-    return type === "video" || type === "live" || type === "bangumi" || type === "audio";
-}
-
-function hasDuration(type) {
-    return type === "video" || type === "audio";
-}
-
-function hasDanmaku(type) {
-    return type === "video" || type === "bangumi";
+function addInfoItems(info, types, card) {
+    if (!Array.isArray(types)) { return; }
+    if (!(card instanceof BiliBiliCard)) { return; }
+    const isVideo = hasDanmaku(card.type);
+    types.forEach(type => addInfoItem(info, type, card.getInfo(type), isVideo));
 }
 
 function setCoverType(cover, type) {
@@ -374,7 +386,7 @@ class BiliBiliCard extends HTMLElement {
         return types?.length ? types : ["views", hasDanmaku(this.type) ? "danmakus" : "comments"];
     }
     set infoTypes(value) {
-        this.setAttribute("info-types", value instanceof Array ? value.join(' ') : value);
+        this.setAttribute("info-types", Array.isArray(value) ? value.join(' ') : value);
     }
 
     get imageProxy() {
@@ -397,8 +409,7 @@ class BiliBiliCard extends HTMLElement {
         duration.textContent ||= this.duration;
         duration.parentElement.style.display = hasDuration(type) ? "unset" : "none";
         this.contents.title.textContent ||= this.title;
-        const info = this.contents.info;
-        this.infoTypes.forEach(type => addInfoItem(info, type, this[type]));
+        addInfoItems(this.contents.info, this.infoTypes, this);
         this.contents.type.textContent ||= getTypeName(type);
         this.contents.author.textContent ||= this.author;
     }
@@ -467,12 +478,12 @@ class BiliBiliCard extends HTMLElement {
                 break;
             case "info-types":
                 const info = this.contents.info;
-                info.innerHTML = "";
+                info.innerHTML = '';
                 let types = newValue?.split(/[,|\s+]/).filter(x => x != '');
                 if (!types?.length) {
                     types = ["views", hasDanmaku(this.type) ? "danmakus" : "comments"];
                 }
-                types.forEach(type => addInfoItem(info, type, this[type]));
+                addInfoItems(this.contents.info, types, this);
                 break;
             case "image-proxy":
                 const cover = this.cover;
@@ -483,6 +494,14 @@ class BiliBiliCard extends HTMLElement {
                 }
                 break;
         }
+    }
+
+    getInfo(name) {
+        let info = this[name];
+        if (typeof info === "undefined") {
+            info = this.getAttribute(name);
+        }
+        return info;
     }
 }
 
