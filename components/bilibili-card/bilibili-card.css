@@ -148,7 +148,7 @@ p {
     border-radius: 4px 0 0 4px;
 }
 
-.video-holder .cover-img:after {
+.video-holder .video-cover-img:after {
     content: "";
     position: absolute;
     left: 50%;

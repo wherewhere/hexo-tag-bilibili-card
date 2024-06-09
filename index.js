@@ -76,6 +76,6 @@ hexo.extend.generator.register("bilibili_card_asset", () => [
     }
 ]);
 
-hexo.extend.tag.register("bilibili_card", args => createCard(bilibili_card.image_proxy, args[0], hexo.log), { async: true });
+hexo.extend.tag.register("bilibili_card", args => createCard(bilibili_card.image_proxy, args, hexo.log), { async: true });
 
 bilibili_card.inject_layouts.forEach(layout => hexo.extend.injector.register("head_begin", () => js("/components/bilibili-card/bilibili-card.js"), layout));

@@ -101,6 +101,38 @@ function addInfoItem(info, type, text, isVideo = true) {
     }
 }
 
+function isVideo(type) {
+    return type === "video" || type === "room";
+}
+
+function setCoverType(cover, type) {
+    if (!(cover instanceof Element)) { return; }
+    const isVideo = isVideo(type);
+    cover.classList.toggle("video-cover-img", isVideo);
+}
+
+function getTypeName(type) {
+    switch (type) {
+        case "video":
+            return "视频";
+        case "article":
+            return "专栏";
+        case "room":
+            return "直播";
+    }
+}
+
+function getUrl(id, type) {
+    switch (type) {
+        case "video":
+            return `https://www.bilibili.com/video/${getVid(id)}`;
+        case "article":
+            return `https://www.bilibili.com/read/${id.slice(0, 2).toLowerCase() === "cv" ? id : `cv${id}`}`;
+        case "room":
+            return `https://live.bilibili.com/${id}`;
+    }
+}
+
 const defaultTitle = "哔哩哔哩 (゜-゜)つロ 干杯~";
 const defaultAuthor = "2233";
 const defaultDuration = "??:??";
@@ -117,6 +149,7 @@ class BiliBiliCard extends HTMLElement {
         duration: null,
         title: null,
         info: null,
+        type: null,
         author: null
     }
 
@@ -186,9 +219,13 @@ class BiliBiliCard extends HTMLElement {
 
         const bottom = document.createElement("div");
         bottom.className = "video-card-bottom";
-        bottom.innerHTML = `<label class="card-text-label">视频</label>`;
         bottom.style.display = "flex";
         content.appendChild(bottom);
+
+        const type = document.createElement("label");
+        type.className = "card-text-label";
+        bottom.appendChild(type);
+        this.contents.type = type;
 
         const author_box = document.createElement("div");
         author_box.className = "view-flex default-flex align-center author-info";
@@ -209,10 +246,10 @@ class BiliBiliCard extends HTMLElement {
     }
 
     get vid() {
-        return getVid(this.getAttribute("vid"));
+        return this.getAttribute("vid");
     }
     set vid(value) {
-        this.setAttribute("vid", getVid(value));
+        this.setAttribute("vid", value);
     }
 
     get type() {
@@ -237,10 +274,10 @@ class BiliBiliCard extends HTMLElement {
     }
 
     get cover() {
-        return this.getAttribute("cover").trimStart();
+        return this.getAttribute("cover")?.trimStart();
     }
     set cover(value) {
-        this.setAttribute("cover", value.trimStart());
+        this.setAttribute("cover", value?.trimStart());
     }
 
     get duration() {
@@ -304,20 +341,25 @@ class BiliBiliCard extends HTMLElement {
         return (this.getAttribute("image-proxy") || defaultProxy).trimEnd();
     }
     set imageProxy(value) {
-        this.setAttribute("image-proxy", value.trimEnd());
+        this.setAttribute("image-proxy", value?.trimEnd());
     }
 
     connectedCallback() {
-        this.contents.link.href ??= `https://www.bilibili.com/video/${this.vid}`;
+        const type = this.type;
+        this.contents.link.href ??= getUrl(this.vid, type);
         const cover = this.cover;
+        setCoverType(cover, type);
         if (cover) {
             this.contents.cover.style.display = "unset";
             this.contents.cover.style.backgroundImage ??= `url(${this.imageProxy}${cover})`;
         }
-        this.contents.duration.textContent ??= this.duration;
+        const duration = this.contents.duration;
+        duration.textContent ??= this.duration;
+        duration.parentElement.style.display = type === "video" ? "unset" : "none";
         this.contents.title.textContent ??= this.title;
         const info = this.contents.info;
         this.infoTypes.forEach(type => addInfoItem(info, type, this[type]));
+        this.contents.type.textContent ??= getTypeName(type);
         this.contents.author.textContent ??= this.author;
     }
 
@@ -325,7 +367,14 @@ class BiliBiliCard extends HTMLElement {
         if (oldValue === newValue) { return; }
         switch (name) {
             case "vid":
-                this.contents.link.href = `https://www.bilibili.com/video/${getVid(newValue)}`;
+                this.contents.link.href = getUrl(newValue, this.type);
+                break;
+            case "type":
+                const type = newValue || "video";
+                this.contents.link.href = getUrl(this.vid, type);
+                setCoverType(this.cover, type);
+                this.contents.duration.parentElement.style.display = type === "video" ? "unset" : "none";
+                this.contents.type.textContent = getTypeName(type);
                 break;
             case "title":
                 this.contents.title.textContent = newValue || defaultTitle;
@@ -334,7 +383,7 @@ class BiliBiliCard extends HTMLElement {
                 this.contents.author.textContent = newValue || defaultAuthor;
                 break;
             case "cover":
-                const value = newValue.trimStart();
+                const value = newValue?.trimStart();
                 if (value) {
                     this.contents.cover.style.display = "unset";
                     this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${value})`;
