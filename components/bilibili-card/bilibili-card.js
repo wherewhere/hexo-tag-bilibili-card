@@ -195,6 +195,8 @@ function getDefaultInfoTypes(value) {
             return ["views"];
         case "bangumi":
             return ["favorites"];
+        case "favorite":
+            return ["views", "favorites"];
         case "article":
         case "audio":
         case "dynamic":
