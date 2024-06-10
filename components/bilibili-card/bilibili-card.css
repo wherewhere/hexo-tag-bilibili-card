@@ -204,6 +204,7 @@ p {
     color: var(--bilibili-card-title-color);
     transition: .3s;
     padding-right: 10px;
+    white-space: pre-line;
 }
 
 .video-holder .video-card-info {

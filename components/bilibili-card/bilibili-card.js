@@ -191,6 +191,8 @@ function getDefaultInfoTypes(value) {
             return ["views", "danmakus"];
         case "user":
             return ["views", "likes"];
+        case "live":
+            return ["views"];
         case "article":
         default:
             return ["views", "comments"];
