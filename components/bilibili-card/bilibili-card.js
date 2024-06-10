@@ -196,6 +196,7 @@ function getDefaultInfoTypes(value) {
         case "bangumi":
             return ["favorites"];
         case "article":
+        case "audio":
         default:
             return ["views", "comments"];
     }
