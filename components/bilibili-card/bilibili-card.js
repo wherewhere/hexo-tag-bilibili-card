@@ -197,6 +197,7 @@ function getDefaultInfoTypes(value) {
             return ["favorites"];
         case "article":
         case "audio":
+        case "dynamic":
         default:
             return ["views", "comments"];
     }
