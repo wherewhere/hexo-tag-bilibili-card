@@ -193,6 +193,8 @@ function getDefaultInfoTypes(value) {
             return ["views", "likes"];
         case "live":
             return ["views"];
+        case "bangumi":
+            return ["favorites"];
         case "article":
         default:
             return ["views", "comments"];
