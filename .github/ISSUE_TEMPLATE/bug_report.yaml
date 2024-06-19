@@ -32,6 +32,7 @@ body:
       description: Specify the version of hexo-generator-apis you're using.
       options:
         - "Latest Source"
+        - "0.8.4"
         - "0.8.3"
         - "0.7.2"
         - "0.7.1"

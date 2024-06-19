@@ -1,6 +1,6 @@
 {
   "name": "hexo-tag-bilibili-card",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "A hexo plugin insert a bilibili video card into your page or article, some of css code is copy from bilibili.",
   "main": "index.js",
   "keywords": [

@@ -161,6 +161,7 @@ function getTypeName(type) {
 }
 
 function getUrl(id, type) {
+    if (!id?.length) { return; }
     switch (type) {
         case "video":
             return `https://www.bilibili.com/video/${getVid(id)}`;
@@ -215,6 +216,8 @@ class BiliBiliCard extends HTMLElement {
     static get observedAttributes() {
         return ["vid", "type", "title", "author", "cover", "duration", "views", "danmakus", "comments", "favorites", "coins", "likes", "info-types", "image-proxy"];
     }
+
+    isLoaded = false;
 
     contents = {
         link: null,
@@ -419,24 +422,25 @@ class BiliBiliCard extends HTMLElement {
 
     connectedCallback() {
         const type = this.type;
-        this.contents.link.href ||= getUrl(this.vid, type);
+        this.contents.link.href = getUrl(this.vid, type);
         const cover = this.cover;
         setCoverType(this.contents.cover, type);
         if (cover) {
             this.contents.cover.style.display = "unset";
-            this.contents.cover.style.backgroundImage ||= `url(${this.imageProxy}${cover})`;
+            this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${cover})`;
         }
         const duration = this.contents.duration;
-        duration.textContent ||= this.duration;
+        duration.textContent = this.duration;
         duration.parentElement.style.display = hasDuration(type) ? "unset" : "none";
-        this.contents.title.textContent ||= this.title;
+        this.contents.title.textContent = this.title;
         addInfoItems(this.contents.info, this.infoTypes, this);
-        this.contents.type.textContent ||= getTypeName(type);
-        this.contents.author.textContent ||= this.author;
+        this.contents.type.textContent = getTypeName(type);
+        this.contents.author.textContent = this.author;
+        this.isLoaded = true;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue === newValue) { return; }
+        if (!this.isLoaded || oldValue === newValue) { return; }
         switch (name) {
             case "vid":
                 this.contents.link.href = getUrl(newValue, this.type);
