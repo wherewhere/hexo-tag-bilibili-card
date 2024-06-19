@@ -16,6 +16,7 @@ npm i hexo-tag-bilibili-card
 
 ## 预览
 
+<!-- Example Start -->
 复制以下代码到 HTML 文件中查看
 
 ```html
@@ -24,6 +25,7 @@ npm i hexo-tag-bilibili-card
     cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万"
     danmakus="4" comments="75" favorites="253" coins="106" likes="287" info-types="views danmakus"></bilibili-card>
 ```
+<!-- Example End -->
 
 ## 使用
 

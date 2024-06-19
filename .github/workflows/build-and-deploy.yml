@@ -1,0 +1,57 @@
+name: build and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create publish folder
+        run: mkdir public
+
+      - name: Copy components to publish folder
+        run: cp -r components public
+
+      - name: Copy README to publish folder
+        run: cp README.md public
+
+      - name: Copy index.html to publish folder
+        run: cp example/index.html public
+
+      - name: Change index.html bilibili-card url
+        run: sed -i 's/"\.\.\/components\/bilibili-card\/bilibili-card\.js"/"components\/bilibili-card\/bilibili-card\.js"/g' public/index.html
+
+      - name: Change index.html README url
+        run: sed -i 's/"\.\.\/README\.md"/"README\.md"/g' public/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
