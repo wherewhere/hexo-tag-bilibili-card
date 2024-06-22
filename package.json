@@ -36,6 +36,7 @@
     "url": "git+https://github.com/wherewhere/hexo-tag-bilibili-card.git"
   },
   "dependencies": {
-    "hexo-fs": "^4.0.0"
+    "hexo-fs": "^4.0.0",
+    "json-bigint": "^1.0.0"
   }
 }

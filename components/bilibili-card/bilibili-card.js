@@ -1,5 +1,13 @@
 const script = getScript("bilibili-card.js");
 
+if (typeof String.prototype.trimStart !== "function") {
+    String.prototype.trimStart = String.prototype.trimLeft;
+}
+
+if (typeof String.prototype.trimEnd !== "function") {
+    String.prototype.trimEnd = String.prototype.trimRight;
+}
+
 function getScript(scriptName) {
     const scripts = document.scripts;
     for (let i = scripts.length; i >= 0;) {
@@ -161,7 +169,7 @@ function getTypeName(type) {
 }
 
 function getUrl(id, type) {
-    if (!id?.length) { return; }
+    if (typeof id !== "string" || !id.length) { return; }
     switch (type) {
         case "video":
             return `https://www.bilibili.com/video/${getVid(id)}`;
@@ -217,20 +225,10 @@ class BiliBiliCard extends HTMLElement {
         return ["vid", "type", "title", "author", "cover", "duration", "views", "danmakus", "comments", "favorites", "coins", "likes", "info-types", "image-proxy"];
     }
 
-    isLoaded = false;
-
-    contents = {
-        link: null,
-        cover: null,
-        duration: null,
-        title: null,
-        info: null,
-        type: null,
-        author: null
-    }
-
     constructor() {
         super();
+
+        this.isLoaded = false;
         const shadowRoot = this.attachShadow({ mode: "open" });
 
         const css = document.createElement("link");
@@ -249,7 +247,6 @@ class BiliBiliCard extends HTMLElement {
         link.style.display = "flex";
         link.style.alignItems = "center";
         card.appendChild(link);
-        this.contents.link = link;
 
         const cover_box = document.createElement("div");
         cover_box.className = "disable-event cover-box";
@@ -266,7 +263,6 @@ class BiliBiliCard extends HTMLElement {
         cover.className = "cover-img";
         cover.style.display = "none";
         cover_box.appendChild(cover);
-        this.contents.cover = cover;
 
         const video_subtitle = document.createElement("div");
         video_subtitle.className = "video-subtitle";
@@ -275,7 +271,6 @@ class BiliBiliCard extends HTMLElement {
         const duration = document.createElement("div");
         duration.className = "video-duration";
         video_subtitle.appendChild(duration);
-        this.contents.duration = duration;
 
         const content = document.createElement("div");
         content.className = "disable-event video-content-container";
@@ -285,13 +280,11 @@ class BiliBiliCard extends HTMLElement {
         title.className = "double-ellipsis video-title";
         title.style.marginBottom = "0";
         content.appendChild(title);
-        this.contents.title = title;
 
         const info = document.createElement("div");
         info.className = "video-card-info";
         info.style.display = "flex";
         content.appendChild(info);
-        this.contents.info = info;
 
         const bottom = document.createElement("div");
         bottom.className = "video-card-bottom";
@@ -301,7 +294,6 @@ class BiliBiliCard extends HTMLElement {
         const type = document.createElement("label");
         type.className = "card-text-label";
         bottom.appendChild(type);
-        this.contents.type = type;
 
         const author_box = document.createElement("div");
         author_box.className = "view-flex default-flex align-center author-info";
@@ -318,7 +310,16 @@ class BiliBiliCard extends HTMLElement {
         const author = document.createElement("span");
         author.className = "view-flex single-ellipsis author-name";
         author_box.appendChild(author);
-        this.contents.author = author;
+
+        this.contents = {
+            link: link,
+            cover: cover,
+            duration: duration,
+            title: title,
+            info: info,
+            type: type,
+            author: author
+        };
     }
 
     get vid() {
@@ -350,10 +351,13 @@ class BiliBiliCard extends HTMLElement {
     }
 
     get cover() {
-        return this.getAttribute("cover")?.trimStart();
+        const value = this.getAttribute("cover");
+        if (typeof value === "string") {
+            return this.getAttribute("cover").trimStart();
+        }
     }
     set cover(value) {
-        this.setAttribute("cover", value?.trimStart());
+        this.setAttribute("cover", typeof value === "string" ? value.trimStart() : value);
     }
 
     get duration() {
@@ -406,8 +410,14 @@ class BiliBiliCard extends HTMLElement {
     }
 
     get infoTypes() {
-        const types = this.getAttribute("info-types")?.split(/[,|\s+]/).filter(x => x != '');
-        return types?.length ? types : getDefaultInfoTypes(this.type);
+        const value = this.getAttribute("info-types");
+        if (typeof value === "string") {
+            const types = this.getAttribute("info-types").split(/[,|\s+]/).filter(x => x != '');
+            if (types.length) {
+                return types;
+            }
+        }
+        getDefaultInfoTypes(this.type);
     }
     set infoTypes(value) {
         this.setAttribute("info-types", Array.isArray(value) ? value.join(' ') : value);
@@ -417,7 +427,7 @@ class BiliBiliCard extends HTMLElement {
         return (this.getAttribute("image-proxy") || defaultProxy).trimEnd();
     }
     set imageProxy(value) {
-        this.setAttribute("image-proxy", value?.trimEnd());
+        this.setAttribute("image-proxy", typeof value === "string" ? value.trimEnd() : value);
     }
 
     connectedCallback() {
@@ -459,7 +469,7 @@ class BiliBiliCard extends HTMLElement {
                 this.contents.author.textContent = newValue || defaultAuthor;
                 break;
             case "cover":
-                const value = newValue?.trimStart();
+                const value = typeof newValue === "string" ? newValue.trimStart() : undefined;
                 if (value) {
                     this.contents.cover.style.display = "unset";
                     this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${value})`;
@@ -504,8 +514,8 @@ class BiliBiliCard extends HTMLElement {
             case "info-types":
                 const info = this.contents.info;
                 info.innerHTML = '';
-                let types = newValue?.split(/[,|\s+]/).filter(x => x != '');
-                if (!types?.length) {
+                let types = typeof newValue === "string" ? newValue.split(/[,|\s+]/).filter(x => x != '') : [];
+                if (!types.length) {
                     types = getDefaultInfoTypes(this.type);
                 }
                 addInfoItems(this.contents.info, types, this);
