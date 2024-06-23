@@ -12,13 +12,22 @@
 <script src="../components/bilibili-card/bilibili-card.js" async></script>
 
 <script>
+  if (typeof HTMLElement.prototype.remove === "undefined") {
+    HTMLElement.prototype.remove = function () {
+      if (this.parentNode) {
+        this.parentNode.removeChild(this);
+      }
+    };
+  }
   function replaceScript(id, src) {
     let script = document.getElementById(id);
     const parent = script.parentNode;
     script.remove();
     script = document.createElement("script");
+    script.id = id;
     script.src = src;
     parent.appendChild(script);
+    return script;
   }
 </script>
 
@@ -27,13 +36,34 @@
   src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
 <script>
   if (typeof hljs === "undefined") {
-    replaceScript("highlightjs-script", "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10/build/highlight.min.js");
+    console.warn("Fallback highlight.js to v10.");
+    let script = replaceScript("highlightjs-script", "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10/build/highlight.min.js");
+    script.onload = function () {
+      if (typeof hljs === "undefined") {
+        console.warn("Fallback highlight.js to v9.");
+        script = replaceScript("highlightjs-script", "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9/build/highlight.min.js");
+        script.onload = function () {
+          if (typeof hljs !== "undefined") {
+            hljs.highlightAll = function () {
+              const blocks = document.querySelectorAll("pre code");
+              for (let i = 0; i < blocks.length; i++) {
+                hljs.highlightBlock(blocks[i]);
+              }
+            };
+            if (typeof isLoaded !== "undefined" && isLoaded) {
+              hljs.highlightAll();
+            }
+          }
+        };
+      }
+    };
   }
 </script>
 
 <script id="marked-script" src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.min.js"></script>
 <script>
   if (typeof marked === "undefined") {
+    console.warn("Fallback marked.");
     replaceScript("marked-script", "https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js");
   }
 </script>
@@ -79,7 +109,7 @@
             message.textContent = "获取成功，正在解析内容";
           let markdown = content.replace(regex, "<example-card></example-card>");
           try {
-            readme.innerHTML = marked.parse(content.replace(regex, "<example-card></example-card>"));
+            readme.innerHTML = marked.parse(markdown);
             try { hljs.highlightAll(); } catch (_) { }
           }
           catch (_) {
@@ -110,9 +140,9 @@
     }
     connectedCallback() {
       message = document.createElement("span");
+      this.appendChild(message);
       readme = document.createElement("div");
       readme.innerHTML = "如果这里什么也没有，请<a href=\"javascript:loadReadme(message, readme);\">刷新</a>页面";
-      this.appendChild(message);
       this.appendChild(readme);
       loadReadme(message, readme);
     }
@@ -120,9 +150,6 @@
   if (!customElements.get("about-content")) {
     customElements.define("about-content", AboutContent);
   }
-</script>
-
-<script>
   class ExampleCard extends HTMLElement {
     constructor() {
       super();
@@ -168,6 +195,31 @@
   if (!customElements.get("example-card")) {
     customElements.define("example-card", ExampleCard);
   }
+  const success = true;
+</script>
+
+<script>
+  let isPolyfillLoaded, onPolyfillLoaded;
+  if (typeof success === "undefined") {
+    function addScript(src) {
+      const script = document.createElement("script");
+      script.src = src;
+      document.scripts[0].parentNode.appendChild(script);
+      return script;
+    }
+    isPolyfillLoaded = success = false;
+    onPolyfillLoaded = function () { };
+    const script = addScript("https://polyfill.io/v3/polyfill.min.js?features=fetch,Promise");
+    script.onload = function () {
+      isPolyfillLoaded = true;
+      onPolyfillLoaded();
+    };
+    if (typeof String.prototype.trimRight === "undefined") {
+      String.prototype.trimRight = function () {
+        return this.replace(/\s+$/, "");
+      };
+    }
+  }
 </script>
 
 <style>
@@ -175,14 +227,15 @@
 
   :root {
     --font-monospace: Consolas, "Courier New", "Liberation Mono", SFMono-Regular, Menlo, Monaco, monospace;
-    --content-padding: 1.5rem;
+    --highlight-bg: #fff3cd;
+    --content-padding: 1rem;
     --loading-display: none;
     --loaded-display: unset;
   }
 
-  @media (max-width: 767px) {
+  @media (min-width: 767px) {
     :root {
-      --content-padding: 1rem;
+      --content-padding: 1.5rem;
     }
   }
 
@@ -237,6 +290,10 @@
   }
 
   .header .header-refresh .header-refresh-ring::part(indeterminate-indicator-1) {
+    stroke: var(--fill-color);
+  }
+
+  .header .header-refresh .header-refresh-ring .indeterminate-indicator-1 {
     stroke: var(--fill-color);
   }
 
@@ -296,6 +353,48 @@
   }
 </style>
 
+<script>
+  if (typeof window.CSS === "undefined" || typeof window.CSS.supports === "undefined" || !window.CSS.supports("--a", 0)) {
+    const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill/dist/css-vars-ponyfill.min.js");
+    script.onload = function () {
+      cssVars({
+        variables: {
+          "--control-corner-radius": "4",
+          "--stroke-width": "1",
+          "--body-font": "\"Segoe UI Variable\", \"Segoe UI\", sans-serif",
+          "--font-weight": "400",
+          "--type-ramp-minus-1-font-size": "12px",
+          "--type-ramp-minus-1-line-height": "16px",
+          "--type-ramp-base-font-size": "14px",
+          "--type-ramp-base-line-height": "20px",
+          "--type-ramp-plus-1-font-size": "16px",
+          "--type-ramp-plus-1-line-height": "22px",
+          "--type-ramp-plus-2-font-size": "20px",
+          "--type-ramp-plus-2-line-height": "26px",
+          "--type-ramp-plus-3-font-size": "24px",
+          "--type-ramp-plus-3-line-height": "32px",
+          "--type-ramp-plus-4-font-size": "28px",
+          "--type-ramp-plus-4-line-height": "36px",
+          "--type-ramp-plus-5-font-size": "32px",
+          "--type-ramp-plus-5-line-height": "40px",
+          "--neutral-base-color": "#808080",
+          "--neutral-layer-4": "#e0e0e0",
+          "--fill-color": "#fbfbfb",
+          "--accent-fill-rest": "#036ac4",
+          "--accent-foreground-rest": "#023b8f",
+          "--accent-foreground-hover": "#012e7f",
+          "--accent-foreground-active": "#0360b9",
+          "--accent-foreground-focus": "#023b8f",
+          "--neutral-fill-layer-rest": "#ffffff",
+          "--neutral-foreground-rest": "#1a1a1a",
+          "--neutral-stroke-rest": "#d6d6d6",
+        },
+        watch: true
+      });
+    }
+  }
+</script>
+
 <div class="layout">
   <div class="header" style="height: 50px;">
     <div class="header-gutters">hexo-tag-bilibili-card</div>
@@ -310,7 +409,65 @@
     </a>
   </div>
   <div class="content">
-    <about-content></about-content>
+    <about-content id="about-content">
+      <script>
+        let isLoading, isLoaded;
+        if (!success) {
+          isLoading = isLoaded = false;
+          function loadReadme(message, readme) {
+            if (isLoading) {
+              return;
+            }
+            isLoading = true;
+            message.textContent = "正在从 GitHub 拉取信息，请坐和放宽";
+            fetch("../README.md").then(function (response) {
+              if (response.ok) {
+                message.textContent = "拉取成功，正在获取内容";
+                response.text().then(function (content) {
+                  if (typeof (content) == "string" && content.length > 0) {
+                    message.textContent = "获取成功，正在解析内容";
+                    try {
+                      readme.innerHTML = marked.parse(content);
+                      try { hljs.highlightAll(); } catch (_) { }
+                      message.remove();
+                    }
+                    catch (ex) {
+                      console.log(ex);
+                      readme.innerHTML = content;
+                      message.remove();
+                      return;
+                    }
+                    return;
+                  }
+                });
+              }
+              readme.innerHTML = "<h2>预览</h2>\n<example-card></example-card>";
+              message.remove();
+            }).catch(function (ex) {
+              message.textContent = "出错了！" + ex;
+              readme.innerHTML = "<h2>预览</h2>\n<example-card></example-card>";
+            });
+            isLoading = false;
+          }
+          const aboutContent = document.getElementById("about-content");
+          message = document.createElement("span");
+          aboutContent.appendChild(message);
+          readme = document.createElement("div");
+          readme.innerHTML = "如果这里什么也没有，请<a href=\"javascript:loadReadme(message, readme);\">刷新</a>页面";
+          aboutContent.appendChild(readme);
+          if (isPolyfillLoaded) {
+            loadReadme(message, readme);
+            isLoaded = true;
+          }
+          else {
+            onPolyfillLoaded = function () {
+              loadReadme(message, readme);
+              isLoaded = true;
+            };
+          }
+        }
+      </script>
+    </about-content>
   </div>
   <footer class="footer">
     <span>Copyright © 2017 - 2024 wherewhere. All Rights Reserved</span>
