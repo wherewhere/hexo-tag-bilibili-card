@@ -1,16 +1,32 @@
 const script = getScript("bilibili-card.js");
 
+if (typeof Array.prototype.includes !== "function") {
+    Array.prototype.includes = function (value) {
+        return this.indexOf(value) !== -1;
+    };
+}
+
 if (typeof String.prototype.trimStart !== "function") {
+    if (typeof String.prototype.trimLeft !== "function") {
+        String.prototype.trimLeft = function () {
+            return this.replace(/^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/, "");
+        };
+    }
     String.prototype.trimStart = String.prototype.trimLeft;
 }
 
 if (typeof String.prototype.trimEnd !== "function") {
+    if (typeof String.prototype.trimRight !== "function") {
+        String.prototype.trimRight = function () {
+            return this.replace(/[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+$/, "");
+        };
+    }
     String.prototype.trimEnd = String.prototype.trimRight;
 }
 
 function getScript(scriptName) {
     const scripts = document.scripts;
-    for (let i = scripts.length; i >= 0;) {
+    for (let i = scripts.length; i > 0;) {
         const script = scripts[--i];
         if (script.src.substring(script.src.lastIndexOf('/') + 1) === scriptName) {
             return script;
@@ -231,10 +247,12 @@ class BiliBiliCard extends HTMLElement {
         this.isLoaded = false;
         const shadowRoot = this.attachShadow({ mode: "open" });
 
-        const css = document.createElement("link");
-        css.rel = "stylesheet";
-        css.href = script.src.substring(0, script.src.lastIndexOf('.')) + ".css";
-        shadowRoot.appendChild(css);
+        if (script) {
+            const css = document.createElement("link");
+            css.href = script.src.substring(0, script.src.lastIndexOf('.')) + ".css";
+            css.rel = "stylesheet";
+            shadowRoot.appendChild(css);
+        }
 
         const card = document.createElement("div");
         card.className = "video-holder";
@@ -436,12 +454,12 @@ class BiliBiliCard extends HTMLElement {
         const cover = this.cover;
         setCoverType(this.contents.cover, type);
         if (cover) {
-            this.contents.cover.style.display = "unset";
+            this.contents.cover.style.display = '';
             this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${cover})`;
         }
         const duration = this.contents.duration;
         duration.textContent = this.duration;
-        duration.parentElement.style.display = hasDuration(type) ? "unset" : "none";
+        duration.parentElement.style.display = hasDuration(type) ? '' : "none";
         this.contents.title.textContent = this.title;
         addInfoItems(this.contents.info, this.infoTypes, this);
         this.contents.type.textContent = getTypeName(type);
@@ -459,7 +477,7 @@ class BiliBiliCard extends HTMLElement {
                 const type = newValue || "video";
                 this.contents.link.href = getUrl(this.vid, type);
                 setCoverType(this.contents.cover, type);
-                this.contents.duration.parentElement.style.display = hasDuration(type) ? "unset" : "none";
+                this.contents.duration.parentElement.style.display = hasDuration(type) ? '' : "none";
                 this.contents.type.textContent = getTypeName(type);
                 break;
             case "title":
@@ -471,12 +489,12 @@ class BiliBiliCard extends HTMLElement {
             case "cover":
                 const value = typeof newValue === "string" ? newValue.trimStart() : undefined;
                 if (value) {
-                    this.contents.cover.style.display = "unset";
+                    this.contents.cover.style.display = '';
                     this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${value})`;
                 }
                 else {
                     this.contents.cover.style.display = "none";
-                    this.contents.cover.style.backgroundImage = "unset";
+                    this.contents.cover.style.backgroundImage = '';
                 }
                 break;
             case "duration":
@@ -486,6 +504,7 @@ class BiliBiliCard extends HTMLElement {
                 if (this.infoTypes.includes("views")) {
                     addInfoItem(this.contents.info, "views", newValue || 0, canPlay(this.type));
                 }
+                break;
             case "danmakus":
                 if (this.infoTypes.includes("danmakus")) {
                     addInfoItem(this.contents.info, "danmakus", newValue || 0);
@@ -524,7 +543,7 @@ class BiliBiliCard extends HTMLElement {
                 const cover = this.cover;
                 if (cover) {
                     const imageProxy = (newValue || defaultProxy).trimEnd();
-                    this.contents.cover.style.display = "unset";
+                    this.contents.cover.style.display = '';
                     this.contents.cover.style.backgroundImage = `url(${imageProxy}${cover})`;
                 }
                 break;
