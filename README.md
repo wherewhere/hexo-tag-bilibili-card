@@ -27,6 +27,8 @@ npm i hexo-tag-bilibili-card
 ```
 <!-- Example End -->
 
+<!-- Babel Example -->
+
 ## 使用
 
 ### 使用插件

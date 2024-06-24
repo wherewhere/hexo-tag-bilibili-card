@@ -22,23 +22,23 @@
     }
 }
 
-a {
+.video-holder a {
     text-decoration: none;
     color: inherit;
     outline: 0;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
+.video-holder h1,
+.video-holder h2,
+.video-holder h3,
+.video-holder h4,
+.video-holder h5,
+.video-holder h6,
+.video-holder p {
     margin: 0;
 }
 
-.iconfont {
+.video-holder .iconfont {
     display: -ms-flexbox;
     display: flex;
     font-size: 16px;
@@ -47,47 +47,47 @@ p {
     -moz-osx-font-smoothing: grayscale
 }
 
-.iconfont svg {
+.video-holder .iconfont svg {
     width: 16px;
     height: 16px;
 }
 
-.full-width {
+.video-holder .full-width {
     width: 100%;
 }
 
-.default-flex {
+.video-holder .default-flex {
     display: -ms-flexbox;
     display: flex;
 }
 
-.view-flex {
+.video-holder .view-flex {
     -ms-flex: 1;
     flex: 1;
     min-width: 0;
 }
 
-.disable-event {
+.video-holder .disable-event {
     pointer-events: none;
 }
 
-.align-center {
+.video-holder .align-center {
     -ms-flex-align: center;
     align-items: center;
 }
 
-.double-ellipsis,
-.single-ellipsis {
+.video-holder .double-ellipsis,
+.video-holder .single-ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.double-ellipsis {
+.video-holder .double-ellipsis {
     display: -webkit-box;
     -webkit-line-clamp: 2;
 }
 
-.single-ellipsis {
+.video-holder .single-ellipsis {
     white-space: nowrap;
 }
 

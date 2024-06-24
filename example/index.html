@@ -102,9 +102,10 @@
     if (properties.isLoading) {
       return;
     }
+    const exampleCard = "<example-card></example-card>";
     try {
       properties.isLoading = true;
-      message.textContent = "正在从 GitHub 拉取信息，请坐和放宽";
+      message.textContent = "正在拉取信息，请坐和放宽";
       const response = await fetch("../README.md");
       if (response.ok) {
         message.textContent = "拉取成功，正在获取内容";
@@ -112,7 +113,7 @@
         if (typeof (content) == "string" && content.length > 0) {
           const regex = /<!-- Example Start -->[\s\S]*<!-- Example End -->/;
             message.textContent = "获取成功，正在解析内容";
-          let markdown = content.replace(regex, "<example-card></example-card>");
+          let markdown = content.replace(regex, exampleCard);
           try {
             readme.innerHTML = marked.parse(markdown);
             try { hljs.highlightAll(); } catch (_) { }
@@ -126,14 +127,14 @@
       }
       readme.innerHTML =
         `<h2>预览</h2>
-        <example-card></example-card>`;
+        ${exampleCard}`;
       message.remove();
     }
     catch (ex) {
       message.textContent = `出错了！${ex}`;
       readme.innerHTML =
         `<h2>预览</h2>
-        <example-card></example-card>`;
+        ${exampleCard}`;
     }
     finally {
       properties.isLoading = false;
@@ -239,6 +240,13 @@
     }
   }
 
+  body,
+  .body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
   .layout {
     width: 100%;
     height: 100%;
@@ -319,6 +327,11 @@
 
   fluent-text-area textarea {
     width: 100%;
+  }
+
+  .babel-example {
+    width: 100%;
+    height: 92px;
   }
 
   footer {
@@ -419,33 +432,32 @@
               return;
             }
             isLoading = true;
-            message.textContent = "正在从 GitHub 拉取信息，请坐和放宽";
+            message.textContent = "正在拉取信息，请坐和放宽";
+            const exampleCard = "<p><iframe class=\"babel-example\" title=\"Babel Example\" src=\"babel.html\"></iframe></p>";
             fetch("../README.md").then(function (response) {
               if (response.ok) {
                 message.textContent = "拉取成功，正在获取内容";
                 response.text().then(function (content) {
                   if (typeof (content) == "string" && content.length > 0) {
                     message.textContent = "获取成功，正在解析内容";
+                    let markdown = content.replace("<!-- Babel Example -->", exampleCard);
                     try {
-                      readme.innerHTML = marked.parse(content);
+                      readme.innerHTML = marked.parse(markdown);
                       try { hljs.highlightAll(); } catch (_) { }
-                      message.remove();
                     }
-                    catch (ex) {
-                      console.log(ex);
-                      readme.innerHTML = content;
-                      message.remove();
-                      return;
+                    catch (_) {
+                      readme.innerHTML = markdown;
                     }
+                    message.remove();
                     return;
                   }
                 });
               }
-              readme.innerHTML = "<h2>预览</h2>\n<example-card></example-card>";
+              readme.innerHTML = "<h2>预览</h2>\n" + exampleCard;
               message.remove();
             }).catch(function (ex) {
               message.textContent = "出错了！" + ex;
-              readme.innerHTML = "<h2>预览</h2>\n<example-card></example-card>";
+              readme.innerHTML = "<h2>预览</h2>\n" + exampleCard;
             });
             isLoading = false;
           }

@@ -27,11 +27,17 @@ jobs:
       - name: Copy index.html to publish folder
         run: cp example/index.html public
 
-      - name: Change index.html bilibili-card url
-        run: sed -i 's/"\.\.\/components\/bilibili-card\/bilibili-card\.js"/"components\/bilibili-card\/bilibili-card\.js"/g' public/index.html
+      - name: Change index.html components url
+        run: sed -i 's/\.\.\/components/components/g' public/index.html
 
       - name: Change index.html README url
-        run: sed -i 's/"\.\.\/README\.md"/"README\.md"/g' public/index.html
+        run: sed -i 's/\.\.\/README\.md/README\.md/g' public/index.html
+
+      - name: Copy babel.html to publish folder
+        run: cp example/babel.html public
+
+      - name: Change index.html components url
+        run: sed -i 's/\.\.\/components/components/g' public/babel.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
