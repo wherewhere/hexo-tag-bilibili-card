@@ -31,6 +31,11 @@ npm i hexo-tag-bilibili-card
 
 ## 使用
 
+### 最低需求
+
+- 支持 Web Components
+- 支持 ES6 语法
+
 ### 使用插件
 
 在你的文章中插入以下片段
@@ -89,6 +94,42 @@ npm i hexo-tag-bilibili-card
 | likes | 点赞数 | 0 |
 | info-types | 显示信息 | 根据卡片类型分配 |
 | image-proxy | 图片代理地址 | https://images.weserv.nl/?url= |
+
+#### 兼容性
+
+请根据注释自行取舍
+
+```html
+<!-- 补全不支持的依赖 -->
+<script src="https://cdn.jsdelivr.net/npm/babel-polyfill/dist/polyfill.min.js"></script>
+<!-- 补全 Web Components 支持 -->
+<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+<!-- 补全不支持的语法 -->
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.11/babel.min.js"></script>
+<!-- 设置 type 为 text/babel 以支持新语法 -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.js" type="text/babel" async></script>
+<!-- 部分情况下控件无法正常自动插入 CSS 依赖，需要手动补充 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.css">
+<!-- 补全 CSS 变量支持 -->
+<script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill/dist/css-vars-ponyfill.min.js"></script>
+<script>
+  cssVars({
+    variables: {
+      "--bilibili-accent-color": "#fb7299",
+      "--bilibili-card-border-color": "#e7e7e7",
+      "--bilibili-card-background-color": "white",
+      "--bilibili-card-cover-color": "#c9c9c9",
+      "--bilibili-card-cover-background-color": "#f4f4f4",
+      "--bilibili-card-title-color": "#505050",
+      "--bilibili-card-subtitle-color": "white",
+      "--bilibili-card-subtitle-background-color": "rgba(0, 0, 0, .4)",
+      "--bilibili-card-content-color": "#999"
+    },
+    watch: true
+  });
+</script>
+<bilibili-card ...></bilibili-card>
+```
 
 ## 配置
 

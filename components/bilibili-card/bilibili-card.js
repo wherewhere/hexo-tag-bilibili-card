@@ -261,6 +261,7 @@ class BiliBiliCard extends HTMLElement {
         const link = document.createElement('a');
         link.className = "default-flex full-width";
         link.target = "_blank";
+        link.rel = "noopener noreferrer";
         link.style.maxHeight = "92px";
         link.style.display = "flex";
         link.style.alignItems = "center";

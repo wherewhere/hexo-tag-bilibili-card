@@ -36,7 +36,7 @@
   }
 </script>
 
-<link href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css" />
 <script id="highlightjs-script"
   src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
 <script>
@@ -209,11 +209,31 @@
       return script;
     }
     isPolyfillLoaded = success = false;
-    onPolyfillLoaded = function () { };
+    onPolyfillLoaded = [function () { isPolyfillLoaded = true; }];
     const script = addScript("https://polyfill.io/v3/polyfill.min.js?features=fetch,Promise");
+    script.id = "polyfill-script";
+    function invokeOnPolyfillLoaded() {
+      for (let i = 0; i < onPolyfillLoaded.length; i++) {
+        onPolyfillLoaded[i]();
+      }
+    }
+    function onPolyfillLoadedEnd() {
+      if (typeof fetch === "undefined") {
+        console.warn("Fallback polyfill.");
+        const script = addScript("https://cdn.jsdelivr.net/npm/fetch-ie8/fetch.min.js");
+        script.onload = function () {
+          invokeOnPolyfillLoaded();
+        }
+      }
+      else {
+        invokeOnPolyfillLoaded();
+      }
+    }
     script.onload = function () {
-      isPolyfillLoaded = true;
-      onPolyfillLoaded();
+      onPolyfillLoadedEnd();
+    };
+    script.onerror = function () {
+      onPolyfillLoadedEnd();
     };
     if (typeof String.prototype.trimRight === "undefined") {
       String.prototype.trimRight = function () {
@@ -467,15 +487,15 @@
           readme = document.createElement("div");
           readme.innerHTML = "如果这里什么也没有，请<a href=\"javascript:loadReadme(message, readme);\">刷新</a>页面";
           aboutContent.appendChild(readme);
-          if (isPolyfillLoaded) {
+          function loadReadmeOnLoaded() {
             loadReadme(message, readme);
             isLoaded = true;
           }
+          if (isPolyfillLoaded) {
+            loadReadmeOnLoaded();
+          }
           else {
-            onPolyfillLoaded = function () {
-              loadReadme(message, readme);
-              isLoaded = true;
-            };
+            onPolyfillLoaded.push(loadReadmeOnLoaded);
           }
         }
       </script>
@@ -484,7 +504,7 @@
   <footer class="footer">
     <span>Copyright © 2017 - 2024 wherewhere. All Rights Reserved</span>
     <div style="flex-grow: 1;"></div>
-    <a href="https://github.com/wherewhere/hexo-tag-bilibili-card" target="_blank" rel="noopener">Github</a>
+    <a href="https://github.com/wherewhere/hexo-tag-bilibili-card" target="_blank" rel="noopener noreferrer">Github</a>
   </footer>
 </div>
 
