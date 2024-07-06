@@ -65,7 +65,7 @@
   }
 </script>
 
-<script id="marked-script" src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.min.js"></script>
+<script id="marked-script" src="https://cdn.jsdelivr.net/npm/marked"></script>
 <script>
   if (typeof marked === "undefined") {
     console.warn("Fallback marked.");
@@ -220,7 +220,7 @@
     function onPolyfillLoadedEnd() {
       if (typeof fetch === "undefined") {
         console.warn("Fallback polyfill.");
-        const script = addScript("https://cdn.jsdelivr.net/npm/fetch-ie8/fetch.min.js");
+        const script = addScript("https://cdn.jsdelivr.net/npm/fetch-ie8");
         script.onload = function () {
           invokeOnPolyfillLoaded();
         }
@@ -388,7 +388,7 @@
 
 <script>
   if (typeof window.CSS === "undefined" || typeof window.CSS.supports === "undefined" || !window.CSS.supports("--a", 0)) {
-    const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill/dist/css-vars-ponyfill.min.js");
+    const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill");
     script.onload = function () {
       cssVars({
         variables: {
