@@ -7,8 +7,6 @@
 <meta name="theme-color" content="#036ac4">
 
 <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@fluentui/web-components/dist/web-components.min.js" type="module"></script>
 <script src="../components/bilibili-card/bilibili-card.js" async></script>
 
 <script>
@@ -36,7 +34,6 @@
   }
 </script>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css" />
 <script id="highlightjs-script"
   src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
 <script>
@@ -70,6 +67,19 @@
   if (typeof marked === "undefined") {
     console.warn("Fallback marked.");
     replaceScript("marked-script", "https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js");
+  }
+</script>
+
+<script type="module">
+  import { baseLayerLuminance, StandardLuminance } from "https://cdn.jsdelivr.net/npm/@fluentui/web-components/dist/web-components.min.js";
+  if (typeof matchMedia === "function") {
+    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+    if (typeof scheme !== "undefined") {
+      scheme.addListener(e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
+      if (scheme.matches) {
+        baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
+      }
+    }
   }
 </script>
 
@@ -239,6 +249,34 @@
       String.prototype.trimRight = function () {
         return this.replace(/\s+$/, "");
       };
+    }
+  }
+</script>
+
+<link title="highlight-light" rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
+<link title="highlight-dark" rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css" disabled>
+<script>
+  const darkCss = document.querySelector('link[title="highlight-dark"]');
+  const lightCss = document.querySelector('link[title="highlight-light"]');
+  if (typeof matchMedia === "function") {
+    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+    if (typeof scheme !== "undefined") {
+      scheme.addListener(e => hljs_ColorSwitcher(e.matches));
+      if (scheme.matches) {
+        hljs_ColorSwitcher(true);
+      }
+    }
+    function hljs_ColorSwitcher(isDark) {
+      if (isDark) {
+        darkCss.removeAttribute("disabled");
+        lightCss.setAttribute("disabled", '');
+      }
+      else {
+        lightCss.removeAttribute("disabled");
+        darkCss.setAttribute("disabled", '');
+      }
     }
   }
 </script>
