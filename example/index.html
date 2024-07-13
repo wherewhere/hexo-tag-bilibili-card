@@ -84,9 +84,12 @@
 </script>
 
 <script>
-  class Properties {
+  class AboutContent extends HTMLElement {
     constructor() {
+      super();
       this._isLoading = false;
+      this.message = document.createElement("span");
+      this.readme = document.createElement("div");
     }
     get isLoading() {
       return this._isLoading;
@@ -105,62 +108,72 @@
         this._isLoading = value;
       }
     }
-  }
-  let message, readme;
-  let properties = typeof Properties === "undefined" ? { isLoading: false } : new Properties();
-  async function loadReadme(message, readme) {
-    if (properties.isLoading) {
-      return;
-    }
-    const exampleCard = "<example-card></example-card>";
-    try {
-      properties.isLoading = true;
-      message.textContent = "正在拉取信息，请坐和放宽";
-      const response = await fetch("../README.md");
-      if (response.ok) {
-        message.textContent = "拉取成功，正在获取内容";
-        const content = await response.text();
-        if (typeof (content) == "string" && content.length > 0) {
-          const regex = /<!-- Example Start -->[\s\S]*<!-- Example End -->/;
-            message.textContent = "获取成功，正在解析内容";
-          let markdown = content.replace(regex, exampleCard);
-          try {
-            readme.innerHTML = marked.parse(markdown);
-            try { hljs.highlightAll(); } catch (_) { }
+    connectedCallback() {
+      const message = this.message;
+      const readme = this.readme;
+      readme.textContent = "如果这里什么也没有，请";
+      let link = document.createElement("a");
+      link.href = "javascript:void(0)";
+      link.onclick = () => this.loadReadmeAsync();
+      link.textContent = "刷新";
+      readme.appendChild(link);
+      readme.append("页面");
+      this.appendChild(this.message);
+      this.appendChild(this.readme);
+      this.loadReadmeAsync();
+      globalThis.refreshReadme = () => {
+        const abouts = document.getElementsByTagName("about-content");
+        for (let i = 0; i < abouts.length; i++) {
+          const about = abouts[i];
+          if (about instanceof AboutContent) {
+            about.loadReadmeAsync();
           }
-          catch (_) {
-            readme.innerHTML = markdown;
-          }
-          message.remove();
-          return;
         }
       }
-      readme.innerHTML =
-        `<h2>预览</h2>
+    }
+    async loadReadmeAsync() {
+      if (this.isLoading) {
+        return;
+      }
+      const exampleCard = "<example-card></example-card>";
+      const message = this.message;
+      const readme = this.readme;
+      try {
+        this.isLoading = true;
+        message.textContent = "正在拉取信息，请坐和放宽";
+        const response = await fetch("../README.md");
+        if (response.ok) {
+          message.textContent = "拉取成功，正在获取内容";
+          const content = await response.text();
+          if (typeof (content) == "string" && content.length > 0) {
+            const regex = /<!-- Example Start -->[\s\S]*<!-- Example End -->/;
+              message.textContent = "获取成功，正在解析内容";
+            let markdown = content.replace(regex, exampleCard);
+            try {
+              readme.innerHTML = marked.parse(markdown);
+              try { hljs.highlightAll(); } catch (_) { }
+            }
+            catch (_) {
+              readme.innerHTML = markdown;
+            }
+            message.remove();
+            return;
+          }
+        }
+        readme.innerHTML =
+          `<h2>预览</h2>
         ${exampleCard}`;
-      message.remove();
-    }
-    catch (ex) {
-      message.textContent = `出错了！${ex}`;
-      readme.innerHTML =
-        `<h2>预览</h2>
+        message.remove();
+      }
+      catch (ex) {
+        message.textContent = `出错了！${ex}`;
+        readme.innerHTML =
+          `<h2>预览</h2>
         ${exampleCard}`;
-    }
-    finally {
-      properties.isLoading = false;
-    }
-  }
-  class AboutContent extends HTMLElement {
-    constructor() {
-      super();
-    }
-    connectedCallback() {
-      message = document.createElement("span");
-      this.appendChild(message);
-      readme = document.createElement("div");
-      readme.innerHTML = "如果这里什么也没有，请<a href=\"javascript:loadReadme(message, readme);\">刷新</a>页面";
-      this.appendChild(readme);
-      loadReadme(message, readme);
+      }
+      finally {
+        this.isLoading = false;
+      }
     }
   }
   defineCustomElement("about-content", AboutContent);
@@ -193,12 +206,13 @@
       const example = document.createElement("div");
       example.style.display = "block";
       gird.appendChild(example);
-      fluentTextArea.valueChanged = (oldValue, newValue) => {
-        if (newValue !== oldValue) {
-          example.innerHTML = newValue;
+      fluentTextArea.addEventListener("input", event => {
+        const value = event.target.value;
+        if (value !== card.innerHTML) {
+          card.innerHTML = value;
         }
-      };
-      fluentTextArea.value =
+      });
+      card.innerHTML = fluentTextArea.value =
         `<bilibili-card vid="BV1y54y1a768" type="video" title="【UWP】手把手教你安装 UWP 安装包" author="where-where"
           cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21"
           views="2.2万" danmakus="4" comments="78" favorites="252" coins="106" likes="287"
@@ -263,7 +277,7 @@
   if (typeof matchMedia === "function") {
     const scheme = window.matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
-      scheme.addListener(e => hljs_ColorSwitcher(e.matches));
+      scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
       if (scheme.matches) {
         hljs_ColorSwitcher(true);
       }
@@ -470,7 +484,7 @@
   <div class="header" style="height: 50px;">
     <div class="header-gutters">hexo-tag-bilibili-card</div>
     <div style="flex-grow: 1;"></div>
-    <a class="header-refresh" title="刷新" href="javascript:loadReadme(message, readme)">
+    <a class="header-refresh" title="刷新" href="javascript:refreshReadme();">
       <svg class="header-refresh-icon" width="16" height="16" viewBox="0 0 18 18">
         <path
           d="M9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 8.6236 16.4723 8.2538 16.4188 7.8923C16.3515 7.4382 16.6839 7 17.1429 7C17.5138 7 17.839 7.2562 17.8953 7.6228C17.9642 8.0718 18 8.5317 18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0C11.3051 0 13.4077 0.86656 15 2.29168V1.25C15 0.83579 15.3358 0.5 15.75 0.5C16.1642 0.5 16.5 0.83579 16.5 1.25V4.25C16.5 4.66421 16.1642 5 15.75 5H12.75C12.3358 5 12 4.66421 12 4.25C12 3.83579 12.3358 3.5 12.75 3.5H14.0991C12.7609 2.25883 10.9691 1.5 9 1.5Z">
@@ -482,17 +496,17 @@
   <div class="content">
     <about-content id="about-content">
       <script>
-        let isLoading, isLoaded;
+        let isLoaded = false;
         if (!success) {
-          isLoading = isLoaded = false;
-          function loadReadme(message, readme) {
+          let isLoading = false;
+          function loadReadmeAsync(message, readme) {
             if (isLoading) {
-              return;
+              return Promise.resolve();
             }
             isLoading = true;
             message.textContent = "正在拉取信息，请坐和放宽";
             const exampleCard = "<p><iframe class=\"babel-example\" title=\"Babel Example\" src=\"babel.html\"></iframe></p>";
-            fetch("../README.md").then(function (response) {
+            return fetch("../README.md").then(function (response) {
               if (response.ok) {
                 message.textContent = "拉取成功，正在获取内容";
                 response.text().then(function (content) {
@@ -516,17 +530,24 @@
             }).catch(function (ex) {
               message.textContent = "出错了！" + ex;
               readme.innerHTML = "<h2>预览</h2>\n" + exampleCard;
+            }).finally(function () {
+              isLoading = false;
             });
-            isLoading = false;
           }
           const aboutContent = document.getElementById("about-content");
-          message = document.createElement("span");
+          const message = document.createElement("span");
+          const readme = document.createElement("div");
+          readme.textContent = "如果这里什么也没有，请";
+          let link = document.createElement("a");
+          link.href = "javascript:void(0)";
+          link.onclick = function () { loadReadmeAsync(message, readme); }
+          link.textContent = "刷新";
+          readme.appendChild(link);
+          readme.append("页面");
           aboutContent.appendChild(message);
-          readme = document.createElement("div");
-          readme.innerHTML = "如果这里什么也没有，请<a href=\"javascript:loadReadme(message, readme);\">刷新</a>页面";
           aboutContent.appendChild(readme);
           function loadReadmeOnLoaded() {
-            loadReadme(message, readme);
+            loadReadmeAsync(message, readme);
             isLoaded = true;
           }
           if (isPolyfillLoaded) {
@@ -534,6 +555,9 @@
           }
           else {
             onPolyfillLoaded.push(loadReadmeOnLoaded);
+          }
+          function refreshReadme() {
+            loadReadmeAsync(message, readme);
           }
         }
       </script>

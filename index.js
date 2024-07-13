@@ -3,7 +3,7 @@
 
 const fs = require("hexo-fs");
 const path = require("path");
-const createCard = require("./lib/create-card.js");
+const createCardAsync = require("./lib/create-card.js");
 const js = hexo.extend.helper.get("js").bind(hexo);
 
 function setSettings(obj, set) {
@@ -76,6 +76,6 @@ hexo.extend.generator.register("bilibili_card_asset", () => [
     }
 ]);
 
-hexo.extend.tag.register("bilibili_card", args => createCard(bilibili_card.image_proxy, args, hexo.log), { async: true });
+hexo.extend.tag.register("bilibili_card", args => createCardAsync(bilibili_card.image_proxy, args, hexo.log), { async: true });
 
 bilibili_card.inject_layouts.forEach(layout => hexo.extend.injector.register("head_end", () => js("/components/bilibili-card/bilibili-card.js"), layout));
