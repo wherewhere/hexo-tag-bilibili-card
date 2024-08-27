@@ -71,7 +71,18 @@
 </script>
 
 <script type="module">
-  import { baseLayerLuminance, StandardLuminance } from "https://cdn.jsdelivr.net/npm/@fluentui/web-components/dist/web-components.min.js";
+  import {
+    provideFluentDesignSystem,
+    fluentProgressRing,
+    fluentTextArea,
+    baseLayerLuminance,
+    StandardLuminance
+  } from "https://cdn.jsdelivr.net/npm/@fluentui/web-components/+esm";
+  provideFluentDesignSystem()
+    .register(
+      fluentProgressRing(),
+      fluentTextArea()
+    );
   if (typeof matchMedia === "function") {
     const scheme = window.matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
@@ -261,7 +272,7 @@
     };
     if (typeof String.prototype.trimRight === "undefined") {
       String.prototype.trimRight = function () {
-        return this.replace(/\s+$/, "");
+        return this.replace(/\s+$/, '');
       };
     }
   }
