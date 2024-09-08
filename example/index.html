@@ -123,7 +123,7 @@
       const message = this.message;
       const readme = this.readme;
       readme.textContent = "如果这里什么也没有，请";
-      let link = document.createElement("a");
+      let link = document.createElement('a');
       link.href = "javascript:void(0)";
       link.onclick = () => this.loadReadmeAsync();
       link.textContent = "刷新";
@@ -201,7 +201,7 @@
       const fluentTextArea = document.createElement("fluent-text-area");
       fluentTextArea.placeholder = `<bilibili-card></bilibili-card>`;
       fluentTextArea.resize = "vertical";
-      fluentTextArea.setAttribute("rows", "4");
+      fluentTextArea.setAttribute("rows", '4');
       fluentTextArea.style.width = "100%";
       fluentTextArea.innerText = "代码："
       root.appendChild(fluentTextArea);
@@ -549,7 +549,7 @@
           const message = document.createElement("span");
           const readme = document.createElement("div");
           readme.textContent = "如果这里什么也没有，请";
-          let link = document.createElement("a");
+          let link = document.createElement('a');
           link.href = "javascript:void(0)";
           link.onclick = function () { loadReadmeAsync(message, readme); }
           link.textContent = "刷新";
