@@ -1,7 +1,18 @@
 (() => {
     if (customElements.get("bilibili-card")) { return; }
 
-    const script = getScript("bilibili-card.js");
+    function getLocation() {
+        const scripts = document.scripts;
+        for (let i = scripts.length; i > 0;) {
+            const script = scripts[--i];
+            if (script.src.substring(script.src.lastIndexOf('/') + 1) === "bilibili-card.js") {
+                const src = script.src;
+                return src.substring(0, src.lastIndexOf('.'));
+            }
+        }
+    }
+
+    let baseUrl = getLocation();
 
     if (typeof Array.prototype.includes !== "function") {
         Array.prototype.includes = value => this.indexOf(value) !== -1;
@@ -19,16 +30,6 @@
             String.prototype.trimRight = () => this.replace(/[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+$/, '');
         }
         String.prototype.trimEnd = String.prototype.trimRight;
-    }
-
-    function getScript(scriptName) {
-        const scripts = document.scripts;
-        for (let i = scripts.length; i > 0;) {
-            const script = scripts[--i];
-            if (script.src.substring(script.src.lastIndexOf('/') + 1) === scriptName) {
-                return script;
-            }
-        }
     }
 
     function getVid(id) {
@@ -225,20 +226,19 @@
     }
 
     function getTheme(theme) {
-        if (script) {
-            const root = script.src.substring(0, script.src.lastIndexOf('.'));
+        if (baseUrl) {
             switch (theme.toLowerCase()) {
                 case '1':
                 case "light":
-                    return `${root}.light.css`;
+                    return `${baseUrl}.light.css`;
                 case '2':
                 case "dark":
-                    return `${root}.dark.css`;
+                    return `${baseUrl}.dark.css`;
                 case '0':
                 case "auto":
                 case "system":
                 case "default":
-                    return `${root}.css`;
+                    return `${baseUrl}.css`;
                 case "-1":
                 case "none":
                     return '';
@@ -256,6 +256,10 @@
     const defaultTheme = "default";
 
     class BiliBiliCard extends HTMLElement {
+        static set baseUrl(value) {
+            baseUrl = value;
+        }
+
         static get observedAttributes() {
             return ["vid", "type", "title", "author", "cover", "duration", "views", "danmakus", "comments", "favorites", "coins", "likes", "info-types", "image-proxy", "theme"];
         }
@@ -389,7 +393,7 @@
         get cover() {
             const value = this.getAttribute("cover");
             if (typeof value === "string") {
-                return this.getAttribute("cover").trimStart();
+                return value.trimStart();
             }
         }
         set cover(value) {
@@ -448,12 +452,12 @@
         get infoTypes() {
             const value = this.getAttribute("info-types");
             if (typeof value === "string") {
-                const types = this.getAttribute("info-types").split(/[,|\s+]/).filter(x => x != '');
+                const types = value.split(/[,|\s+]/).filter(x => x != '');
                 if (types.length) {
                     return types;
                 }
             }
-            getDefaultInfoTypes(this.type);
+            return getDefaultInfoTypes(this.type);
         }
         set infoTypes(value) {
             this.setAttribute("info-types", Array.isArray(value) ? value.join(' ') : value);
@@ -589,4 +593,14 @@
     }
 
     customElements.define("bilibili-card", BiliBiliCard);
+
+    if (typeof this === "undefined") {
+        const global =
+            typeof globalThis !== "undefined" ? globalThis
+                : typeof window !== "undefined" ? window : {};
+        global._BiliBiliCard = BiliBiliCard;
+    }
+    else {
+        this.BiliBiliCard = BiliBiliCard;
+    }
 })();
