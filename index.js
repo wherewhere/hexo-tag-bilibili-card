@@ -4,7 +4,6 @@
 const fs = require("hexo-fs");
 const path = require("path");
 const createCardAsync = require("./lib/create-card.js");
-const js = hexo.extend.helper.get("js").bind(hexo);
 
 function setSettings(obj, set) {
     if (typeof set === "undefined") {
@@ -56,7 +55,8 @@ function setSettings(obj, set) {
 const bilibili_card = {
     enable: true,
     image_proxy: undefined,
-    inject_layouts: ["default"]
+    inject_layouts: ["default"],
+    mode: "system"
 };
 
 setSettings(bilibili_card, hexo.config.bilibili_card);
@@ -65,17 +65,58 @@ if (!bilibili_card?.enable) {
     return;
 }
 
-hexo.extend.generator.register("bilibili_card_asset", () => [
-    {
+const isComponent = bilibili_card?.mode == "component";
+
+hexo.extend.generator.register("bilibili_card_asset", () => isComponent
+    ? [{
         path: "components/bilibili-card/bilibili-card.js",
         data: () => fs.createReadStream(path.resolve(__dirname, "./components/bilibili-card", "bilibili-card.js"))
     },
     {
         path: "components/bilibili-card/bilibili-card.css",
         data: () => fs.createReadStream(path.resolve(__dirname, "./components/bilibili-card", "bilibili-card.css"))
-    }
-]);
+    },
+    {
+        path: "components/bilibili-card/bilibili-card.dark.css",
+        data: () => fs.createReadStream(path.resolve(__dirname, "./components/bilibili-card", "bilibili-card.dark.css"))
+    },
+    {
+        path: "components/bilibili-card/bilibili-card.light.css",
+        data: () => fs.createReadStream(path.resolve(__dirname, "./components/bilibili-card", "bilibili-card.light.css"))
+    }]
+    : [{
+        path: "css/bilibili-card.css",
+        data: () => fs.createReadStream(path.resolve(__dirname, (() => {
+            const baseUrl = "./components/bilibili-card/bilibili-card";
+            switch (bilibili_card.mode.toString().toLowerCase()) {
+                case '1':
+                case "light":
+                    return `${baseUrl}.light.css`;
+                case '2':
+                case "dark":
+                    return `${baseUrl}.dark.css`;
+                case '0':
+                case "auto":
+                case "system":
+                case "default":
+                    return `${baseUrl}.css`;
+                case "-1":
+                case "none":
+                    return '';
+                default:
+                    return theme;
+            }
+        })()))
+    }]
+);
 
-hexo.extend.tag.register("bilibili_card", args => createCardAsync(bilibili_card.image_proxy, args, hexo.log), { async: true });
+hexo.extend.tag.register("bilibili_card", args => createCardAsync(bilibili_card.image_proxy, args, isComponent, hexo.log), { async: true });
 
-bilibili_card.inject_layouts.forEach(layout => hexo.extend.injector.register("head_end", () => js("/components/bilibili-card/bilibili-card.js"), layout));
+if (isComponent) {
+    const js = hexo.extend.helper.get("js").bind(hexo);
+    bilibili_card.inject_layouts.forEach(layout => hexo.extend.injector.register("head_end", () => js("/components/bilibili-card/bilibili-card.js"), layout));
+}
+else {
+    const css = hexo.extend.helper.get("css").bind(hexo);
+    bilibili_card.inject_layouts.forEach(layout => hexo.extend.injector.register("head_end", () => css("/css/bilibili-card.css"), layout));
+}

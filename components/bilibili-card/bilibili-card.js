@@ -1,4 +1,11 @@
 (() => {
+    /**
+     * @typedef {"video" | "article" | "user" | "live" | "bangumi" | "audio" | "dynamic" | "favorite" | "album"} cardType
+     * @typedef {"views" | "danmakus" | "comments" | "favorites" | "coins" | "likes" | "time"} infoType
+     * @typedef {"system" | "light" | "dark"} themeType
+     * @typedef {{vid: string, type: cardType, title: string, author: string, cover: string, duration: string, views: string | number, danmakus: string | number, comments: string | number, favorites: string | number, coins: string | number, likes: string | number}} cardInfo
+     */
+
     if (customElements.get("bilibili-card")) { return; }
 
     function getLocation() {
@@ -32,6 +39,9 @@
         String.prototype.trimEnd = String.prototype.trimRight;
     }
 
+    /**
+     * @param {string} id
+     */
     function getVid(id) {
         const type = id.slice(0, 2).toUpperCase();
         if (type === "BV" || type === "AV") {
@@ -48,14 +58,23 @@
         }
     }
 
+    /**
+     * @param {cardType} type
+     */
     function canPlay(type) {
         return type === "video" || type === "live" || type === "bangumi" || type === "audio";
     }
 
+    /**
+     * @param {cardType} type
+     */
     function hasDuration(type) {
         return type === "video" || type === "audio";
     }
 
+    /**
+     * @param {infoType} type
+     */
     function getIcon(type, isVideo = true) {
         switch (type) {
             case "views":
@@ -106,6 +125,10 @@
         }
     }
 
+    /**
+     * @param {infoType} type
+     * @param {string} text
+     */
     function createInfoItem(type, text, isVideo = true) {
         const icon = getIcon(type, isVideo);
         if (typeof icon !== "object") { return; }
@@ -123,6 +146,11 @@
         return item;
     }
 
+    /**
+     * @param {Element} info
+     * @param {infoType} type
+     * @param {string} text
+     */
     function addInfoItem(info, type, text, isVideo = true) {
         if (!(info instanceof Element)) { return; }
         let item = info.querySelector(`.cover-info-item.${type}`);
@@ -136,6 +164,11 @@
         }
     }
 
+    /**
+     * @param {Element} info
+     * @param {infoType[]} types
+     * @param {BiliBiliCard} card
+     */
     function addInfoItems(info, types, card) {
         if (!Array.isArray(types)) { return; }
         if (!(card instanceof BiliBiliCard)) { return; }
@@ -143,6 +176,10 @@
         types.forEach(type => addInfoItem(info, type, card.getInfo(type), isVideo));
     }
 
+    /**
+     * @param {Element} cover
+     * @param {cardType} type
+     */
     function setCoverType(cover, type) {
         if (!(cover instanceof Element)) { return; }
         if (canPlay(type)) {
@@ -153,6 +190,9 @@
         }
     }
 
+    /**
+     * @param {cardType} type
+     */
     function getTypeName(type) {
         switch (type) {
             case "video":
@@ -178,6 +218,10 @@
         }
     }
 
+    /**
+     * @param {string} id
+     * @param {cardType} type
+     */
     function getUrl(id, type) {
         if (typeof id !== "string" || !id.length) { return; }
         switch (type) {
@@ -204,6 +248,9 @@
         }
     }
 
+    /**
+     * @param {cardType} value
+     */
     function getDefaultInfoTypes(value) {
         switch (value) {
             case "video":
@@ -225,6 +272,9 @@
         }
     }
 
+    /**
+     * @param {themeType} theme
+     */
     function getTheme(theme) {
         if (baseUrl) {
             switch (theme.toLowerCase()) {
@@ -256,6 +306,9 @@
     const defaultTheme = "default";
 
     class BiliBiliCard extends HTMLElement {
+        /**
+         * @param {string} value
+         */
         static set baseUrl(value) {
             baseUrl = value;
         }
@@ -497,6 +550,11 @@
             this.isLoaded = true;
         }
 
+        /**
+         * @param {string} name
+         * @param {string} oldValue
+         * @param {string} newValue
+         */
         attributeChangedCallback(name, oldValue, newValue) {
             if (!this.isLoaded || oldValue === newValue) { return; }
             switch (name) {
@@ -583,7 +641,11 @@
             }
         }
 
+        /**
+         * @param {infoType} name
+         */
         getInfo(name) {
+            /** @type {string | null} */
             let info = this[name];
             if (typeof info === "undefined") {
                 info = this.getAttribute(name);
@@ -594,7 +656,10 @@
 
     customElements.define("bilibili-card", BiliBiliCard);
 
-    if (typeof this === "undefined") {
+    if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+        module.exports = BiliBiliCard;
+    }
+    else if (typeof this === "undefined") {
         const global =
             typeof globalThis !== "undefined" ? globalThis
                 : typeof window !== "undefined" ? window : {};

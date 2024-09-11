@@ -1,10 +1,30 @@
 (() => {
+    /**
+     * @typedef {"video" | "article" | "user" | "live" | "bangumi" | "audio" | "dynamic" | "favorite" | "album"} cardType
+     * @typedef {"views" | "danmakus" | "comments" | "favorites" | "coins" | "likes" | "time"} infoType
+     * @typedef {"system" | "light" | "dark"} themeType
+     * @typedef {{vid: string, type: cardType, title: string, author: string, cover: string, duration: string, views: string | number, danmakus: string | number, comments: string | number, favorites: string | number, coins: string | number, likes: string | number}} cardInfo
+     */
+
+    /** @type {globalThis} */
     const global =
         typeof this !== "undefined" ? this
             : typeof globalThis !== "undefined" ? globalThis
                 : typeof window !== "undefined" ? window : {};
 
-    if ((typeof this !== "undefined" && typeof global.bilibiliCardBuilder !== "undefined")
+    let document = global.document;
+    let Element = global.Element;
+
+    const isModule = typeof module !== "undefined" && typeof module.exports !== "undefined";
+    if (isModule) {
+        if (typeof document === "undefined") {
+            const { JSDOM } = require("jsdom");
+            const { window } = new JSDOM();
+            document = window.document;
+            Element = window.Element;
+        }
+    }
+    else if ((typeof this !== "undefined" && typeof global.bilibiliCardBuilder !== "undefined")
         || typeof global._bilibiliCardBuilder !== "undefined") {
         return;
     }
@@ -27,6 +47,9 @@
         String.prototype.trimEnd = String.prototype.trimRight;
     }
 
+    /**
+     * @param {string} id
+     */
     function getVid(id) {
         const type = id.slice(0, 2).toUpperCase();
         if (type === "BV" || type === "AV") {
@@ -43,14 +66,23 @@
         }
     }
 
+    /**
+     * @param {cardType} type
+     */
     function canPlay(type) {
         return type === "video" || type === "live" || type === "bangumi" || type === "audio";
     }
 
+    /**
+     * @param {cardType} type
+     */
     function hasDuration(type) {
         return type === "video" || type === "audio";
     }
 
+    /**
+     * @param {infoType} type
+     */
     function getIcon(type, isVideo = true) {
         switch (type) {
             case "views":
@@ -101,6 +133,10 @@
         }
     }
 
+    /**
+     * @param {infoType} type
+     * @param {string} text
+     */
     function createInfoItem(type, text, isVideo = true) {
         const icon = getIcon(type, isVideo);
         if (typeof icon !== "object") { return; }
@@ -118,6 +154,11 @@
         return item;
     }
 
+    /**
+     * @param {Element} info
+     * @param {infoType} type
+     * @param {string} text
+     */
     function addInfoItem(info, type, text, isVideo = true) {
         if (!(info instanceof Element)) { return; }
         let item = info.querySelector(`.cover-info-item.${type}`);
@@ -131,6 +172,11 @@
         }
     }
 
+    /**
+     * @param {Element} info
+     * @param {infoType[]} types
+     * @param {{getInfo: function(infoType): string}} card
+     */
     function addInfoItems(info, types, card) {
         if (!Array.isArray(types)) { return; }
         if (!(typeof card === "object")) { return; }
@@ -138,6 +184,10 @@
         types.forEach(type => addInfoItem(info, type, card.getInfo(type), isVideo));
     }
 
+    /**
+     * @param {Element} info
+     * @param {cardType} type
+     */
     function setCoverType(cover, type) {
         if (!(cover instanceof Element)) { return; }
         if (canPlay(type)) {
@@ -148,6 +198,9 @@
         }
     }
 
+    /**
+     * @param {cardType} type
+     */
     function getTypeName(type) {
         switch (type) {
             case "video":
@@ -173,6 +226,10 @@
         }
     }
 
+    /**
+     * @param {string} id
+     * @param {cardType} type
+     */
     function getUrl(id, type) {
         if (typeof id !== "string" || !id.length) { return; }
         switch (type) {
@@ -199,6 +256,9 @@
         }
     }
 
+    /**
+     * @param {cardType} value
+     */
     function getDefaultInfoTypes(value) {
         switch (value) {
             case "video":
@@ -225,8 +285,25 @@
     const defaultDuration = "??:??";
     const defaultProxy = "https://images.weserv.nl/?url=";
 
-    function createHost(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }) {
-        const bilibiliCard = document.createElement("bilibili-card");
+    /**
+     * @param {string} imageProxy
+     * @param {string} infoTypes
+     * @param {cardInfo}
+     * @param {themeType} theme
+     */
+    function createHost(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
+        return createHostWithTagName("bilibili-card", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
+    }
+
+    /**
+     * @param {string} tagName
+     * @param {string} imageProxy
+     * @param {string} infoTypes
+     * @param {cardInfo}
+     * @param {themeType} theme
+     */
+    function createHostWithTagName(tagName, imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
+        const bilibiliCard = document.createElement(tagName);
         if (vid) {
             bilibiliCard.setAttribute("vid", vid);
         }
@@ -269,9 +346,15 @@
         if (imageProxy) {
             bilibiliCard.setAttribute("image-proxy", imageProxy);
         }
+        if (theme) {
+            bilibiliCard.setAttribute("theme", theme);
+        }
         return bilibiliCard;
     }
 
+    /**
+     * @param {Element} host 
+     */
     function initHost(host) {
         host.bilibiliCard = {
             host: host,
@@ -589,23 +672,49 @@
         };
     }
 
+    /**
+     * @param {Element} host
+     */
     function attachHost(host) {
         host.bilibiliCard.connectedCallback();
     }
 
-    function createCard(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }) {
-        const bilibiliCard = createHost(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes });
+    /**
+     * @param {string} imageProxy
+     * @param {string} infoTypes
+     * @param {cardInfo}
+     * @param {themeType} theme
+     */
+    function createCard(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
+        return createCardWithTagName("div", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
+    }
+
+    /**
+     * @param {string} tagName
+     * @param {string} imageProxy
+     * @param {string} infoTypes
+     * @param {cardInfo}
+     * @param {themeType} theme
+     */
+    function createCardWithTagName(tagName, imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
+        const bilibiliCard = createHostWithTagName(tagName, imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
         praseElement(bilibiliCard);
         return bilibiliCard;
     }
 
+    /**
+     * @param {Element} element
+     */
     function praseElement(element) {
-        if (element instanceof HTMLElement) {
+        if (element instanceof Element) {
             initHost(element);
             attachHost(element);
         }
     }
 
+    /**
+     * @param {Node} element
+     */
     function registerObserver(element) {
         const observer = new MutationObserver(mutationsList => {
             for (const mutation of mutationsList) {
@@ -618,10 +727,22 @@
         element.bilibiliCard.observer = observer;
     }
 
-    if (typeof this === "undefined") {
-        global._bilibiliCardBuilder = { createCard, praseElement, registerObserver };
+    const exports = {
+        createHost,
+        createHostWithTagName,
+        createCard,
+        createCardWithTagName,
+        praseElement,
+        registerObserver
+    };
+
+    if (isModule) {
+        module.exports = exports;
+    }
+    else if (typeof this === "undefined") {
+        global._bilibiliCardBuilder = exports;
     }
     else {
-        global.bilibiliCardBuilder = { createCard, praseElement, registerObserver };
+        global.bilibiliCardBuilder = exports;
     }
 })();

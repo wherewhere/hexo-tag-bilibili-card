@@ -23,7 +23,8 @@ npm i hexo-tag-bilibili-card
 <script src="https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.js" async></script>
 <bilibili-card vid="BV1y54y1a768" type="video" title="【UWP】手把手教你安装 UWP 安装包" author="where-where"
   cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万"
-  danmakus="4" comments="75" favorites="253" coins="106" likes="287" info-types="views danmakus"></bilibili-card>
+  danmakus="4" comments="75" favorites="253" coins="106" likes="287" info-types="views danmakus"
+  theme="system"></bilibili-card>
 ```
 <!-- Example End -->
 
@@ -49,13 +50,14 @@ npm i hexo-tag-bilibili-card
 | 属性名 | 描述 | 可选值 | 默认值 | 示例 |
 |-------|------|-------|-------|-----|
 | $id | 媒体 ID | 视频：AV, BV；~~专栏：CV~~；番剧：MD；音频：AU | 空，将跳过生成 | BV1y54y1a768 |
-| $type | 卡片类型 | video, ~~article~~, user, live, bangumi, audio, dynamic, favorite, album | 自动识别 AV, BV, CV, MD, AU，识别失败视为 video | video |
+| $type | 卡片类型 | video, ~~article~~, user, live, bangumi, audio, dynamic, favorite, ~~album~~ | 自动识别 AV, BV, ~~CV~~, MD, AU，识别失败视为 video | video |
 | $info-types | 显示信息 | views, danmakus, comments, favorites, coins, likes | 空，由 bilibili-card 分配默认值 | views danmakus |
+| $theme | 样式 | system, light, dark | 空，由 bilibili-card 分配 | system |
 
 完整示例
 
 ```md
-{% bilibili_card BV1y54y1a768 video 'views danmakus' %}
+{% bilibili_card BV1y54y1a768 video 'views danmakus' system %}
 ```
 
 然后你就可以看见文章中的卡片了
@@ -94,6 +96,7 @@ npm i hexo-tag-bilibili-card
 | likes | 点赞数 | 0 |
 | info-types | 显示信息 | 根据卡片类型分配 |
 | image-proxy | 图片代理地址 | https://images.weserv.nl/?url= |
+| theme | 样式 | system |
 
 #### 兼容性
 
@@ -137,12 +140,15 @@ npm i hexo-tag-bilibili-card
 
 ```yaml
 bilibili_card:
-  enable: true # 是否启用
+  enable: true  # 是否启用
   image_proxy: https://images.weserv.nl/?url= # 图片代理
   inject_layouts: [default] # 需要注入的布局
+  mode: component # 模式选择，component 为 Web 组件
+                  # 其他为直接插入 HTML，样式可选 system, light, dark
 ```
 
 ## 引用及参考
+- [jsdom](https://github.com/jsdom/jsdom "jsdom")
 - [hexo-fs](https://github.com/hexojs/hexo-fs "hexo-fs")
 - [hexo-bilibili-card](https://github.com/MaxChang3/hexo-bilibili-card "hexo-bilibili-card")
 - [哔哩哔哩-API收集整理](https://github.com/SocialSisterYi/bilibili-API-collect "BiliBili API Collect")
