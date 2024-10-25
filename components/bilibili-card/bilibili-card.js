@@ -663,7 +663,7 @@
         const global =
             typeof globalThis !== "undefined" ? globalThis
                 : typeof window !== "undefined" ? window : {};
-        global._BiliBiliCard = BiliBiliCard;
+        global.$BiliBiliCard = BiliBiliCard;
     }
     else {
         this.BiliBiliCard = BiliBiliCard;

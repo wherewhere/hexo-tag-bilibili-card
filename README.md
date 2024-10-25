@@ -42,7 +42,7 @@ npm i hexo-tag-bilibili-card
 在你的文章中插入以下片段
 
 ```md
-{% bilibili_card $id $type $info-types %}
+{% bilibili_card $id $type $info-types $theme %}
 ```
 
 其中
@@ -52,7 +52,7 @@ npm i hexo-tag-bilibili-card
 | $id | 媒体 ID | 视频：AV, BV；~~专栏：CV~~；番剧：MD；音频：AU | 空，将跳过生成 | BV1y54y1a768 |
 | $type | 卡片类型 | video, ~~article~~, user, live, bangumi, audio, dynamic, favorite, ~~album~~ | 自动识别 AV, BV, ~~CV~~, MD, AU，识别失败视为 video | video |
 | $info-types | 显示信息 | views, danmakus, comments, favorites, coins, likes | 空，由 bilibili-card 分配默认值 | views danmakus |
-| $theme | 样式 | system, light, dark | 空，由 bilibili-card 分配 | system |
+| $theme | 样式 | system, light, dark | 空，由 bilibili-card 分配默认值 | system |
 
 完整示例
 
@@ -97,6 +97,135 @@ npm i hexo-tag-bilibili-card
 | info-types | 显示信息 | 根据卡片类型分配 |
 | image-proxy | 图片代理地址 | https://images.weserv.nl/?url= |
 | theme | 样式 | system |
+
+### 使用 Builder
+
+你还可以使用 `bilibiliCardBuilder` 来生成 DOM 对象
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card/bilibili-card.css">
+<div id="host"></div>
+<script type="module">
+  import { bilibiliCardBuilder } from "https://unpkg.com/hexo-tag-bilibili-card/components/bilibili-card-builder/bilibili-card-builder.esm.js";
+  const card = bilibiliCardBuilder.createCard(
+    undefined,
+    "views danmakus",
+    {
+      vid: "BV1y54y1a768",
+      title: "【UWP】手把手教你安装 UWP 安装包",
+      author: "where-where",
+      cover: "http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg",
+      duration: "05:21",
+      views: "2.2万",
+      danmakus: "4",
+      comments: "75",
+      favorites: "253",
+      coins: "106",
+      likes: "287"
+    }
+  );
+  document.getElementById("host").appendChild(card);
+</script>
+```
+
+其中
+
+```ts
+/** 卡片类型 */
+type cardType = "video" | "article" | "user" | "live" | "bangumi" | "audio" | "dynamic" | "favorite" | "album";
+/** 样式 */
+type themeType = "system" | "light" | "dark";
+/** 卡片信息 */
+type cardInfo =
+    {
+        /** 媒体 ID */
+        vid: string;
+        /** 卡片类型 */
+        type: cardType;
+        /** 卡片标题 */
+        title: string;
+        /** 作者 */
+        author: string;
+        /** 封面图片地址 */
+        cover: string;
+        /** 媒体时长 */
+        duration: string;
+        /** 观看量 */
+        views: string | number;
+        /** 弹幕数 */
+        danmakus: string | number;
+        /** 评论数 */
+        comments: string | number;
+        /** 收藏数 */
+        favorites: string | number;
+        /** 投币数 */
+        coins: string | number;
+        /** 点赞数 */
+        likes: string | number;
+    };
+
+/** 哔哩哔哩控件生成器 */
+declare interface IBilibiliCardBuilder {
+    /**
+     * 生成哔哩哔哩卡片控件外壳
+     * @param imageProxy 图片代理地址
+     * @param infoTypes 显示信息
+     * @param 卡片信息
+     * @param theme 样式
+     * @returns 卡片控件
+     */
+    createHost(imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo, theme: themeType): HTMLElement;
+    /**
+     * 使用自定义标签名生成哔哩哔哩卡片控件外壳
+     * @param tagName 自定义标签名
+     * @param imageProxy 图片代理地址
+     * @param infoTypes 显示信息
+     * @param 卡片信息
+     * @param theme 样式
+     * @returns 卡片控件
+     */
+    createHostWithTagName(tagName: string, imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo, theme: themeType): HTMLElement;
+    /**
+     * 为哔哩哔哩卡片控件外壳生成卡片内容
+     * @param element 控件外壳
+     */
+    praseElement(element: HTMLElement): void;
+    /**
+     * 生成哔哩哔哩卡片控件
+     * @param imageProxy 图片代理地址
+     * @param infoTypes 显示信息
+     * @param 卡片信息
+     * @param theme 样式
+     * @returns 卡片控件
+     */
+    createCard(imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo, theme: themeType): HTMLElement;
+    /**
+     * 使用自定义标签名生成哔哩哔哩卡片控件
+     * @param tagName 自定义标签名
+     * @param imageProxy 图片代理地址
+     * @param infoTypes 显示信息
+     * @param 卡片信息
+     * @param theme 样式
+     * @returns 卡片控件
+     */
+    createCardWithTagName(tagName: string, imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo, theme: themeType): HTMLElement;
+    /**
+     * 注册哔哩哔哩卡片控件属性变化观察器
+     * @param element 卡片控件
+     */
+    registerObserver(element: HTMLElement): void;
+}
+
+/** 哔哩哔哩控件生成器 */
+const bilibiliCardBuilder: IBilibiliCardBuilder;
+
+/** 全局导出 */
+globalThis.bilibiliCardBuilder = bilibiliCardBuilder;
+/** CommonJS 导出 */
+module.exports = bilibiliCardBuilder;
+/** ES6 导出 */
+export default bilibiliCardBuilder;
+```
 
 #### 兼容性
 

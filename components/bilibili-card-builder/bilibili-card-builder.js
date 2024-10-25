@@ -25,7 +25,7 @@
         }
     }
     else if ((typeof this !== "undefined" && typeof global.bilibiliCardBuilder !== "undefined")
-        || typeof global._bilibiliCardBuilder !== "undefined") {
+        || typeof global.$bilibiliCardBuilder !== "undefined") {
         return;
     }
 
@@ -740,7 +740,7 @@
         module.exports = exports;
     }
     else if (typeof this === "undefined") {
-        global._bilibiliCardBuilder = exports;
+        global.$bilibiliCardBuilder = exports;
     }
     else {
         global.bilibiliCardBuilder = exports;

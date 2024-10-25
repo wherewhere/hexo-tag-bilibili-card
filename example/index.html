@@ -129,8 +129,8 @@
       link.textContent = "刷新";
       readme.appendChild(link);
       readme.append("页面");
-      this.appendChild(this.message);
-      this.appendChild(this.readme);
+      this.appendChild(message);
+      this.appendChild(readme);
       this.loadReadmeAsync();
       globalThis.refreshReadme = () => {
         const abouts = document.getElementsByTagName("about-content");
