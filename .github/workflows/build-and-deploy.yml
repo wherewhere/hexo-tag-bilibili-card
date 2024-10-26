@@ -36,8 +36,14 @@ jobs:
       - name: Copy babel.html to publish folder
         run: cp example/babel.html public
 
-      - name: Change index.html components url
+      - name: Change babel.html components url
         run: sed -i 's/\.\.\/components/components/g' public/babel.html
+
+      - name: Copy maker.html to publish folder
+        run: cp example/maker.html public
+
+      - name: Change maker.html components url
+        run: sed -i 's/\.\.\/components/components/g' public/maker.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
