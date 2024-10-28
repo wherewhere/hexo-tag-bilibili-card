@@ -122,11 +122,11 @@
     connectedCallback() {
       const message = this.message;
       const readme = this.readme;
-      readme.textContent = "如果这里什么也没有，请";
+      readme.innerText = "如果这里什么也没有，请";
       let link = document.createElement('a');
       link.href = "javascript:void(0)";
       link.onclick = () => this.loadReadmeAsync();
-      link.textContent = "刷新";
+      link.innerText = "刷新";
       readme.appendChild(link);
       readme.append("页面");
       this.appendChild(message);
@@ -151,14 +151,14 @@
       const readme = this.readme;
       try {
         this.isLoading = true;
-        message.textContent = "正在拉取信息，请坐和放宽";
+        message.innerText = "正在拉取信息，请坐和放宽";
         const response = await fetch("../README.md");
         if (response.ok) {
-          message.textContent = "拉取成功，正在获取内容";
+          message.innerText = "拉取成功，正在获取内容";
           const content = await response.text();
           if (typeof (content) == "string" && content.length > 0) {
             const regex = /<!-- Example Start -->[\s\S]*<!-- Example End -->/;
-              message.textContent = "获取成功，正在解析内容";
+              message.innerText = "获取成功，正在解析内容";
             let markdown = content.replace(regex, exampleCard);
             try {
               readme.innerHTML = marked.parse(markdown);
@@ -177,7 +177,7 @@
         message.remove();
       }
       catch (ex) {
-        message.textContent = `出错了！${ex}`;
+        message.innerText = `出错了！${ex}`;
         readme.innerHTML =
           `<h2>预览</h2>
         ${exampleCard}`;
@@ -278,13 +278,9 @@
   }
 </script>
 
-<link title="highlight-light" rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
-<link title="highlight-dark" rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css" disabled>
+<link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script>
-  const darkCss = document.querySelector('link[title="highlight-dark"]');
-  const lightCss = document.querySelector('link[title="highlight-light"]');
+  const highlightCss = document.querySelector('link[title="highlight"]');
   if (typeof matchMedia === "function") {
     const scheme = window.matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
@@ -295,12 +291,10 @@
     }
     function hljs_ColorSwitcher(isDark) {
       if (isDark) {
-        darkCss.removeAttribute("disabled");
-        lightCss.setAttribute("disabled", '');
+        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
       }
       else {
-        lightCss.removeAttribute("disabled");
-        darkCss.setAttribute("disabled", '');
+        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
       }
     }
   }
@@ -522,14 +516,14 @@
               return Promise.resolve();
             }
             isLoading = true;
-            message.textContent = "正在拉取信息，请坐和放宽";
+            message.innerText = "正在拉取信息，请坐和放宽";
             const exampleCard = "<p><iframe class=\"babel-example\" title=\"Babel Example\" src=\"babel.html\"></iframe></p>";
             return fetch("../README.md").then(function (response) {
               if (response.ok) {
-                message.textContent = "拉取成功，正在获取内容";
+                message.innerText = "拉取成功，正在获取内容";
                 response.text().then(function (content) {
                   if (typeof (content) == "string" && content.length > 0) {
-                    message.textContent = "获取成功，正在解析内容";
+                    message.innerText = "获取成功，正在解析内容";
                     let markdown = content.replace("<!-- Babel Example -->", exampleCard);
                     try {
                       readme.innerHTML = marked.parse(markdown);
@@ -546,7 +540,7 @@
               readme.innerHTML = "<h2>预览</h2>\n" + exampleCard;
               message.remove();
             }).catch(function (ex) {
-              message.textContent = "出错了！" + ex;
+              message.innerText = "出错了！" + ex;
               readme.innerHTML = "<h2>预览</h2>\n" + exampleCard;
             }).finally(function () {
               isLoading = false;
@@ -555,11 +549,11 @@
           const aboutContent = document.getElementById("about-content");
           const message = document.createElement("span");
           const readme = document.createElement("div");
-          readme.textContent = "如果这里什么也没有，请";
+          readme.innerText = "如果这里什么也没有，请";
           let link = document.createElement('a');
           link.href = "javascript:void(0)";
           link.onclick = function () { loadReadmeAsync(message, readme); }
-          link.textContent = "刷新";
+          link.innerText = "刷新";
           readme.appendChild(link);
           readme.append("页面");
           aboutContent.appendChild(message);

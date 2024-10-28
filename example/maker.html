@@ -88,16 +88,16 @@
       }
       connectedCallback() {
         const { message, readme } = this;
-        readme.textContent = "如果这里什么也没有，请";
+        readme.innerText = "如果这里什么也没有，请";
         let link = document.createElement("a");
         link.href = "javascript:void(0)";
         link.onclick = () => this.loadReadmeAsync();
-        link.textContent = "刷新";
+        link.innerText = "刷新";
         readme.appendChild(link);
         readme.append("页面，或者前往这个");
         link = document.createElement("a");
         link.href = "https://wherewhere.github.io/tools/bilibili-card";
-        link.textContent = "页面";
+        link.innerText = "页面";
         readme.appendChild(link);
         readme.append("查看");
         this.appendChild(message);
@@ -120,13 +120,13 @@
         const { message, readme } = this;
         try {
           this.isLoading = true;
-          message.textContent = "正在从 GitHub 拉取信息，请坐和放宽";
+          message.innerText = "正在从 GitHub 拉取信息，请坐和放宽";
           const response = await fetch("https://cdn.jsdelivr.net/gh/wherewhere/wherewhere.github.io@main/source/tools/bilibili-card/index.md");
           if (response.ok) {
-            message.textContent = "拉取成功，正在解析";
+            message.innerText = "拉取成功，正在解析";
             const content = await response.text();
             if (typeof (content) == "string" && content.length > 0) {
-              message.textContent = "解析成功";
+              message.innerText = "解析成功";
               const html = marked.parse(getContent(content).replace(/{% \w+ %}/g, ''));
               const dom = document.createElement("div");
               dom.innerHTML = html;
@@ -162,7 +162,7 @@
         finally {
           this.isLoading = false;
         }
-        message.textContent = "拉取失败，即将跳转到 GitHub 页面";
+        message.innerText = "拉取失败，即将跳转到 GitHub 页面";
         location.href = "https://wherewhere.github.io/tools/bilibili-card"
       }
     }
@@ -170,13 +170,9 @@
   }
 </script>
 
-<link title="highlight-light" rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
-<link title="highlight-dark" rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css" disabled>
+<link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script>
-  const darkCss = document.querySelector('link[title="highlight-dark"]');
-  const lightCss = document.querySelector('link[title="highlight-light"]');
+  const highlightCss = document.querySelector('link[title="highlight"]');
   if (typeof matchMedia === "function") {
     const scheme = window.matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
@@ -187,12 +183,10 @@
     }
     function hljs_ColorSwitcher(isDark) {
       if (isDark) {
-        darkCss.removeAttribute("disabled");
-        lightCss.setAttribute("disabled", '');
+        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
       }
       else {
-        lightCss.removeAttribute("disabled");
-        darkCss.setAttribute("disabled", '');
+        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
       }
     }
   }

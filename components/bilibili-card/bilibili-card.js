@@ -155,7 +155,7 @@
         if (!(info instanceof Element)) { return; }
         let item = info.querySelector(`.cover-info-item.${type}`);
         if (item) {
-            item.querySelector(".num-info").textContent = text;
+            item.querySelector(".num-info").innerText = text;
             return;
         }
         item = createInfoItem(type, text, isVideo);
@@ -541,12 +541,12 @@
                 this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${cover})`;
             }
             const duration = this.contents.duration;
-            duration.textContent = this.duration;
+            duration.innerText = this.duration;
             duration.parentElement.style.display = hasDuration(type) ? '' : "none";
-            this.contents.title.textContent = this.title;
+            this.contents.title.innerText = this.title;
             addInfoItems(this.contents.info, this.infoTypes, this);
-            this.contents.type.textContent = getTypeName(type);
-            this.contents.author.textContent = this.author;
+            this.contents.type.innerText = getTypeName(type);
+            this.contents.author.innerText = this.author;
             this.isLoaded = true;
         }
 
@@ -566,13 +566,13 @@
                     this.contents.link.href = getUrl(this.vid, type);
                     setCoverType(this.contents.cover, type);
                     this.contents.duration.parentElement.style.display = hasDuration(type) ? '' : "none";
-                    this.contents.type.textContent = getTypeName(type);
+                    this.contents.type.innerText = getTypeName(type);
                     break;
                 case "title":
-                    this.contents.title.textContent = newValue || defaultTitle;
+                    this.contents.title.innerText = newValue || defaultTitle;
                     break;
                 case "author":
-                    this.contents.author.textContent = newValue || defaultAuthor;
+                    this.contents.author.innerText = newValue || defaultAuthor;
                     break;
                 case "cover":
                     const value = typeof newValue === "string" ? newValue.trimStart() : undefined;
@@ -586,7 +586,7 @@
                     }
                     break;
                 case "duration":
-                    this.contents.duration.textContent = newValue || defaultDuration;
+                    this.contents.duration.innerText = newValue || defaultDuration;
                     break;
                 case "views":
                     if (this.infoTypes.includes("views")) {
