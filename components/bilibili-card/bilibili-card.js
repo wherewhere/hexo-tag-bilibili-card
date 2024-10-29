@@ -289,6 +289,8 @@
                 case "system":
                 case "default":
                     return `${baseUrl}.css`;
+                case "fluent":
+                    return `${baseUrl}.fluent.css`;
                 case "-1":
                 case "none":
                     return '';
