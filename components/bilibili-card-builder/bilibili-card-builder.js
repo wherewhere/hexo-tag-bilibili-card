@@ -283,7 +283,7 @@
     const defaultTitle = "哔哩哔哩 (゜-゜)つロ 干杯~";
     const defaultAuthor = "2233";
     const defaultDuration = "??:??";
-    const defaultProxy = "https://images.weserv.nl/?url=";
+    const defaultProxy = typeof _wb_wombat === "undefined" ? "https://images.weserv.nl/?url=" : '';
 
     /**
      * @param {string} imageProxy
