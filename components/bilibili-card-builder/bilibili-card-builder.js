@@ -280,6 +280,19 @@
         }
     }
 
+    /**
+     * @param {string} proxy
+     * @param {string} url
+     */
+    function getBackgroundUrl(proxy, url) {
+        if (typeof _wb_wombat === "undefined") {
+            return `${proxy}${url}`
+        }
+        else {
+            return _wb_wombat.rewrite_url(`${proxy}${_wb_wombat.extract_orig(url)}`);
+        }
+    }
+
     const defaultTitle = "哔哩哔哩 (゜-゜)つロ 干杯~";
     const defaultAuthor = "2233";
     const defaultDuration = "??:??";
@@ -480,7 +493,7 @@
                 setCoverType(this.contents.cover, type);
                 if (cover) {
                     this.contents.cover.style.display = '';
-                    this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${cover})`;
+                    this.contents.cover.style.backgroundImage = `url(${getBackgroundUrl(this.imageProxy, cover)})`;
                 }
                 const duration = this.contents.duration;
                 duration.textContent = this.duration;
@@ -514,7 +527,7 @@
                         const value = typeof newValue === "string" ? newValue.trimStart() : undefined;
                         if (value) {
                             this.contents.cover.style.display = '';
-                            this.contents.cover.style.backgroundImage = `url(${this.imageProxy}${value})`;
+                            this.contents.cover.style.backgroundImage = `url(${getBackgroundUrl(this.imageProxy, value)})`;
                         }
                         else {
                             this.contents.cover.style.display = "none";
@@ -568,7 +581,7 @@
                         if (cover) {
                             const imageProxy = (newValue || defaultProxy).trimEnd();
                             this.contents.cover.style.display = '';
-                            this.contents.cover.style.backgroundImage = `url(${imageProxy}${cover})`;
+                            this.contents.cover.style.backgroundImage = `url(${getBackgroundUrl(imageProxy, cover)})`;
                         }
                         break;
                 }
