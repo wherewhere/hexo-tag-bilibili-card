@@ -4,7 +4,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>hexo-tag-bilibili-card</title>
 <meta name="description" content="一个 Hexo 插件，在你的文章中插入哔哩哔哩卡片，样式模仿和借鉴自哔哩哔哩">
-<meta name="theme-color" content="#036ac4">
+<meta name="theme-color" content="#036ac4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#60c9fc" media="(prefers-color-scheme: dark)">
+
+<style>
+  :root {
+    --control-corner-radius: 4;
+    --stroke-width: 1;
+    --body-font: Segoe UI Variable, Segoe UI, sans-serif;
+    --font-weight: 400;
+    --type-ramp-minus-1-font-size: 12px;
+    --type-ramp-minus-1-line-height: 16px;
+    --type-ramp-base-font-size: 14px;
+    --type-ramp-base-line-height: 20px;
+    --type-ramp-plus-1-font-size: 16px;
+    --type-ramp-plus-1-line-height: 22px;
+    --type-ramp-plus-2-font-size: 20px;
+    --type-ramp-plus-2-line-height: 26px;
+    --type-ramp-plus-3-font-size: 24px;
+    --type-ramp-plus-3-line-height: 32px;
+    --type-ramp-plus-4-font-size: 28px;
+    --type-ramp-plus-4-line-height: 36px;
+    --type-ramp-plus-5-font-size: 32px;
+    --type-ramp-plus-5-line-height: 40px;
+    --neutral-base-color: #808080;
+    --neutral-layer-4: #e0e0e0;
+    --fill-color: #fbfbfb;
+    --accent-fill-rest: #036ac4;
+    --accent-foreground-rest: #023b8f;
+    --accent-foreground-hover: #012e7f;
+    --accent-foreground-active: #0360b9;
+    --accent-foreground-focus: #023b8f;
+    --neutral-fill-layer-rest: #ffffff;
+    --neutral-fill-stealth-rest: #fbfbfb;
+    --neutral-foreground-rest: #1a1a1a;
+    --neutral-stroke-rest: #d6d6d6;
+  }
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 <script src="../components/bilibili-card/bilibili-card.js" async></script>
@@ -84,9 +120,9 @@
       fluentTextArea()
     );
   if (typeof matchMedia === "function") {
-    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+    const scheme = matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
-      scheme.addListener(e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
+      scheme.addEventListener("change", e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
       if (scheme.matches) {
         baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
       }
@@ -282,7 +318,7 @@
 <script>
   const highlightCss = document.querySelector('link[title="highlight"]');
   if (typeof matchMedia === "function") {
-    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+    const scheme = matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
       scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
       if (scheme.matches) {
@@ -445,43 +481,10 @@
 </style>
 
 <script>
-  if (typeof window.CSS === "undefined" || typeof window.CSS.supports === "undefined" || !window.CSS.supports("--a", 0)) {
+  if (typeof CSS === "undefined" || typeof CSS.supports === "undefined" || !CSS.supports("--a", 0)) {
     const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill");
     script.onload = function () {
-      cssVars({
-        variables: {
-          "--control-corner-radius": "4",
-          "--stroke-width": "1",
-          "--body-font": "\"Segoe UI Variable\", \"Segoe UI\", sans-serif",
-          "--font-weight": "400",
-          "--type-ramp-minus-1-font-size": "12px",
-          "--type-ramp-minus-1-line-height": "16px",
-          "--type-ramp-base-font-size": "14px",
-          "--type-ramp-base-line-height": "20px",
-          "--type-ramp-plus-1-font-size": "16px",
-          "--type-ramp-plus-1-line-height": "22px",
-          "--type-ramp-plus-2-font-size": "20px",
-          "--type-ramp-plus-2-line-height": "26px",
-          "--type-ramp-plus-3-font-size": "24px",
-          "--type-ramp-plus-3-line-height": "32px",
-          "--type-ramp-plus-4-font-size": "28px",
-          "--type-ramp-plus-4-line-height": "36px",
-          "--type-ramp-plus-5-font-size": "32px",
-          "--type-ramp-plus-5-line-height": "40px",
-          "--neutral-base-color": "#808080",
-          "--neutral-layer-4": "#e0e0e0",
-          "--fill-color": "#fbfbfb",
-          "--accent-fill-rest": "#036ac4",
-          "--accent-foreground-rest": "#023b8f",
-          "--accent-foreground-hover": "#012e7f",
-          "--accent-foreground-active": "#0360b9",
-          "--accent-foreground-focus": "#023b8f",
-          "--neutral-fill-layer-rest": "#ffffff",
-          "--neutral-foreground-rest": "#1a1a1a",
-          "--neutral-stroke-rest": "#d6d6d6",
-        },
-        watch: true
-      });
+      cssVars({ watch: true });
     }
   }
 </script>
@@ -524,8 +527,9 @@
                 message.innerText = "拉取成功，正在获取内容";
                 response.text().then(function (content) {
                   if (typeof (content) == "string" && content.length > 0) {
-                    message.innerText = "获取成功，正在解析内容";
-                    let markdown = content.replace("<!-- Babel Example -->", exampleCard);
+                    const regex = /<!-- Babel Example Start -->[\s\S]*<!-- Babel Example End -->/;
+                      message.innerText = "获取成功，正在解析内容";
+                    let markdown = content.replace(regex, exampleCard);
                     try {
                       readme.innerHTML = marked.parse(markdown);
                       try { hljs.highlightAll(); } catch (_) { }

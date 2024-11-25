@@ -4,7 +4,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>hexo-tag-bilibili-card - 哔哩哔哩卡片</title>
 <meta name="description" content="哔哩哔哩卡片生成器">
-<meta name="theme-color" content="#ca3e00">
+<meta name="theme-color" content="#ca3e00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ffc57a" media="(prefers-color-scheme: dark)">
+
+<style>
+  :root {
+    --control-corner-radius: 4;
+    --stroke-width: 1;
+    --body-font: Segoe UI Variable, Segoe UI, sans-serif;
+    --font-weight: 400;
+    --type-ramp-minus-1-font-size: 12px;
+    --type-ramp-minus-1-line-height: 16px;
+    --type-ramp-base-font-size: 14px;
+    --type-ramp-base-line-height: 20px;
+    --type-ramp-plus-1-font-size: 16px;
+    --type-ramp-plus-1-line-height: 22px;
+    --type-ramp-plus-2-font-size: 20px;
+    --type-ramp-plus-2-line-height: 26px;
+    --type-ramp-plus-3-font-size: 24px;
+    --type-ramp-plus-3-line-height: 32px;
+    --type-ramp-plus-4-font-size: 28px;
+    --type-ramp-plus-4-line-height: 36px;
+    --type-ramp-plus-5-font-size: 32px;
+    --type-ramp-plus-5-line-height: 40px;
+    --neutral-base-color: #808080;
+    --neutral-layer-4: #e0e0e0;
+    --fill-color: #fbfbfb;
+    --accent-fill-rest: #ca3e00;
+    --accent-foreground-rest: #841c00;
+    --accent-foreground-hover: #6f1200;
+    --accent-foreground-active: #bc3700;
+    --accent-foreground-focus: #841c00;
+    --neutral-fill-layer-rest: #ffffff;
+    --neutral-fill-stealth-rest: #ffffff;
+    --neutral-foreground-rest: #212121;
+    --neutral-stroke-rest: #dadada;
+  }
+</style>
 
 <script src="../components/bilibili-card/bilibili-card.js" async></script>
 
@@ -23,7 +59,7 @@
   accentBaseColor.withDefault(SwatchRGB.create(0xFC / 0xFF, 0x64 / 0xFF, 0x23 / 0xFF));
   fillColor.withDefault(neutralLayerFloating);
   if (typeof matchMedia === "function") {
-    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+    const scheme = matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
       if (scheme.matches) {
         baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
@@ -174,7 +210,7 @@
 <script>
   const highlightCss = document.querySelector('link[title="highlight"]');
   if (typeof matchMedia === "function") {
-    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+    const scheme = matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
       scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
       if (scheme.matches) {
@@ -335,6 +371,21 @@
     line-height: var(--type-ramp-minus-1-line-height);
   }
 </style>
+
+<script>
+  if (typeof CSS === "undefined" || typeof CSS.supports === "undefined" || !CSS.supports("--a", 0)) {
+    function addScript(src) {
+      const script = document.createElement("script");
+      script.src = src;
+      document.scripts[0].parentNode.appendChild(script);
+      return script;
+    }
+    const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill");
+    script.onload = function () {
+      cssVars({ watch: true });
+    }
+  }
+</script>
 
 <div class="layout">
   <div class="header" style="height: 50px;">
