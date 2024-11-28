@@ -27,22 +27,32 @@
   }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill"></script>
 <script>
-  cssVars({
-    variables: {
-      "--bilibili-accent-color": "#fb7299",
-      "--bilibili-card-border-color": "#e7e7e7",
-      "--bilibili-card-background-color": "white",
-      "--bilibili-card-cover-color": "#c9c9c9",
-      "--bilibili-card-cover-background-color": "#f4f4f4",
-      "--bilibili-card-title-color": "#505050",
-      "--bilibili-card-subtitle-color": "white",
-      "--bilibili-card-subtitle-background-color": "rgba(0, 0, 0, .4)",
-      "--bilibili-card-content-color": "#999"
-    },
-    watch: true
-  });
+  if (typeof CSS === "undefined" || typeof CSS.supports === "undefined" || !CSS.supports("--a", 0)) {
+    function addScript(src) {
+      const script = document.createElement("script");
+      script.src = src;
+      document.scripts[0].parentNode.appendChild(script);
+      return script;
+    }
+    const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill");
+    script.onload = function () {
+      cssVars({
+        variables: {
+          "--bilibili-accent-color": "#fb7299",
+          "--bilibili-card-border-color": "#e7e7e7",
+          "--bilibili-card-background-color": "white",
+          "--bilibili-card-cover-color": "#c9c9c9",
+          "--bilibili-card-cover-background-color": "#f4f4f4",
+          "--bilibili-card-title-color": "#505050",
+          "--bilibili-card-subtitle-color": "white",
+          "--bilibili-card-subtitle-background-color": "rgba(0, 0, 0, .4)",
+          "--bilibili-card-content-color": "#999"
+        },
+        watch: true
+      });
+    }
+  }
 </script>
 
 <bilibili-card vid="BV1y54y1a768" type="video" title="【UWP】手把手教你安装 UWP 安装包" author="where-where"
