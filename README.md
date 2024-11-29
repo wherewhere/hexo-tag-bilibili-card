@@ -26,9 +26,22 @@ npm i hexo-tag-bilibili-card
   danmakus="4" comments="75" favorites="253" coins="106" likes="287" info-types="views danmakus"
   theme="system"></bilibili-card>
 ```
-<!-- Example End -->
 
-<!-- Babel Example -->
+<!-- Babel Example Start -->
+SVG 预览
+
+<a href="https://www.bilibili.com/video/BV1y54y1a768">
+  <picture>
+    <source media="(prefers-color-scheme: light)"
+      srcset="https://github.com/user-attachments/assets/5eefc5bc-6ec7-4eb8-b76f-ab2d299646fe">
+    <source media="(prefers-color-scheme: dark)"
+      srcset="https://github.com/user-attachments/assets/34ceff84-f383-4555-bcc8-b1ca892d34ff">
+    <img height="92" alt="【UWP】手把手教你安装 UWP 安装包"
+      src="https://github.com/user-attachments/assets/5eefc5bc-6ec7-4eb8-b76f-ab2d299646fe">
+  </picture>
+</a>
+<!-- Babel Example End -->
+<!-- Example End -->
 
 ## 使用
 
