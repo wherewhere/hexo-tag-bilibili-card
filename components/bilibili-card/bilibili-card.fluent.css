@@ -25,20 +25,6 @@
     --bilibili-card-content-color-focus: var(--neutral-fill-strong-focus);
 }
 
-.video-holder {
-    box-sizing: border-box;
-    border-radius: 6px;
-    box-shadow: var(--elevation-shadow-card-rest);
-}
-
-.video-holder:hover {
-    box-shadow: var(--elevation-shadow-card-hover);
-}
-
-.video-holder:active {
-    box-shadow: var(--elevation-shadow-card-pressed);
-}
-
 .video-holder a {
     text-decoration: none;
     color: inherit;
@@ -113,6 +99,16 @@
     position: relative;
     border-radius: 6px;
     overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: var(--elevation-shadow-card-rest);
+}
+
+.video-holder:hover {
+    box-shadow: var(--elevation-shadow-card-hover);
+}
+
+.video-holder:active {
+    box-shadow: var(--elevation-shadow-card-pressed);
 }
 
 .video-holder a {
@@ -136,7 +132,7 @@
     height: 92px;
     font-size: 42px;
     position: relative;
-    border-radius: 4px 0 0 4px;
+    border-radius: 6px 0 0 6px;
     overflow: hidden;
     -ms-flex-negative: 0;
     flex-shrink: 0;
@@ -154,7 +150,7 @@
     fill: var(--bilibili-card-cover-color);
     background-color: var(--bilibili-card-cover-background-color);
     text-align: center;
-    border-radius: 4px 0 0 4px;
+    border-radius: 6px 0 0 6px;
 }
 
 .video-holder .default-cover svg {
@@ -175,7 +171,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50%;
-    border-radius: 4px 0 0 4px;
+    border-radius: 6px 0 0 6px;
 }
 
 .video-holder .video-cover-img:after {
