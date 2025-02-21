@@ -39,6 +39,24 @@
     --neutral-fill-stealth-rest: #ffffff;
     --neutral-foreground-rest: #212121;
     --neutral-stroke-rest: #dadada;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --neutral-layer-4: #000000;
+      --fill-color: #272727;
+      --accent-fill-rest: #ffc57a;
+      --accent-foreground-rest: #ffdfae;
+      --accent-foreground-hover: #fff0d9;
+      --accent-foreground-active: #ffae5d;
+      --accent-foreground-focus: #ffdfae;
+      --neutral-fill-layer-rest: #333333;
+      --neutral-fill-stealth-rest: #272727;
+      --neutral-foreground-rest: #ffffff;
+      --neutral-stroke-rest: #505050;
+      color-scheme: dark;
+    }
   }
 </style>
 
@@ -58,12 +76,10 @@
   provideFluentDesignSystem().register(fluentProgressRing());
   accentBaseColor.withDefault(SwatchRGB.create(0xFC / 0xFF, 0x64 / 0xFF, 0x23 / 0xFF));
   fillColor.withDefault(neutralLayerFloating);
-  if (typeof matchMedia === "function") {
-    const scheme = matchMedia("(prefers-color-scheme: dark)");
-    if (typeof scheme !== "undefined") {
-      if (scheme.matches) {
-        baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
-      }
+  const scheme = matchMedia("(prefers-color-scheme: dark)");
+  if (typeof scheme !== "undefined") {
+    if (scheme.matches) {
+      baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
     }
   }
 </script>
@@ -127,7 +143,7 @@
         readme.innerText = "如果这里什么也没有，请";
         let link = document.createElement("a");
         link.href = "javascript:void(0)";
-        link.onclick = () => this.loadReadmeAsync();
+        link.addEventListener("click", () => this.loadReadmeAsync());
         link.innerText = "刷新";
         readme.appendChild(link);
         readme.append("页面，或者前往这个");
@@ -161,7 +177,7 @@
           if (response.ok) {
             message.innerText = "拉取成功，正在解析";
             const content = await response.text();
-            if (typeof (content) == "string" && content.length > 0) {
+            if (typeof content === "string" && content.length > 0) {
               message.innerText = "解析成功";
               const html = marked.parse(getContent(content).replace(/{% \w+ %}/g, ''));
               const dom = document.createElement("div");
@@ -209,20 +225,20 @@
 <link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script>
   const highlightCss = document.querySelector('link[title="highlight"]');
-  if (typeof matchMedia === "function") {
+  {
     const scheme = matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
       scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
       if (scheme.matches) {
         hljs_ColorSwitcher(true);
       }
-    }
-    function hljs_ColorSwitcher(isDark) {
-      if (isDark) {
-        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
-      }
-      else {
-        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
+      function hljs_ColorSwitcher(isDark) {
+        if (isDark) {
+          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
+        }
+        else {
+          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
+        }
       }
     }
   }
@@ -245,6 +261,10 @@
     }
   }
 
+  html {
+    overflow: hidden;
+  }
+
   body,
   .body {
     width: 100%;
@@ -257,7 +277,6 @@
     width: 100%;
     height: 100%;
     position: relative;
-    flex: 1;
     display: flex;
     flex-direction: column;
   }
@@ -313,7 +332,7 @@
 
   .content {
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
     padding: 0.5rem var(--content-padding);
   }
 
@@ -383,7 +402,7 @@
     const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill");
     script.onload = function () {
       cssVars({ watch: true });
-    }
+    };
   }
 </script>
 
@@ -411,7 +430,7 @@
     <app-content></app-content>
   </div>
   <footer class="footer">
-    <span>Copyright © 2017 - 2024 wherewhere. All Rights Reserved</span>
+    <span>Copyright © 2017 - 2025 wherewhere. All Rights Reserved</span>
     <div style="flex-grow: 1;"></div>
     <a href="https://github.com/wherewhere/hexo-tag-bilibili-card" target="_blank" rel="noopener noreferrer">Github</a>
   </footer>

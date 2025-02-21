@@ -40,6 +40,24 @@
     --neutral-fill-stealth-rest: #fbfbfb;
     --neutral-foreground-rest: #1a1a1a;
     --neutral-stroke-rest: #d6d6d6;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --neutral-layer-4: #000000;
+      --fill-color: #272727;
+      --accent-fill-rest: #60c9fc;
+      --accent-foreground-rest: #82ddfd;
+      --accent-foreground-hover: #9eecfd;
+      --accent-foreground-active: #3db5fb;
+      --accent-foreground-focus: #82ddfd;
+      --neutral-fill-layer-rest: #333333;
+      --neutral-fill-stealth-rest: #272727;
+      --neutral-foreground-rest: #ffffff;
+      --neutral-stroke-rest: #505050;
+      color-scheme: dark;
+    }
   }
 </style>
 
@@ -52,21 +70,25 @@
       customElements.define(name, constructor);
     }
   }
-  if (typeof HTMLElement.prototype.remove === "undefined") {
-    HTMLElement.prototype.remove = function () {
+  if (!Element.prototype.remove) {
+    Element.prototype.remove = function () {
       if (this.parentNode) {
         this.parentNode.removeChild(this);
       }
     };
   }
+  if (!Element.prototype.replaceWith) {
+    Element.prototype.replaceWith = function (node) {
+      if (this.parentNode) {
+        this.parentNode.replaceChild(node, this);
+      }
+    };
+  }
   function replaceScript(id, src) {
-    const old = document.getElementById(id);
-    const parent = old.parentNode;
-    old.remove();
     const script = document.createElement("script");
     script.id = id;
     script.src = src;
-    parent.appendChild(script);
+    document.getElementById(id).replaceWith(script);
     return script;
   }
 </script>
@@ -120,13 +142,11 @@
       fluentProgressRing(),
       fluentTextArea()
     );
-  if (typeof matchMedia === "function") {
-    const scheme = matchMedia("(prefers-color-scheme: dark)");
-    if (typeof scheme !== "undefined") {
-      scheme.addEventListener("change", e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
-      if (scheme.matches) {
-        baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
-      }
+  const scheme = matchMedia("(prefers-color-scheme: dark)");
+  if (typeof scheme !== "undefined") {
+    scheme.addListener(e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
+    if (scheme.matches) {
+      baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
     }
   }
 </script>
@@ -162,7 +182,7 @@
       readme.innerText = "如果这里什么也没有，请";
       let link = document.createElement('a');
       link.href = "javascript:void(0)";
-      link.onclick = () => this.loadReadmeAsync();
+      link.addEventListener("click", () => this.loadReadmeAsync());
       link.innerText = "刷新";
       readme.appendChild(link);
       readme.append("页面");
@@ -193,7 +213,7 @@
         if (response.ok) {
           message.innerText = "拉取成功，正在获取内容";
           const content = await response.text();
-          if (typeof (content) == "string" && content.length > 0) {
+          if (typeof content === "string" && content.length > 0) {
             const regex = /<!-- Example Start -->[\s\S]*<!-- Example End -->/;
               message.innerText = "获取成功，正在解析内容";
             let markdown = content.replace(regex, exampleCard);
@@ -286,26 +306,21 @@
       for (let i = 0; i < onPolyfillLoaded.length; i++) {
         onPolyfillLoaded[i]();
       }
+      onPolyfillLoaded = [];
     }
     function onPolyfillLoadedEnd() {
       if (typeof fetch === "undefined") {
         console.warn("Fallback polyfill.");
         const script = addScript("https://cdn.jsdelivr.net/npm/fetch-ie8");
-        script.onload = function () {
-          invokeOnPolyfillLoaded();
-        }
+        script.onload = invokeOnPolyfillLoaded;
       }
       else {
         invokeOnPolyfillLoaded();
       }
     }
-    script.onload = function () {
-      onPolyfillLoadedEnd();
-    };
-    script.onerror = function () {
-      onPolyfillLoadedEnd();
-    };
-    if (typeof String.prototype.trimRight === "undefined") {
+    script.onload = onPolyfillLoadedEnd;
+    script.onerror = onPolyfillLoadedEnd;
+    if (!String.prototype.trimRight) {
       String.prototype.trimRight = function () {
         return this.replace(/\s+$/, '');
       };
@@ -316,20 +331,20 @@
 <link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script>
   const highlightCss = document.querySelector('link[title="highlight"]');
-  if (typeof matchMedia === "function") {
+  {
     const scheme = matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
       scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
       if (scheme.matches) {
         hljs_ColorSwitcher(true);
       }
-    }
-    function hljs_ColorSwitcher(isDark) {
-      if (isDark) {
-        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
-      }
-      else {
-        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
+      function hljs_ColorSwitcher(isDark) {
+        if (isDark) {
+          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
+        }
+        else {
+          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
+        }
       }
     }
   }
@@ -352,6 +367,10 @@
     }
   }
 
+  html {
+    overflow: hidden;
+  }
+
   body,
   .body {
     width: 100%;
@@ -364,7 +383,6 @@
     width: 100%;
     height: 100%;
     position: relative;
-    flex: 1;
     display: flex;
     flex-direction: column;
   }
@@ -420,7 +438,7 @@
 
   .content {
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
     padding: 0.5rem var(--content-padding);
   }
 
@@ -537,7 +555,7 @@
               if (response.ok) {
                 message.innerText = "拉取成功，正在获取内容";
                 response.text().then(function (content) {
-                  if (typeof (content) == "string" && content.length > 0) {
+                  if (typeof content === "string" && content.length > 0) {
                     const regex = /<!-- Babel Example Start -->[\s\S]*<!-- Babel Example End -->/;
                       message.innerText = "获取成功，正在解析内容";
                     let markdown = content.replace(regex, exampleCard);
@@ -568,14 +586,17 @@
           readme.innerText = "如果这里什么也没有，请";
           let link = document.createElement('a');
           link.href = "javascript:void(0)";
-          link.onclick = function () { loadReadmeAsync(message, readme); }
+          link.addEventListener("click", function () { loadReadmeAsync(message, readme); });
           link.innerText = "刷新";
           readme.appendChild(link);
-          readme.append("页面");
+          readme.appendChild(document.createTextNode("页面"));
           aboutContent.appendChild(message);
           aboutContent.appendChild(readme);
-          function loadReadmeOnLoaded() {
+          function refreshReadme() {
             loadReadmeAsync(message, readme);
+          }
+          function loadReadmeOnLoaded() {
+            refreshReadme();
             isLoaded = true;
           }
           if (isPolyfillLoaded) {
@@ -584,15 +605,12 @@
           else {
             onPolyfillLoaded.push(loadReadmeOnLoaded);
           }
-          function refreshReadme() {
-            loadReadmeAsync(message, readme);
-          }
         }
       </script>
     </about-content>
   </div>
   <footer class="footer">
-    <span>Copyright © 2017 - 2024 wherewhere. All Rights Reserved</span>
+    <span>Copyright © 2017 - 2025 wherewhere. All Rights Reserved</span>
     <div style="flex-grow: 1;"></div>
     <a href="https://github.com/wherewhere/hexo-tag-bilibili-card" target="_blank" rel="noopener noreferrer">Github</a>
   </footer>

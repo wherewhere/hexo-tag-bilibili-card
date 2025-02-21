@@ -15,6 +15,32 @@
 <style>
   @import '../components/bilibili-card/bilibili-card.css';
 
+  :root {
+    --bilibili-accent-color: #fb7299;
+    --bilibili-card-border-color: #e7e7e7;
+    --bilibili-card-background-color: white;
+    --bilibili-card-cover-color: #c9c9c9;
+    --bilibili-card-cover-background-color: #f4f4f4;
+    --bilibili-card-title-color: #505050;
+    --bilibili-card-subtitle-color: white;
+    --bilibili-card-subtitle-background-color: rgba(0, 0, 0, .4);
+    --bilibili-card-content-color: #999;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bilibili-accent-color: #eb7093;
+      --bilibili-card-border-color: #2a2a2a;
+      --bilibili-card-background-color: #141414;
+      --bilibili-card-cover-color: #464646;
+      --bilibili-card-cover-background-color: #1f1f1f;
+      --bilibili-card-title-color: #b5b5b5;
+      --bilibili-card-content-color: #727272;
+      color-scheme: dark;
+    }
+  }
+
   body {
     margin: 0;
     width: 100%;
@@ -37,21 +63,8 @@
     }
     const script = addScript("https://cdn.jsdelivr.net/npm/css-vars-ponyfill");
     script.onload = function () {
-      cssVars({
-        variables: {
-          "--bilibili-accent-color": "#fb7299",
-          "--bilibili-card-border-color": "#e7e7e7",
-          "--bilibili-card-background-color": "white",
-          "--bilibili-card-cover-color": "#c9c9c9",
-          "--bilibili-card-cover-background-color": "#f4f4f4",
-          "--bilibili-card-title-color": "#505050",
-          "--bilibili-card-subtitle-color": "white",
-          "--bilibili-card-subtitle-background-color": "rgba(0, 0, 0, .4)",
-          "--bilibili-card-content-color": "#999"
-        },
-        watch: true
-      });
-    }
+      cssVars({ watch: true });
+    };
   }
 </script>
 
