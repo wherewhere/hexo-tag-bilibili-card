@@ -1,4 +1,4 @@
-.video-holder * {
+.video-holder {
     --bilibili-accent-color: var(--accent-fill-rest);
     --bilibili-accent-color-hover: var(--accent-fill-hover);
     --bilibili-accent-color-active: var(--accent-fill-active);
@@ -136,6 +136,7 @@
     overflow: hidden;
     -ms-flex-negative: 0;
     flex-shrink: 0;
+    float: left;
 }
 
 .video-holder .default-cover {

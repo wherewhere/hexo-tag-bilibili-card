@@ -54,7 +54,7 @@ function setSettings(obj, set) {
 }
 
 const bilibili_card = {
-    enable: true,
+    enable: false,
     image_proxy: undefined,
     inject_layouts: ["default"],
     generator_assets: ["default"],

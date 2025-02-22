@@ -12,36 +12,35 @@
             : typeof globalThis !== "undefined" ? globalThis
                 : typeof window !== "undefined" ? window : {};
 
+    let window = global.window;
     let document = global.document;
-    let Element = global.Element;
 
     const isModule = typeof module !== "undefined" && typeof module.exports !== "undefined";
     if (isModule) {
         if (typeof document === "undefined") {
             const { JSDOM } = require("jsdom");
-            const { window } = new JSDOM();
+            window = new JSDOM().window;
             document = window.document;
-            Element = window.Element;
         }
     }
-    else if ((typeof this !== "undefined" && typeof global.bilibiliCardBuilder !== "undefined")
-        || typeof global.$bilibiliCardBuilder !== "undefined") {
+    else if ((typeof this !== "undefined" && !global.bilibiliCardBuilder)
+        || !global.$bilibiliCardBuilder) {
         return;
     }
 
-    if (typeof Array.prototype.includes !== "function") {
+    if (!Array.prototype.includes) {
         Array.prototype.includes = function (value) { return this.indexOf(value) !== -1; }
     }
 
-    if (typeof String.prototype.trimStart !== "function") {
-        if (typeof String.prototype.trimLeft !== "function") {
+    if (!String.prototype.trimStart) {
+        if (!String.prototype.trimLeft) {
             String.prototype.trimLeft = function () { return this.replace(/^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/, ''); }
         }
         String.prototype.trimStart = String.prototype.trimLeft;
     }
 
-    if (typeof String.prototype.trimEnd !== "function") {
-        if (typeof String.prototype.trimRight !== "function") {
+    if (!String.prototype.trimEnd) {
+        if (!String.prototype.trimRight) {
             String.prototype.trimRight = function () { return this.replace(/[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+$/, ''); }
         }
         String.prototype.trimEnd = String.prototype.trimRight;
@@ -160,14 +159,14 @@
      * @param {string} text
      */
     function addInfoItem(info, type, text, isVideo = true) {
-        if (!(info instanceof Element)) { return; }
+        if (!info) { return; }
         let item = info.querySelector(`.cover-info-item.${type}`);
         if (item) {
             item.querySelector(".num-info").textContent = text;
             return;
         }
         item = createInfoItem(type, text, isVideo);
-        if (item instanceof Element) {
+        if (item) {
             info.appendChild(item);
         }
     }
@@ -189,7 +188,7 @@
      * @param {cardType} type
      */
     function setCoverType(cover, type) {
-        if (!(cover instanceof Element)) { return; }
+        if (!cover) { return; }
         if (canPlay(type)) {
             cover.classList.add("video-cover-img");
         }
@@ -613,6 +612,7 @@
 
         const cover_box = document.createElement("div");
         cover_box.className = "disable-event cover-box";
+        cover_box.style.float = "left";
         cover_box.innerHTML =
             `<i class="iconfont default-cover">
                 <svg viewBox="0 0 1093 1023" style="width: 42px; height: 42px;">
@@ -719,7 +719,7 @@
      * @param {Element} element
      */
     function praseElement(element) {
-        if (element instanceof Element) {
+        if (element) {
             initHost(element);
             attachHost(element);
         }
@@ -746,7 +746,8 @@
         createCard,
         createCardWithTagName,
         praseElement,
-        registerObserver
+        registerObserver,
+        window
     };
 
     if (isModule) {

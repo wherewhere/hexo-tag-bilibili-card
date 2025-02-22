@@ -227,6 +227,10 @@ declare interface IBilibiliCardBuilder {
      * @param element 卡片控件
      */
     registerObserver(element: HTMLElement): void;
+    /**
+     * 当前生成器所用 Window 对象
+     */
+    window: Window;
 }
 
 /** 哔哩哔哩控件生成器 */
@@ -282,9 +286,10 @@ export default bilibiliCardBuilder;
 
 ```yaml
 bilibili_card:
-  enable: true  # 是否启用
+  enable: true  # 是否启用，默认关
   image_proxy: https://images.weserv.nl/?url= # 图片代理
   inject_layouts: [default] # 需要注入的布局
+  generator_assets: ["default"] # 需要生成的资源
   mode: component # 模式选择，component 为 Web 组件
                   # 其他为直接插入 HTML，样式可选 system, light, dark
 ```

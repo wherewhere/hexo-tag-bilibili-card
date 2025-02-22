@@ -1,4 +1,4 @@
-.video-holder * {
+.video-holder {
     --bilibili-accent-color: #eb7093;
     --bilibili-card-border-color: #2a2a2a;
     --bilibili-card-background-color: #141414;
@@ -99,6 +99,7 @@
     overflow: hidden;
     -ms-flex-negative: 0;
     flex-shrink: 0;
+    float: left;
 }
 
 .video-holder .default-cover {

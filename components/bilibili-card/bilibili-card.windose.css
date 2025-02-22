@@ -5,10 +5,6 @@
 }
 
 .video-holder {
-    font-family: 'DinkieBitmap 9px';
-}
-
-.video-holder * {
     --bilibili-accent-color: #4d23cf;
     --bilibili-card-border-color: #fdf1fe;
     --bilibili-card-shadow-color: #805cdc;
@@ -19,24 +15,13 @@
     --bilibili-card-subtitle-color: #4e2c8e;
     --bilibili-card-subtitle-background-color: #f7e1fb;
     --bilibili-card-content-color: #4e2c8e;
+    font-family: 'DinkieBitmap 9px';
 }
 
 .video-holder a {
     text-decoration: none;
     color: inherit;
     outline: 0;
-    border-top: 2px solid var(--bilibili-card-border-color);
-    border-left: 2px solid var(--bilibili-card-border-color);
-    border-right: 2px solid var(--bilibili-card-shadow-color);
-    border-bottom: 2px solid var(--bilibili-card-shadow-color);
-}
-
-.video-holder:active a {
-    border-top: 2px solid var(--bilibili-card-shadow-color);
-    border-left: 2px solid var(--bilibili-card-shadow-color);
-    border-right: 2px solid var(--bilibili-card-border-color);
-    border-bottom: 2px solid var(--bilibili-card-border-color);
-
 }
 
 .video-holder h1,
@@ -106,6 +91,17 @@
 
 .video-holder a {
     color: var(--bilibili-accent-color);
+    border-top: 2px solid var(--bilibili-card-border-color);
+    border-left: 2px solid var(--bilibili-card-border-color);
+    border-right: 2px solid var(--bilibili-card-shadow-color);
+    border-bottom: 2px solid var(--bilibili-card-shadow-color);
+}
+
+.video-holder:active a {
+    border-top: 2px solid var(--bilibili-card-shadow-color);
+    border-left: 2px solid var(--bilibili-card-shadow-color);
+    border-right: 2px solid var(--bilibili-card-border-color);
+    border-bottom: 2px solid var(--bilibili-card-border-color);
 }
 
 .video-holder .cover-box {
@@ -116,6 +112,7 @@
     overflow: hidden;
     -ms-flex-negative: 0;
     flex-shrink: 0;
+    float: left;
 }
 
 .video-holder .default-cover {
