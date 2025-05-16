@@ -8,8 +8,8 @@
                 : typeof window !== "undefined" ? window : {};
 
     const isModule = typeof module !== "undefined" && typeof module.exports !== "undefined";
-    if (!isModule && ((typeof this !== "undefined" && typeof global.bilibiliCardMessage !== "undefined")
-        || typeof global.$bilibiliCardMessage !== "undefined")) {
+    if (!isModule && ((typeof this !== "undefined" && global.bilibiliCardMessage)
+        || global.$bilibiliCardMessage)) {
         return;
     }
 

@@ -23,8 +23,8 @@
             document = window.document;
         }
     }
-    else if ((typeof this !== "undefined" && !global.bilibiliCardBuilder)
-        || !global.$bilibiliCardBuilder) {
+    else if ((typeof this !== "undefined" && global.bilibiliCardBuilder)
+        || global.$bilibiliCardBuilder) {
         return;
     }
 
