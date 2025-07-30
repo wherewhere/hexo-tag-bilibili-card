@@ -59,6 +59,23 @@
       color-scheme: dark;
     }
   }
+
+  @supports (color: light-dark(tan, red)) {
+    :root {
+      --neutral-layer-4: light-dark(#e0e0e0, #000000);
+      --fill-color: light-dark(#fbfbfb, #272727);
+      --accent-fill-rest: light-dark(#036ac4, #60c9fc);
+      --accent-foreground-rest: light-dark(#023b8f, #82ddfd);
+      --accent-foreground-hover: light-dark(#012e7f, #9eecfd);
+      --accent-foreground-active: light-dark(#0360b9, #3db5fb);
+      --accent-foreground-focus: light-dark(#023b8f, #82ddfd);
+      --neutral-fill-layer-rest: light-dark(#ffffff, #333333);
+      --neutral-fill-stealth-rest: light-dark(#fbfbfb, #272727);
+      --neutral-foreground-rest: light-dark(#1a1a1a, #ffffff);
+      --neutral-stroke-rest: light-dark(#d6d6d6, #505050);
+      color-scheme: light dark;
+    }
+  }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
@@ -142,11 +159,51 @@
       fluentProgressRing(),
       fluentTextArea()
     );
-  const scheme = matchMedia("(prefers-color-scheme: dark)");
-  if (typeof scheme !== "undefined") {
-    scheme.addListener(e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
-    if (scheme.matches) {
-      baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
+  if (CSS.supports("color", "light-dark(tan, red)")) {
+    function updateTheme(target) {
+      const colorScheme = getComputedStyle(target).colorScheme;
+      switch (colorScheme) {
+        case "dark":
+        case "dark only":
+          baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
+          break;
+        case "light":
+        case "light only":
+          baseLayerLuminance.withDefault(StandardLuminance.LightMode);
+          break;
+        case "light dark":
+          const scheme = matchMedia("(prefers-color-scheme: dark)");
+          baseLayerLuminance.withDefault(scheme.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          break;
+        default:
+          const div = document.createElement("div");
+          div.style.color = "light-dark(tan, red)";
+          document.body.appendChild(div);
+          baseLayerLuminance.withDefault(getComputedStyle(div).color === "rgb(210, 180, 140)" ? StandardLuminance.LightMode : StandardLuminance.DarkMode);
+          document.body.removeChild(div);
+          break;
+      }
+    }
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.type === "attributes" && mutation.attributeName === "style") {
+          updateTheme(mutation.target);
+        }
+      }
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style"]
+    });
+    updateTheme(document.documentElement);
+  }
+  else {
+    const scheme = matchMedia("(prefers-color-scheme: dark)");
+    if (typeof scheme !== "undefined") {
+      scheme.addListener(e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
+      if (scheme.matches) {
+        baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
+      }
     }
   }
 </script>
@@ -331,20 +388,59 @@
 <link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script>
   const highlightCss = document.querySelector('link[title="highlight"]');
-  {
+  function hljs_ColorSwitcher(isDark) {
+    if (isDark) {
+      highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
+    }
+    else {
+      highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
+    }
+  }
+  if (typeof CSS !== "undefined" && typeof CSS.supports !== "undefined" && CSS.supports("color", "light-dark(tan, red)")) {
+    function updateTheme(target) {
+      const colorScheme = getComputedStyle(target).colorScheme;
+      switch (colorScheme) {
+        case "dark":
+        case "dark only":
+          hljs_ColorSwitcher(true);
+          break;
+        case "light":
+        case "light only":
+          hljs_ColorSwitcher(false);
+          break;
+        case "light dark":
+          const scheme = matchMedia("(prefers-color-scheme: dark)");
+          hljs_ColorSwitcher(scheme.matches);
+          break;
+        default:
+          const div = document.createElement("div");
+          div.style.color = "light-dark(tan, red)";
+          document.body.appendChild(div);
+          hljs_ColorSwitcher(getComputedStyle(div).color !== "rgb(210, 180, 140)");
+          document.body.removeChild(div);
+          break;
+      }
+    }
+    const observer = new MutationObserver(function (mutations) {
+      for (let i = 0; i < mutations.length; i++) {
+        const mutation = mutations[i];
+        if (mutation.type === "attributes" && mutation.attributeName === "style") {
+          updateTheme(mutation.target);
+        }
+      }
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style"]
+    });
+    updateTheme(document.documentElement);
+  }
+  else {
     const scheme = matchMedia("(prefers-color-scheme: dark)");
     if (typeof scheme !== "undefined") {
       scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
       if (scheme.matches) {
         hljs_ColorSwitcher(true);
-      }
-      function hljs_ColorSwitcher(isDark) {
-        if (isDark) {
-          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
-        }
-        else {
-          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
-        }
       }
     }
   }

@@ -8,9 +8,11 @@
     --bilibili-card-subtitle-color: white;
     --bilibili-card-subtitle-background-color: rgba(0, 0, 0, .4);
     --bilibili-card-content-color: #727272;
+    color-scheme: dark;
 }
 
 .video-holder a {
+    -webkit-text-decoration: none;
     text-decoration: none;
     color: inherit;
     outline: 0;
@@ -27,12 +29,15 @@
 }
 
 .video-holder .iconfont {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
     display: -ms-flexbox;
     display: flex;
     font-size: 16px;
     font-style: normal;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .video-holder .iconfont svg {
@@ -45,11 +50,17 @@
 }
 
 .video-holder .default-flex {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
     display: -ms-flexbox;
     display: flex;
 }
 
 .video-holder .view-flex {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -moz-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
     min-width: 0;
@@ -60,6 +71,9 @@
 }
 
 .video-holder .align-center {
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
     -ms-flex-align: center;
     align-items: center;
 }
@@ -67,11 +81,13 @@
 .video-holder .double-ellipsis,
 .video-holder .single-ellipsis {
     overflow: hidden;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
 }
 
 .video-holder .double-ellipsis {
     display: -webkit-box;
+    -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
 }
@@ -82,11 +98,14 @@
 
 .video-holder {
     position: relative;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
     border-radius: 6px;
     overflow: hidden;
 }
 
 .video-holder a {
+    color: #eb7093;
     color: var(--bilibili-accent-color);
 }
 
@@ -95,8 +114,11 @@
     height: 92px;
     font-size: 42px;
     position: relative;
+    -webkit-border-radius: 6px 0 0 6px;
+    -moz-border-radius: 6px 0 0 6px;
     border-radius: 6px 0 0 6px;
     overflow: hidden;
+    -webkit-flex-shrink: 0;
     -ms-flex-negative: 0;
     flex-shrink: 0;
     float: left;
@@ -110,10 +132,15 @@
     height: 100%;
     line-height: 100%;
     font-size: inherit;
+    color: #464646;
     color: var(--bilibili-card-cover-color);
+    fill: #464646;
     fill: var(--bilibili-card-cover-color);
+    background-color: #1f1f1f;
     background-color: var(--bilibili-card-cover-background-color);
     text-align: center;
+    -webkit-border-radius: 6px 0 0 6px;
+    -moz-border-radius: 6px 0 0 6px;
     border-radius: 6px 0 0 6px;
 }
 
@@ -123,6 +150,10 @@
     left: 50%;
     width: 42px;
     height: 42px;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
 
@@ -132,9 +163,13 @@
     left: 0;
     width: 100%;
     height: 100%;
+    -moz-background-size: cover;
+    -o-background-size: cover;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50%;
+    -webkit-border-radius: 6px 0 0 6px;
+    -moz-border-radius: 6px 0 0 6px;
     border-radius: 6px 0 0 6px;
 }
 
@@ -143,10 +178,16 @@
     position: absolute;
     left: 50%;
     top: 50%;
+    -webkit-transform: translate(-18px, -13px);
+    -moz-transform: translate(-18px, -13px);
+    -ms-transform: translate(-18px, -13px);
+    -o-transform: translate(-18px, -13px);
     transform: translate(-18px, -13px);
     width: 36px;
     height: 26px;
     background-image: url(https://s1.hdslb.com/bfs/static/jinkela/article-web/asserts/icon_video_logo.png);
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
     background-size: 100%;
     background-position: 50%;
     z-index: 2;
@@ -154,6 +195,7 @@
 
 .video-holder .video-icon {
     font-size: 32px;
+    color: #464646;
     color: var(--bilibili-card-cover-color);
 }
 
@@ -161,7 +203,10 @@
     position: absolute;
     bottom: 4px;
     right: 4px;
+    background: rgba(0, 0, 0, .4);
     background: var(--bilibili-card-subtitle-background-color);
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
     border-radius: 2px;
 }
 
@@ -169,20 +214,29 @@
     padding: 1px 3px;
     font-size: 10px;
     line-height: 14px;
+    color: white;
     color: var(--bilibili-card-subtitle-color);
 }
 
 .video-holder .video-content-container {
     width: 100%;
     display: grid;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
     padding: 8px 10px 0;
     height: 92px;
     text-align: left;
+    color: #727272;
     color: var(--bilibili-card-content-color);
+    fill: #727272;
     fill: var(--bilibili-card-content-color);
+    background: #141414;
     background: var(--bilibili-card-background-color);
+    border: 1px solid #2a2a2a;
     border: 1px solid var(--bilibili-card-border-color);
+    -webkit-border-radius: 0 6px 6px 0;
+    -moz-border-radius: 0 6px 6px 0;
     border-radius: 0 6px 6px 0;
 }
 
@@ -191,24 +245,40 @@
     height: 38px;
     line-height: 19px;
     font-size: 13px;
+    color: #b5b5b5;
     color: var(--bilibili-card-title-color);
+    -webkit-transition: .3s;
+    -o-transition: .3s;
+    -moz-transition: .3s;
     transition: .3s;
     padding-right: 10px;
     white-space: pre-line;
 }
 
 .video-holder .video-card-info {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
     align-items: center;
     overflow: hidden;
 }
 
 .video-holder .video-card-info .cover-info-item {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
     align-items: center;
     height: 21px;
     line-height: 21px;
@@ -229,14 +299,28 @@
 }
 
 .video-holder .video-card-bottom {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
     align-items: center;
 }
 
 .video-holder .card-text-label {
+    -webkit-transform: scale(.87) translateY(1px);
+    -moz-transform: scale(.87) translateY(1px);
+    -ms-transform: scale(.87) translateY(1px);
+    -o-transform: scale(.87) translateY(1px);
     transform: scale(.87) translateY(1px);
+    -webkit-transform-origin: left top;
+    -moz-transform-origin: left top;
+    -ms-transform-origin: left top;
+    -o-transform-origin: left top;
     transform-origin: left top;
     position: relative;
     display: inline-block;
@@ -244,8 +328,10 @@
     height: 17px;
     line-height: 16px;
     font-size: 10px;
+    color: #eb7093;
     color: var(--bilibili-accent-color);
     text-align: center;
+    border: #eb7093;
     border: var(--bilibili-accent-color);
 }
 
@@ -259,7 +345,11 @@
     height: 16px;
     border: .08em solid;
     border-color: inherit;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
     border-radius: 2px;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
     box-sizing: content-box;
 }
 

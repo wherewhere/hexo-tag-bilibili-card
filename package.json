@@ -1,6 +1,6 @@
 {
   "name": "hexo-tag-bilibili-card",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "A hexo plugin insert a bilibili video card into your page or article, some of css code is copy from bilibili.",
   "main": "index.js",
   "module": "components/index.esm.js",
@@ -37,8 +37,8 @@
     "url": "git+https://github.com/wherewhere/hexo-tag-bilibili-card.git"
   },
   "dependencies": {
-    "hexo-fs": "^4.0.0",
-    "jsdom": "^25.0.0"
+    "hexo-fs": "^5.0.0",
+    "jsdom": "^26.0.0"
   },
   "overrides": {
     "tough-cookie": "^5.0.0"
