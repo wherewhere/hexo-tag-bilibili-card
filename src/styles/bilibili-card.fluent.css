@@ -1,0 +1,369 @@
+:root,
+:host {
+    --bilibili-accent-color: var(--accent-fill-rest);
+    --bilibili-accent-color-hover: var(--accent-fill-hover);
+    --bilibili-accent-color-active: var(--accent-fill-active);
+    --bilibili-accent-color-focus: var(--accent-fill-focus);
+    --bilibili-card-border-color: var(--neutral-stroke-layer-rest);
+    --bilibili-card-border-color-hover: var(--neutral-stroke-layer-hover);
+    --bilibili-card-border-color-active: var(--neutral-stroke-layer-active);
+    --bilibili-card-border-color-focus: var(--neutral-stroke-layer-focus);
+    --bilibili-card-background-color: var(--neutral-fill-rest);
+    --bilibili-card-background-color-hover: var(--neutral-fill-hover);
+    --bilibili-card-background-color-active: var(--neutral-fill-active);
+    --bilibili-card-background-color-focus: var(--neutral-fill-focus);
+    --bilibili-card-cover-color: var(--neutral-fill-stealth-rest);
+    --bilibili-card-cover-background-color: var(--neutral-fill-secondary-rest);
+    --bilibili-card-title-color: var(--neutral-foreground-rest);
+    --bilibili-card-title-color-hover: var(--neutral-foreground-rest);
+    --bilibili-card-title-color-active: var(--neutral-foreground-active);
+    --bilibili-card-title-color-focus: var(--neutral-foreground-focus);
+    --bilibili-card-subtitle-color: white;
+    --bilibili-card-subtitle-background-color: rgba(0, 0, 0, .4);
+    --bilibili-card-content-color: var(--neutral-fill-strong-rest);
+    --bilibili-card-content-color-hover: var(--neutral-fill-strong-hover);
+    --bilibili-card-content-color-active: var(--neutral-fill-strong-active);
+    --bilibili-card-content-color-focus: var(--neutral-fill-strong-focus);
+}
+
+.video-holder a {
+    text-decoration: none;
+    color: inherit;
+    outline: 0;
+}
+
+.video-holder h1,
+.video-holder h2,
+.video-holder h3,
+.video-holder h4,
+.video-holder h5,
+.video-holder h6,
+.video-holder p {
+    margin: 0;
+}
+
+.video-holder .iconfont {
+    display: flex;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.video-holder .iconfont svg {
+    width: 16px;
+    height: 16px;
+}
+
+.video-holder .full-width {
+    width: 100%;
+}
+
+.video-holder .default-flex {
+    display: flex;
+}
+
+.video-holder .view-flex {
+    flex: 1;
+    min-width: 0;
+}
+
+.video-holder .disable-event {
+    pointer-events: none;
+}
+
+.video-holder .align-center {
+    align-items: center;
+}
+
+.video-holder .double-ellipsis,
+.video-holder .single-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.video-holder .double-ellipsis {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.video-holder .single-ellipsis {
+    white-space: nowrap;
+}
+
+.video-holder {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: var(--elevation-shadow-card-rest);
+}
+
+.video-holder:hover {
+    box-shadow: var(--elevation-shadow-card-hover);
+}
+
+.video-holder:active {
+    box-shadow: var(--elevation-shadow-card-pressed);
+}
+
+.video-holder a {
+    color: var(--bilibili-accent-color);
+}
+
+.video-holder:hover a {
+    color: var(--bilibili-accent-color-hover);
+}
+
+.video-holder:active a {
+    color: var(--bilibili-accent-color-active);
+}
+
+.video-holder:focus a {
+    color: var(--bilibili-accent-color-focus);
+}
+
+.video-holder .cover-box {
+    width: 150px;
+    height: 92px;
+    font-size: 42px;
+    position: relative;
+    border-radius: 6px 0 0 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    float: left;
+}
+
+.video-holder .default-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    font-size: inherit;
+    color: var(--bilibili-card-cover-color);
+    fill: var(--bilibili-card-cover-color);
+    background-color: var(--bilibili-card-cover-background-color);
+    text-align: center;
+    border-radius: 6px 0 0 6px;
+}
+
+.video-holder .default-cover svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 42px;
+    height: 42px;
+    transform: translate(-50%, -50%);
+}
+
+.video-holder .cover-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 6px 0 0 6px;
+}
+
+.video-holder .video-cover-img:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-18px, -13px);
+    width: 36px;
+    height: 26px;
+    background-image: url(https://s1.hdslb.com/bfs/static/jinkela/article-web/asserts/icon_video_logo.png);
+    background-size: 100%;
+    background-position: 50%;
+    z-index: 2;
+}
+
+.video-holder .video-icon {
+    font-size: 32px;
+    color: var(--bilibili-card-cover-color);
+}
+
+.video-holder:hover .video-icon {
+    color: var(--bilibili-card-cover-color-hover);
+}
+
+.video-holder:active .video-icon {
+    color: var(--bilibili-card-cover-color-active);
+}
+
+.video-holder:focus .video-icon {
+    color: var(--bilibili-card-cover-color-focus);
+}
+
+.video-holder .video-subtitle {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: var(--bilibili-card-subtitle-background-color);
+    border-radius: 2px;
+}
+
+.video-holder .video-duration {
+    padding: 1px 3px;
+    font-size: 10px;
+    line-height: 14px;
+    color: var(--bilibili-card-subtitle-color);
+}
+
+.video-holder .video-content-container {
+    width: 100%;
+    display: grid;
+    box-sizing: border-box;
+    padding: 8px 10px 0;
+    height: 92px;
+    text-align: left;
+    color: var(--bilibili-card-content-color);
+    fill: var(--bilibili-card-content-color);
+    background: var(--bilibili-card-background-color);
+    border: 1px solid var(--bilibili-card-border-color);
+    border-radius: 0 6px 6px 0;
+}
+
+.video-holder:hover .video-content-container {
+    color: var(--bilibili-card-content-color-hover);
+    fill: var(--bilibili-card-content-color-hover);
+    background: var(--bilibili-card-background-color-hover);
+    border: 1px solid var(--bilibili-card-border-color-hover);
+}
+
+.video-holder:active .video-content-container {
+    color: var(--bilibili-card-content-color-active);
+    fill: var(--bilibili-card-content-color-active);
+    background: var(--bilibili-card-background-color-active);
+    border: 1px solid var(--bilibili-card-border-color-active);
+}
+
+.video-holder:focus .video-content-container {
+    color: var(--bilibili-card-content-color-focus);
+    fill: var(--bilibili-card-content-color-focus);
+    background: var(--bilibili-card-background-color-focus);
+    border: 1px solid var(--bilibili-card-border-color-focus);
+}
+
+.video-holder .video-title {
+    margin-bottom: 0;
+    height: 38px;
+    line-height: 19px;
+    font-size: 13px;
+    color: var(--bilibili-card-title-color);
+    transition: .3s;
+    padding-right: 10px;
+    white-space: pre-line;
+}
+
+.video-holder:hover .video-title {
+    color: var(--bilibili-card-title-color-hover);
+}
+
+.video-holder:active .video-title {
+    color: var(--bilibili-card-title-color-active);
+}
+
+.video-holder:focus .video-title {
+    color: var(--bilibili-card-title-color-focus);
+}
+
+.video-holder .video-card-info {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.video-holder .video-card-info .cover-info-item {
+    display: flex;
+    align-items: center;
+    height: 21px;
+    line-height: 21px;
+}
+
+.video-holder .cover-info-item {
+    display: inline-block;
+    height: 21px;
+    line-height: 21px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.video-holder .num-info {
+    padding: 0px 4px;
+    display: inline-block;
+    min-width: 50px;
+}
+
+.video-holder .video-card-bottom {
+    display: flex;
+    align-items: center;
+}
+
+.video-holder .card-text-label {
+    transform: scale(.87) translateY(1px);
+    transform-origin: left top;
+    position: relative;
+    display: inline-block;
+    padding: 0 3px 0 4px;
+    height: 17px;
+    line-height: 16px;
+    font-size: 10px;
+    color: var(--bilibili-accent-color);
+    text-align: center;
+    border: var(--bilibili-accent-color);
+}
+
+.video-holder:hover .card-text-label {
+    color: var(--bilibili-accent-color-hover);
+    border-color: var(--bilibili-accent-color-hover);
+}
+
+.video-holder:active .card-text-label {
+    color: var(--bilibili-accent-color-active);
+    border-color: var(--bilibili-accent-color-active);
+}
+
+.video-holder:focus .card-text-label {
+    color: var(--bilibili-accent-color-focus);
+    border-color: var(--bilibili-accent-color-focus);
+}
+
+.video-holder .card-text-label:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 16px;
+    border: .08em solid;
+    border-color: inherit;
+    border-radius: 2px;
+    box-sizing: content-box;
+}
+
+.video-holder .author-info {
+    margin-left: 4px;
+    padding-right: 12px;
+    line-height: 22px;
+}
+
+.video-holder .up-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.video-holder .author-name {
+    margin-left: 2px;
+    display: inline-block;
+    font-size: 10px;
+}

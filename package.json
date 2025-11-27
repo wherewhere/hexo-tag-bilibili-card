@@ -4,6 +4,11 @@
   "description": "A hexo plugin insert a bilibili video card into your page or article, some of css code is copy from bilibili.",
   "main": "index.js",
   "module": "components/index.esm.js",
+  "scripts": {
+    "dev": "vite ./dev",
+    "build": "rollup -c",
+    "build-dev": "vite build ./dev"
+  },
   "keywords": [
     "hexo",
     "bilibili",
@@ -35,6 +40,34 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wherewhere/hexo-tag-bilibili-card.git"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "@fluentui/svg-icons": "^1.0.0",
+    "@fluentui/web-components": "^2.0.0",
+    "@rollup/plugin-babel": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-url": "^8.0.0",
+    "@types/babel__core": "^7.0.0",
+    "@types/hexo": "^3.0.0",
+    "@unhead/vue": "^2.0.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "color-scheme-checker": "^0.0.1",
+    "js-beautify": "^1.0.0",
+    "markdown-it-async": "^2.2.0",
+    "markdown-it-highlightjs": "^4.0.0",
+    "postcss-preset-env": "^10.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-dts": "^6.0.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "sass": "^1.0.0",
+    "terser": "^5.0.0",
+    "vite": "^7.0.0",
+    "vite-plugin-simple-html": "^1.0.0",
+    "vite-svg-loader": "^5.0.0",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0"
   },
   "dependencies": {
     "hexo-fs": "^5.0.0",

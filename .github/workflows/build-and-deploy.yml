@@ -2,7 +2,7 @@ name: build and deploy
 
 on:
   push:
-    branches: [main]
+    branches: [rollup]
   workflow_dispatch:
 
 jobs:
@@ -15,55 +15,46 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create publish folder
-        run: mkdir public
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Examples: 20, 18.19, >=16.20.2, lts/Iron, lts/Hydrogen, *, latest, current, node
+          # Ref: https://github.com/actions/setup-node#supported-version-syntax
+          node-version: 'latest'
 
-      - name: Copy components to publish folder
-        run: cp -r components public
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Copy README to publish folder
-        run: cp README.md public
+      - name: Build
+        run: npm run build-dev
 
-      - name: Copy index.html to publish folder
-        run: cp example/index.html public
+      # Changes the base-tag in index.html to match GitHub Pages repository subdirectory
+      - name: Change index.html base-tag
+        run: sed -i 's/<base href=\/>/<base href=\/hexo-tag-bilibili-card\/>/g' dev/dist/index.html
 
-      - name: Change index.html components url
-        run: sed -i 's/\.\.\/components/components/g' public/index.html
-
-      - name: Change index.html README url
-        run: sed -i 's/\.\.\/README\.md/README\.md/g' public/index.html
-
-      - name: Copy babel.html to publish folder
-        run: cp example/babel.html public
-
-      - name: Change babel.html components url
-        run: sed -i 's/\.\.\/components/components/g' public/babel.html
-
-      - name: Copy maker.html to publish folder
-        run: cp example/maker.html public
-
-      - name: Change maker.html components url
-        run: sed -i 's/\.\.\/components/components/g' public/maker.html
+      # Copy index.html to 404.html to serve the same file when a file is not found
+      - name: copy index.html to 404.html
+        run: cp dev/dist/index.html dev/dist/404.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: dev/dist
 
-  deploy:
-    needs: build
+  # deploy:
+  #   needs: build
 
-    permissions:
-      pages: write
-      id-token: write
+  #   permissions:
+  #     pages: write
+  #     id-token: write
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  #   steps:
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4

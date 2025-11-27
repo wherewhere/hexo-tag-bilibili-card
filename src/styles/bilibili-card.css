@@ -1,0 +1,315 @@
+:root,
+:host {
+    --bilibili-accent-color: #fb7299;
+    --bilibili-card-border-color: #e7e7e7;
+    --bilibili-card-background-color: white;
+    --bilibili-card-cover-color: #c9c9c9;
+    --bilibili-card-cover-background-color: #f4f4f4;
+    --bilibili-card-title-color: #505050;
+    --bilibili-card-subtitle-color: white;
+    --bilibili-card-subtitle-background-color: rgba(0, 0, 0, .4);
+    --bilibili-card-content-color: #999;
+}
+
+:host,
+.video-holder {
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    :root,
+    :host {
+        --bilibili-accent-color: #eb7093;
+        --bilibili-card-border-color: #2a2a2a;
+        --bilibili-card-background-color: #141414;
+        --bilibili-card-cover-color: #464646;
+        --bilibili-card-cover-background-color: #1f1f1f;
+        --bilibili-card-title-color: #b5b5b5;
+        --bilibili-card-content-color: #727272;
+    }
+
+    :host,
+    .video-holder {
+        color-scheme: dark;
+    }
+}
+
+@supports (color: light-dark(tan, red)) {
+
+    :root,
+    :host {
+        --bilibili-accent-color: light-dark(#fb7299, #eb7093);
+        --bilibili-card-border-color: light-dark(#e7e7e7, #2a2a2a);
+        --bilibili-card-background-color: light-dark(white, #141414);
+        --bilibili-card-cover-color: light-dark(#c9c9c9, #464646);
+        --bilibili-card-cover-background-color: light-dark(#f4f4f4, #1f1f1f);
+        --bilibili-card-title-color: light-dark(#505050, #b5b5b5);
+        --bilibili-card-content-color: light-dark(#999, #727272);
+    }
+
+    :host,
+    .video-holder {
+        color-scheme: inherit;
+    }
+}
+
+.video-holder a {
+    text-decoration: none;
+    color: inherit;
+    outline: 0;
+}
+
+.video-holder h1,
+.video-holder h2,
+.video-holder h3,
+.video-holder h4,
+.video-holder h5,
+.video-holder h6,
+.video-holder p {
+    margin: 0;
+}
+
+.video-holder .iconfont {
+    display: flex;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.video-holder .iconfont svg {
+    width: 16px;
+    height: 16px;
+}
+
+.video-holder .full-width {
+    width: 100%;
+}
+
+.video-holder .default-flex {
+    display: flex;
+}
+
+.video-holder .view-flex {
+    flex: 1;
+    min-width: 0;
+}
+
+.video-holder .disable-event {
+    pointer-events: none;
+}
+
+.video-holder .align-center {
+    align-items: center;
+}
+
+.video-holder .double-ellipsis,
+.video-holder .single-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.video-holder .double-ellipsis {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.video-holder .single-ellipsis {
+    white-space: nowrap;
+}
+
+.video-holder {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.video-holder a {
+    color: var(--bilibili-accent-color);
+}
+
+.video-holder .cover-box {
+    width: 150px;
+    height: 92px;
+    font-size: 42px;
+    position: relative;
+    border-radius: 6px 0 0 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    float: left;
+}
+
+.video-holder .default-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    font-size: inherit;
+    color: var(--bilibili-card-cover-color);
+    fill: var(--bilibili-card-cover-color);
+    background-color: var(--bilibili-card-cover-background-color);
+    text-align: center;
+    border-radius: 6px 0 0 6px;
+}
+
+.video-holder .default-cover svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 42px;
+    height: 42px;
+    transform: translate(-50%, -50%);
+}
+
+.video-holder .cover-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 6px 0 0 6px;
+}
+
+.video-holder .video-cover-img:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-18px, -13px);
+    width: 36px;
+    height: 26px;
+    background-image: url(https://s1.hdslb.com/bfs/static/jinkela/article-web/asserts/icon_video_logo.png);
+    background-size: 100%;
+    background-position: 50%;
+    z-index: 2;
+}
+
+.video-holder .video-icon {
+    font-size: 32px;
+    color: var(--bilibili-card-cover-color);
+}
+
+.video-holder .video-subtitle {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: var(--bilibili-card-subtitle-background-color);
+    border-radius: 2px;
+}
+
+.video-holder .video-duration {
+    padding: 1px 3px;
+    font-size: 10px;
+    line-height: 14px;
+    color: var(--bilibili-card-subtitle-color);
+}
+
+.video-holder .video-content-container {
+    width: 100%;
+    display: grid;
+    box-sizing: border-box;
+    padding: 8px 10px 0;
+    height: 92px;
+    text-align: left;
+    color: var(--bilibili-card-content-color);
+    fill: var(--bilibili-card-content-color);
+    background: var(--bilibili-card-background-color);
+    border: 1px solid var(--bilibili-card-border-color);
+    border-radius: 0 6px 6px 0;
+}
+
+.video-holder .video-title {
+    margin-bottom: 0;
+    height: 38px;
+    line-height: 19px;
+    font-size: 13px;
+    color: var(--bilibili-card-title-color);
+    transition: .3s;
+    padding-right: 10px;
+    white-space: pre-line;
+}
+
+.video-holder .video-card-info {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.video-holder .video-card-info .cover-info-item {
+    display: flex;
+    align-items: center;
+    height: 21px;
+    line-height: 21px;
+}
+
+.video-holder .cover-info-item {
+    display: inline-block;
+    height: 21px;
+    line-height: 21px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.video-holder .num-info {
+    padding: 0px 4px;
+    display: inline-block;
+    min-width: 50px;
+}
+
+.video-holder .video-card-bottom {
+    display: flex;
+    align-items: center;
+}
+
+.video-holder .card-text-label {
+    transform: scale(.87) translateY(1px);
+    transform-origin: left top;
+    position: relative;
+    display: inline-block;
+    padding: 0 3px 0 4px;
+    height: 17px;
+    line-height: 16px;
+    font-size: 10px;
+    color: var(--bilibili-accent-color);
+    text-align: center;
+    border: var(--bilibili-accent-color);
+}
+
+.video-holder .card-text-label:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 16px;
+    border: .08em solid;
+    border-color: inherit;
+    border-radius: 2px;
+    box-sizing: content-box;
+}
+
+.video-holder .author-info {
+    margin-left: 4px;
+    padding-right: 12px;
+    line-height: 22px;
+}
+
+.video-holder .up-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.video-holder .author-name {
+    margin-left: 2px;
+    display: inline-block;
+    font-size: 10px;
+}

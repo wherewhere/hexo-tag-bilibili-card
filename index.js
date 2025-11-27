@@ -4,7 +4,7 @@
 /** @typedef {import("@types/hexo")} */
 
 const path = require("path");
-const createCardAsync = require("./lib/create-card.js");
+const { createCardAsync } = require("./dist/lib/create-card.cjs");
 
 function setSettings(obj, set) {
     if (typeof set === "undefined") {
