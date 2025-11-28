@@ -15,6 +15,7 @@
                 style="min-width: calc(var(--base-height-multiplier) * 11.25px);">
                 <fluent-option value="components">控件</fluent-option>
                 <fluent-option value="html">HTML</fluent-option>
+                <fluent-option value="vue">Vue</fluent-option>
                 <fluent-option value="svg" disabled>SVG</fluent-option>
             </fluent-select>
         </SettingsCard>
@@ -123,7 +124,13 @@
                             @click="() => createExample(json, imageProxy, id, type, infoTypes, theme)">生成卡片</fluent-button>
                     </div>
                 </template>
-                <div ref="example" v-show="example" style="max-width: 100%;"></div>
+                <div v-if="example" style="max-width: 100%;">
+                    <bilibili-card v-if="exampleType === 'components'" v-bind="props" />
+                    <div v-else-if="exampleType === 'html'" v-html="example"></div>
+                    <BiliBiliCard v-else-if="exampleType === 'vue'" v-bind="props" />
+                    <HighlightJS language="html" :code="example"
+                        style="margin-top: calc(var(--design-unit) * 1px); margin-bottom: 0; border-radius: 6px;" />
+                </div>
             </InputLabel>
         </div>
     </div>
@@ -132,17 +139,20 @@
 <script lang="ts" setup>
 import "../types";
 import "../helpers/fluentui";
-import { shallowRef, useTemplateRef } from "vue";
+import "../helpers/hljs";
+import { shallowRef } from "vue";
 import { useSeoMeta } from "@unhead/vue";
 import { name } from "../../package.json";
 import { neutralFillInputRest, type Combobox } from "@fluentui/web-components";
-import { encodeHTML } from "entities";
-import hljs from "../helpers/hljs";
 import html_beautify from "js-beautify/js/src/html";
 import type { cardType, themeType } from "../../src/helpers/types";
-import * as message from "../../src/tools/bilibili-card-message";
-import * as builder from "../../src/tools/bilibili-card-builder";
+import { getApi, getMessage } from "../../src/tools/bilibili-card-message";
+import { createHost, createHostWithTagName, createCardWithTagName } from "../../src/tools/bilibili-card-builder";
 import { getTheme } from "../../src/helpers/theme";
+import type { cardInfo } from "../../src/helpers/types";
+import type { Props } from "../../src/components/bilibili-card.vue";
+import hljs from "@highlightjs/vue-plugin";
+import BiliBiliCard from "../../src/components/bilibili-card.vue";
 import InputLabel from "../components/InputLabel.vue";
 import SettingsCard from "../components/SettingsCard.vue";
 import SettingsExpander from "../components/SettingsExpander.vue";
@@ -164,6 +174,8 @@ import Feed20Regular from "@fluentui/svg-icons/icons/feed_20_regular.svg";
 import Collections20Regular from "@fluentui/svg-icons/icons/collections_20_regular.svg";
 import Album20Regular from "@fluentui/svg-icons/icons/album_20_regular.svg";
 import PresenceUnknown20Regular from "@fluentui/svg-icons/icons/presence_unknown_20_regular.svg";
+
+const HighlightJS = hljs.component;
 
 const title = "哔哩哔哩卡片";
 const description = "哔哩哔哩卡片生成器";
@@ -198,20 +210,20 @@ const type = shallowRef<cardType>("video");
 function getApiUrl() {
     const idValue = id.value;
     if (!idValue) { return null; }
-    else { return message.getApi(idValue, type.value); }
+    else { return getApi(idValue, type.value); }
 };
 
 const json = shallowRef('');
 async function getApiAsync() {
     const idValue = id.value;
     if (!idValue) { return; }
-    json.value = await fetch(message.getApi(idValue, type.value))
+    json.value = await fetch(getApi(idValue, type.value))
         .then(x => x.text())
         .catch(ex => ex.toString());
 };
 
-function getTypeIcon(typeValue: cardType) {
-    switch (typeValue) {
+function getTypeIcon(type: cardType) {
+    switch (type) {
         case "video":
             return VideoClip20Regular;
         case "article":
@@ -235,8 +247,8 @@ function getTypeIcon(typeValue: cardType) {
     }
 };
 
-function getExampleID(typeValue: string) {
-    switch (typeValue) {
+function getExampleID(type: string) {
+    switch (type) {
         case "video":
             return "BV1y54y1a768";
         case "article":
@@ -258,8 +270,8 @@ function getExampleID(typeValue: string) {
     }
 };
 
-function getDefaultInfoTypes(typeValue: string) {
-    switch (typeValue) {
+function getDefaultInfoTypes(type: string) {
+    switch (type) {
         case "video":
             return "views, danmakus";
         case "user":
@@ -291,57 +303,36 @@ function onCopyClicked(event: MouseEvent, text: string) {
         });
 };
 
-function createExample(jsonValue: string, imageProxyValue: string, idValue: string, typeValue: cardType, infoTypesValue: string, themeValue: themeType) {
-    updateExample(createCard(JSON.parse(jsonValue), imageProxyValue, idValue, typeValue, infoTypesValue, themeValue));
-};
-
 const example = shallowRef('');
-const exampleEl = useTemplateRef("example");
-function updateExample(element?: string) {
-    const exampleElement = exampleEl.value;
-    if (exampleElement instanceof HTMLElement) {
-        if (!element) {
-            exampleElement.innerHTML = example.value = '';
-        }
-        else {
-            element = html_beautify(element);
-            exampleElement.innerHTML = example.value = element;
-            const pre = document.createElement("pre");
-            pre.className = "highlight html language-html";
-            pre.style.marginTop = "calc(var(--design-unit) * 1px)";
-            pre.style.marginBottom = "unset";
-            pre.style.borderRadius = "6px";
-            const code = document.createElement("code");
-            code.innerHTML = encodeHTML(element);
-            pre.appendChild(code);
-            exampleElement.appendChild(pre);
-            hljs.highlightElement(code);
-        }
-    }
+const props = shallowRef({} as Props);
+const output = shallowRef<"components" | "html" | "vue" | "svg">("components");
+const exampleType = shallowRef<typeof output.value>(output.value);
+function createExample(json: string, imageProxy: string, id: string, type: cardType, infoTypes: string, theme: themeType) {
+    const message = getMessage(type, id, JSON.parse(json), console);
+    example.value = html_beautify(createElement(imageProxy, infoTypes, message, theme) || '');
+    props.value = {
+        imageProxy,
+        infoTypes,
+        theme,
+        ...message
+    };
+    exampleType.value = output.value;
 };
 
-function createCard(token: any, imageProxyValue: string, idValue: string, typeValue: cardType, infoTypesValue: string, themeValue: themeType) {
-    if (!token) { return ''; }
-    const _message = message.getMessage(typeValue, idValue, token, console);
-    return createElement(imageProxyValue, infoTypesValue, _message, themeValue);
-};
-
-const output = shallowRef("components");
 const theme = shallowRef<themeType>('' as themeType);
-function createElement(imageProxyValue: string, infoTypesValue: string, { vid, type: msgType, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: any, themeValue: themeType) {
+function createElement<T extends cardType>(imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
     switch (output.value) {
         case "components":
-            return builder.createHost(imageProxyValue, infoTypesValue, { vid, type: msgType, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, themeValue).outerHTML;
+            return createHost(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme).outerHTML;
+        case "vue":
+            return createHostWithTagName("BiliBiliCard", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme).outerHTML;
         case "html":
-            const card = builder.createCardWithTagName("div", imageProxyValue, infoTypesValue, { vid, type: msgType, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, themeValue);
-            if (card instanceof HTMLElement) {
-                const link = document.createElement("link");
-                link.rel = "stylesheet";
-                link.href = getTheme(themeValue || '0');
-                console.log(themeValue, getTheme(themeValue || '0'));
-                card.insertBefore(link, card.firstChild);
-                return card.innerHTML;
-            }
+            const card = createCardWithTagName("div", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = getTheme(theme || '0');
+            card.insertBefore(link, card.firstChild);
+            return card.innerHTML;
     }
 };
 </script>

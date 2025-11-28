@@ -5,14 +5,14 @@ import type {
     IBiliBiliCard
 } from "../helpers/types";
 
-import { polyfill } from "../helpers/polyfill";
-polyfill();
+import "../helpers/polyfill";
 
 import {
     getDefaultInfoTypes,
     defaultTitle,
     defaultAuthor,
     defaultDuration,
+    defaultTheme,
     defaultProxy,
     initCard,
     connectedCallback,
@@ -22,9 +22,7 @@ import {
 
 import { getTheme } from "../helpers/theme";
 
-const defaultTheme = "default";
-
-class BiliBiliCard extends HTMLElement implements IBiliBiliCard {
+export default class BiliBiliCard extends HTMLElement implements IBiliBiliCard {
     declare isLoaded: boolean;
     declare contents: {
         link: HTMLAnchorElement;
@@ -193,5 +191,3 @@ class BiliBiliCard extends HTMLElement implements IBiliBiliCard {
 }
 
 customElements.define("bilibili-card", BiliBiliCard);
-
-export default BiliBiliCard;

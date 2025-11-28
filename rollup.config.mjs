@@ -185,6 +185,14 @@ export default [{
     },
     plugins: esPlugin
 }, {
+    input: "src/index.es.ts",
+    output: {
+        format: "es",
+        dir: "dist",
+        entryFileNames: "[name].d.ts"
+    },
+    plugins: dtsPlugin
+}, {
     input: "src/index.cjs.ts",
     output: {
         format: "cjs",
@@ -201,7 +209,15 @@ export default [{
         minifyInternalExports: false
     },
     plugins: esPlugin
-},
+}, {
+    input: "src/index.cjs.ts",
+    output: {
+        format: "es",
+        dir: "dist",
+        entryFileNames: "[name].d.ts"
+    },
+    plugins: dtsPlugin
+}
     // ...getJSConfigs("tools/bilibili-card-builder", "biliBiliCardBuilder", ["iife"]),
     // ...getJSConfigs("tools/bilibili-card-message", "biliBiliCardMessage", ["iife"]),
     // ...getJSConfigs("components/bilibili-card/bilibili-card", "BiliBiliCard", ["iife"])

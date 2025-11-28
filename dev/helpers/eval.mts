@@ -1,4 +1,5 @@
-/** @type {import("vite").Plugin} */
+import type { Plugin } from "vite";
+
 export default {
     name: "eval",
     enforce: "pre",
@@ -14,4 +15,4 @@ export default {
             return `export default ${JSON.stringify(result)}`;
         }
     }
-};
+} as Plugin;

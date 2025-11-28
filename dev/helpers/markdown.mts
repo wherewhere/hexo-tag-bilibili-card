@@ -1,7 +1,7 @@
+import type { Plugin } from "vite";
 import MarkdownIt from "markdown-it-async";
 import hljs from "markdown-it-highlightjs";
 
-/** @type {import("vite").Plugin} */
 export default {
     name: "markdown",
     enforce: "pre",
@@ -21,4 +21,4 @@ export default {
             }
         };
     }
-};
+} as Plugin;

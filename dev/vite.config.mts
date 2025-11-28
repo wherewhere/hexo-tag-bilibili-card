@@ -2,9 +2,9 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import svgLoader from "vite-svg-loader";
 import simpleHtmlPlugin from "vite-plugin-simple-html";
-import markdown from "./helpers/markdown.mjs";
-import eval from "./helpers/eval.mjs";
-import githubImporter from "./helpers/github-importer.mjs";
+import markdown from "./helpers/markdown.mts";
+import eval from "./helpers/eval.mts";
+import githubImporter from "./helpers/github-importer.mts";
 
 export default defineConfig({
     root: "dev",

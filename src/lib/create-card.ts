@@ -5,7 +5,7 @@ import type { cardType, themeType } from "../helpers/types";
 import * as bilibiliCardMessage from "../tools/bilibili-card-message";
 import * as bilibiliCardBuilder from "../tools/bilibili-card-builder";
 
-export async function createCardAsync(imageProxy: string, args: string[], isComponent: boolean, log: { warn: (arg0: string) => void; } = console) {
+export default async function createCardAsync(imageProxy: string, args: string[], isComponent: boolean, log: { warn: (arg0: string) => void; } = console) {
     const id = args[0];
     if (!id?.length) { return; }
     const message = await bilibiliCardMessage.getMessageAsync(args[1] as cardType, id, log);

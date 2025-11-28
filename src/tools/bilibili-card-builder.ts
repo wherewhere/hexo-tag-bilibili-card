@@ -6,11 +6,11 @@ import type {
     IBiliBiliCard
 } from "../helpers/types";
 
+import "../helpers/polyfill";
+
 import { initDOM } from "../helpers/node";
 const { window, document } = initDOM();
-
-import { polyfill } from "../helpers/polyfill";
-polyfill();
+export { window };
 
 import {
     getDefaultInfoTypes,
@@ -24,11 +24,11 @@ import {
     getInfo
 } from "../helpers/builder";
 
-function createHost<T extends cardType = "video">(imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
+export function createHost<T extends cardType = "video">(imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
     return createHostWithTagName("bilibili-card", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
 }
 
-function createHostWithTagName<T extends cardType = "video">(tagName: string, imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
+export function createHostWithTagName<T extends cardType = "video">(tagName: string, imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
     const bilibiliCard = document.createElement(tagName);
     if (vid) {
         bilibiliCard.setAttribute("vid", vid);
@@ -231,23 +231,23 @@ function attachHost(host: BiliBiliCardElement) {
     host.bilibiliCard.connectedCallback();
 }
 
-function createCard<T extends cardType = "video">(imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
+export function createCard<T extends cardType>(imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
     return createCardWithTagName("div", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
 }
 
-function createCardWithTagName<T extends cardType = "video">(tagName: string, imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
+export function createCardWithTagName<T extends cardType>(tagName: string, imageProxy: string, infoTypes: string, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }: cardInfo<T>, theme: themeType) {
     const bilibiliCard = createHostWithTagName(tagName, imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
     praseElement(bilibiliCard);
     return bilibiliCard;
 }
 
-function praseElement(element: Element) {
+export function praseElement(element: Element) {
     if (element) {
         attachHost(initHost(element));
     }
 }
 
-function registerObserver(element: BiliBiliCardElement) {
+export function registerObserver(element: BiliBiliCardElement) {
     const observer = new MutationObserver(mutationsList => {
         for (const mutation of mutationsList) {
             if (mutation.type === 'attributes') {
@@ -258,13 +258,3 @@ function registerObserver(element: BiliBiliCardElement) {
     observer.observe(element, { attributes: true, attributeFilter: ["vid", "type", "title", "author", "cover", "duration", "views", "danmakus", "comments", "favorites", "coins", "likes", "info-types", "image-proxy"], attributeOldValue: true });
     element.bilibiliCard.observer = observer;
 }
-
-export {
-    createHost,
-    createHostWithTagName,
-    createCard,
-    createCardWithTagName,
-    praseElement,
-    registerObserver,
-    window
-};

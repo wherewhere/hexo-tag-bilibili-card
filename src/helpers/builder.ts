@@ -1,7 +1,6 @@
 import type {
     cardType,
     infoType,
-    themeType,
     IBiliBiliCardInfo,
     IBiliBiliCard
 } from "./types.js";
@@ -22,15 +21,15 @@ function getVid(id: string) {
     }
 }
 
-function canPlay<T extends cardType>(type: T): T extends "video" | "live" | "bangumi" | "audio" ? true : false {
+export function canPlay<T extends cardType>(type: T): T extends "video" | "live" | "bangumi" | "audio" ? true : false {
     return (type === "video" || type === "live" || type === "bangumi" || type === "audio") as any;
 }
 
-function hasDuration<T extends cardType>(type: T): T extends "video" | "audio" ? true : false {
+export function hasDuration<T extends cardType>(type: T): T extends "video" | "audio" ? true : false {
     return (type === "video" || type === "audio") as any;
 }
 
-function getIcon(type: infoType | "time", isVideo = true) {
+export function getIcon(type: infoType | "time", isVideo = true) {
     switch (type) {
         case "views":
             return isVideo
@@ -141,7 +140,7 @@ type typeNameMap = {
     [key: string]: string;
 };
 
-function getTypeName<T extends keyof typeNameMap & string>(type: T): typeNameMap[T] {
+export function getTypeName<T extends keyof typeNameMap & string>(type: T): typeNameMap[T] {
     switch (type) {
         case "video":
             return "视频";
@@ -166,7 +165,7 @@ function getTypeName<T extends keyof typeNameMap & string>(type: T): typeNameMap
     }
 }
 
-function getUrl(id: string | null, type: cardType) {
+export function getUrl(id: string | null, type: cardType) {
     if (typeof id !== "string" || !id.length) { return; }
     switch (type) {
         case "video":
@@ -218,6 +217,7 @@ import { getBackgroundUrl, defaultProxy } from "./url";
 export const defaultTitle = "哔哩哔哩 (゜-゜)つロ 干杯~";
 export const defaultAuthor = "2233";
 export const defaultDuration = "??:??";
+export const defaultTheme = "default";
 export { defaultProxy };
 
 export function initCard(this: IBiliBiliCard, shadowRoot: ShadowRoot | Element) {

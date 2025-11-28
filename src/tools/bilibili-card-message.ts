@@ -40,7 +40,7 @@ function getVid(id: string) {
     }
 }
 
-function getApi(id: string, type: cardType) {
+export function getApi(id: string, type: cardType) {
     switch (type) {
         case "video":
             const vid = getVid(id);
@@ -608,7 +608,7 @@ function getAlbumMessage(id: string, token: any, log: { warn: (data: string) => 
     }
 }
 
-function getMessage<T extends cardType>(type: T, id: string, token: any, log: { warn: (data: string) => void; } = console): cardInfo<T> {
+export function getMessage<T extends cardType>(type: T, id: string, token: any, log: { warn: (data: string) => void; } = console): cardInfo<T> {
     switch (type) {
         case "video":
             return getVideoMessage(id, token, log) as cardInfo<T>;
@@ -645,7 +645,7 @@ function getMessage<T extends cardType>(type: T, id: string, token: any, log: { 
     }
 }
 
-async function getMessageAsync<T extends cardType>(type: T, id: string, log: { warn: (data: string) => void; } = console): Promise<cardInfo<T>> {
+export async function getMessageAsync<T extends cardType>(type: T, id: string, log: { warn: (data: string) => void; } = console): Promise<cardInfo<T>> {
     const token = await fetch(getApi(id, type))
         .then(x => x.json())
         .catch(ex => ex.toString());
@@ -689,9 +689,3 @@ async function getMessageAsync<T extends cardType>(type: T, id: string, log: { w
             }
     }
 }
-
-export {
-    getApi,
-    getMessage,
-    getMessageAsync
-};
