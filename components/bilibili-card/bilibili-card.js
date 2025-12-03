@@ -322,7 +322,7 @@
     const defaultTitle = "哔哩哔哩 (゜-゜)つロ 干杯~";
     const defaultAuthor = "2233";
     const defaultDuration = "??:??";
-    const defaultProxy = typeof _wb_wombat === "undefined" ? "https://images.weserv.nl/?url=" : '';
+    const defaultProxy = "https://images.weserv.nl/?url=";
     const defaultTheme = "default";
 
     class BiliBiliCard extends HTMLElement {
@@ -525,7 +525,7 @@
 
         get infoTypes() {
             const value = this.getAttribute("info-types");
-            if (typeof value === "string") {
+            if (value && typeof value === "string") {
                 const types = value.split(/[,|\s+]/).filter(x => x != '');
                 if (types.length) {
                     return types;

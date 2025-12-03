@@ -295,7 +295,7 @@
     const defaultTitle = "哔哩哔哩 (゜-゜)つロ 干杯~";
     const defaultAuthor = "2233";
     const defaultDuration = "??:??";
-    const defaultProxy = typeof _wb_wombat === "undefined" ? "https://images.weserv.nl/?url=" : '';
+    const defaultProxy = "https://images.weserv.nl/?url=";
 
     /**
      * @param {string} imageProxy
@@ -466,7 +466,7 @@
 
             get infoTypes() {
                 const value = this.getAttribute("info-types");
-                if (typeof value === "string") {
+                if (value && typeof value === "string") {
                     const types = value.split(/[,|\s+]/).filter(x => x != '');
                     if (types.length) {
                         return types;
@@ -731,7 +731,7 @@
     function registerObserver(element) {
         const observer = new MutationObserver(mutationsList => {
             for (const mutation of mutationsList) {
-                if (mutation.type === 'attributes') {
+                if (mutation.type === "attributes") {
                     mutation.target.bilibiliCard.attributeChangedCallback(mutation.attributeName, mutation.oldValue, mutation.target.getAttribute(mutation.attributeName));
                 }
             }

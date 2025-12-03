@@ -6,6 +6,8 @@
 <meta name="description" content="一个 Hexo 插件，在你的文章中插入哔哩哔哩卡片，样式模仿和借鉴自哔哩哔哩">
 <meta name="theme-color" content="#036ac4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#60c9fc" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="96x96"
+  href="https://s1.hdslb.com/bfs/static/jinkela/article-web/asserts/icon_video_logo.png" />
 
 <style>
   :root {
@@ -36,6 +38,7 @@
     --accent-foreground-hover: #012e7f;
     --accent-foreground-active: #0360b9;
     --accent-foreground-focus: #023b8f;
+    --neutral-fill-input-rest: #ffffff;
     --neutral-fill-layer-rest: #ffffff;
     --neutral-fill-stealth-rest: #fbfbfb;
     --neutral-foreground-rest: #1a1a1a;
@@ -52,6 +55,7 @@
       --accent-foreground-hover: #9eecfd;
       --accent-foreground-active: #3db5fb;
       --accent-foreground-focus: #82ddfd;
+      --neutral-fill-input-rest: #333333;
       --neutral-fill-layer-rest: #333333;
       --neutral-fill-stealth-rest: #272727;
       --neutral-foreground-rest: #ffffff;
@@ -69,6 +73,7 @@
       --accent-foreground-hover: light-dark(#012e7f, #9eecfd);
       --accent-foreground-active: light-dark(#0360b9, #3db5fb);
       --accent-foreground-focus: light-dark(#023b8f, #82ddfd);
+      --neutral-fill-input-rest: light-dark(#ffffff, #333333);
       --neutral-fill-layer-rest: light-dark(#ffffff, #333333);
       --neutral-fill-stealth-rest: light-dark(#fbfbfb, #272727);
       --neutral-foreground-rest: light-dark(#1a1a1a, #ffffff);
@@ -77,6 +82,12 @@
     }
   }
 </style>
+
+<script>
+  if (!window.globalThis) {
+    window.globalThis = window;
+  }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 <script src="../components/bilibili-card/bilibili-card.js" async></script>
@@ -113,10 +124,16 @@
 <script id="highlightjs-script"
   src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
 <script>
+  let isLoaded = false;
   if (typeof hljs === "undefined") {
     console.warn("Fallback highlight.js to v10.");
     let script = replaceScript("highlightjs-script", "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10/build/highlight.min.js");
     script.onload = function () {
+      function highlightAll() {
+        if (isLoaded) {
+          hljs.highlightAll();
+        }
+      }
       if (typeof hljs === "undefined") {
         console.warn("Fallback highlight.js to v9.");
         script = replaceScript("highlightjs-script", "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9/build/highlight.min.js");
@@ -128,11 +145,12 @@
                 hljs.highlightBlock(blocks[i]);
               }
             };
-            if (typeof isLoaded !== "undefined" && isLoaded) {
-              hljs.highlightAll();
-            }
+            highlightAll();
           }
         };
+      }
+      else {
+        highlightAll();
       }
     };
   }
@@ -142,65 +160,46 @@
 <script>
   if (typeof marked === "undefined") {
     console.warn("Fallback marked.");
-    replaceScript("marked-script", "https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js");
+    const script = replaceScript("marked-script", "https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js");
+    script.onload = function () {
+      if (typeof marked !== "undefined" && isLoaded) {
+        refreshReadme();
+      }
+    };
   }
 </script>
 
 <script type="module">
   import {
     provideFluentDesignSystem,
-    fluentTextArea,
+    fluentTextArea
+  } from "https://cdn.jsdelivr.net/npm/@fluentui/web-components/+esm";
+  provideFluentDesignSystem().register(fluentTextArea());
+  if (isLoaded) {
+    const abouts = document.getElementsByTagName("about-content");
+    for (let i = 0; i < abouts.length; i++) {
+      const about = abouts[i];
+      if (about instanceof AboutContent) {
+        about.updateTextArea();
+      }
+    }
+  }
+</script>
+
+<script type="module">
+  import {
     baseLayerLuminance,
     StandardLuminance
   } from "https://cdn.jsdelivr.net/npm/@fluentui/web-components/+esm";
-  provideFluentDesignSystem().register(fluentTextArea());
-  if (CSS.supports("color", "light-dark(tan, red)")) {
-    function updateTheme(target) {
-      const colorScheme = getComputedStyle(target).colorScheme;
-      switch (colorScheme) {
-        case "dark":
-        case "dark only":
-          baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
-          break;
-        case "light":
-        case "light only":
-          baseLayerLuminance.withDefault(StandardLuminance.LightMode);
-          break;
-        case "light dark":
-          const scheme = matchMedia("(prefers-color-scheme: dark)");
-          baseLayerLuminance.withDefault(scheme.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
-          break;
-        default:
-          const div = document.createElement("div");
-          div.style.color = "light-dark(tan, red)";
-          document.body.appendChild(div);
-          baseLayerLuminance.withDefault(getComputedStyle(div).color === "rgb(210, 180, 140)" ? StandardLuminance.LightMode : StandardLuminance.DarkMode);
-          document.body.removeChild(div);
-          break;
-      }
-    }
-    const observer = new MutationObserver(mutations => {
-      for (const mutation of mutations) {
-        if (mutation.type === "attributes" && mutation.attributeName === "style") {
-          updateTheme(mutation.target);
-        }
-      }
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["style"]
-    });
-    updateTheme(document.documentElement);
+  import {
+    isDarkTheme,
+    registerColorSchemeListener
+  } from "https://cdn.jsdelivr.net/npm/color-scheme-checker/+esm";
+  function updateTheme(isDark) {
+    baseLayerLuminance.withDefault(isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
   }
-  else {
-    const scheme = matchMedia("(prefers-color-scheme: dark)");
-    if (typeof scheme !== "undefined") {
-      scheme.addListener(e => baseLayerLuminance.withDefault(e.matches ? StandardLuminance.DarkMode : StandardLuminance.LightMode));
-      if (scheme.matches) {
-        baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
-      }
-    }
-  }
+  registerColorSchemeListener(updateTheme);
+  updateTheme(isDarkTheme());
 </script>
 
 <script>
@@ -239,6 +238,7 @@
       this.appendChild(message);
       this.appendChild(readme);
       this.loadReadmeAsync();
+      isLoaded = true;
       globalThis.refreshReadme = () => {
         const abouts = document.getElementsByTagName("about-content");
         for (let i = 0; i < abouts.length; i++) {
@@ -293,6 +293,18 @@
         this.isLoading = false;
       }
     }
+    updateTextArea() {
+      const examples = this.getElementsByTagName("example-card");
+      for (let i = 0; i < examples.length; i++) {
+        const example = examples[i];
+        if (example instanceof ExampleCard) {
+          const value = example.textArea.value;
+          example.innerHTML = '';
+          example.connectedCallback();
+          example.textArea.value = value;
+        }
+      }
+    }
   }
   defineCustomElement("about-content", AboutContent);
   class ExampleCard extends HTMLElement {
@@ -305,7 +317,7 @@
       root.style.flexDirection = "column";
       root.style.rowGap = "0.5rem";
       this.appendChild(root);
-      const fluentTextArea = document.createElement(typeof _wb_wombat === "undefined" ? "fluent-text-area" : "textarea");
+      const fluentTextArea = this.textArea = document.createElement(customElements.get("fluent-text-area") ? "fluent-text-area" : "textarea");
       fluentTextArea.placeholder = "<bilibili-card></bilibili-card>";
       fluentTextArea.resize = "vertical";
       fluentTextArea.wrap = "off";
@@ -332,9 +344,9 @@
       });
       example.innerHTML = fluentTextArea.value =
         `<bilibili-card vid="BV1y54y1a768" type="video" title="【UWP】手把手教你安装 UWP 安装包" author="where-where"
-          cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万"
-          danmakus="4" comments="75" favorites="253" coins="106" likes="287" info-types="views danmakus"
-          theme="system"></bilibili-card>`;
+    cover="http://i2.hdslb.com/bfs/archive/41bc750cb5011bb036e008a716a89158c7eb7bb5.jpg" duration="05:21" views="2.2万"
+    danmakus="4" comments="75" favorites="253" coins="106" likes="287" info-types="views danmakus"
+    theme="fluent"></bilibili-card>`;
     }
   }
   defineCustomElement("example-card", ExampleCard);
@@ -381,7 +393,11 @@
 </script>
 
 <link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
-<script>
+<script type="module">
+  import {
+    isDarkTheme,
+    registerColorSchemeListener
+  } from "https://cdn.jsdelivr.net/npm/color-scheme-checker/+esm";
   const highlightCss = document.querySelector('link[title="highlight"]');
   function hljs_ColorSwitcher(isDark) {
     if (isDark) {
@@ -391,58 +407,12 @@
       highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
     }
   }
-  if (typeof CSS !== "undefined" && typeof CSS.supports !== "undefined" && CSS.supports("color", "light-dark(tan, red)")) {
-    function updateTheme(target) {
-      const colorScheme = getComputedStyle(target).colorScheme;
-      switch (colorScheme) {
-        case "dark":
-        case "dark only":
-          hljs_ColorSwitcher(true);
-          break;
-        case "light":
-        case "light only":
-          hljs_ColorSwitcher(false);
-          break;
-        case "light dark":
-          const scheme = matchMedia("(prefers-color-scheme: dark)");
-          hljs_ColorSwitcher(scheme.matches);
-          break;
-        default:
-          const div = document.createElement("div");
-          div.style.color = "light-dark(tan, red)";
-          document.body.appendChild(div);
-          hljs_ColorSwitcher(getComputedStyle(div).color !== "rgb(210, 180, 140)");
-          document.body.removeChild(div);
-          break;
-      }
-    }
-    const observer = new MutationObserver(function (mutations) {
-      for (let i = 0; i < mutations.length; i++) {
-        const mutation = mutations[i];
-        if (mutation.type === "attributes" && mutation.attributeName === "style") {
-          updateTheme(mutation.target);
-        }
-      }
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["style"]
-    });
-    updateTheme(document.documentElement);
-  }
-  else {
-    const scheme = matchMedia("(prefers-color-scheme: dark)");
-    if (typeof scheme !== "undefined") {
-      scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
-      if (scheme.matches) {
-        hljs_ColorSwitcher(true);
-      }
-    }
-  }
+  registerColorSchemeListener(hljs_ColorSwitcher);
+  hljs_ColorSwitcher(isDarkTheme());
 </script>
 
 <style>
-  @import 'https://cdn.jsdelivr.net/gh/microsoft/fluentui-blazor@dev/src/Core/wwwroot/css/reboot.css';
+  @import "https://cdn.jsdelivr.net/gh/microsoft/fluentui-blazor@dev/src/Core/wwwroot/css/reboot.css";
 
   :root {
     --font-monospace: "Cascadia Code NF", "Cascadia Code PL", "Cascadia Code", "Cascadia Next SC", "Cascadia Next TC", "Cascadia Next JP", Consolas, "Courier New", "Liberation Mono", SFMono-Regular, Menlo, Monaco, monospace;
@@ -456,6 +426,10 @@
     :root {
       --content-padding: 1.5rem;
     }
+  }
+
+  * {
+    transition: background-color 0.083s ease-in-out;
   }
 
   html {
@@ -574,6 +548,25 @@
     overflow-wrap: normal;
   }
 
+  textarea {
+    background: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)), border-box var(--neutral-stroke-input-rest);
+    border: calc(var(--stroke-width) * 1px) solid transparent;
+    border-radius: calc(var(--control-corner-radius) * 1px);
+    font-family: var(--body-font);
+    color: var(--neutral-foreground-rest);
+    fill: currentcolor;
+    position: relative;
+    outline: none;
+  }
+
+  @media (forced-colors: none) {
+
+    textarea:not(:disabled):active,
+    textarea:not(:disabled):focus-within {
+      border-bottom: calc(var(--stroke-width) * 1px) solid var(--accent-fill-rest);
+    }
+  }
+
   .label {
     display: block;
     color: var(--neutral-foreground-rest);
@@ -670,19 +663,22 @@
         <span class="dark-icon">
           <svg width="16" height="16" viewBox="0 0 16 16">
             <path
-              d="M13.5 11.5C12.934 12.4859 12.1357 13.3187 11.1746 13.9258C10.2135 14.533 9.11863 14.8963 7.98518 14.984C6.85173 15.0717 5.714 14.8813 4.67092 14.4292C3.62783 13.9771 2.71095 13.2771 1.99999 12.39C4.82999 11.3 6.55999 9.96998 7.59999 7.98998C8.63999 5.98998 8.92999 3.82998 8.34999 1.08998C9.4894 1.23749 10.5748 1.66398 11.5098 2.33161C12.4449 2.99923 13.2007 3.88734 13.7101 4.91714C14.2196 5.94693 14.4669 7.08657 14.4303 8.2349C14.3936 9.38324 14.0741 10.5048 13.5 11.5ZM3.44999 14.92C4.49396 15.5222 5.66079 15.8802 6.86289 15.967C8.06499 16.0538 9.27114 15.8672 10.3908 15.4211C11.5105 14.9751 12.5146 14.2813 13.3277 13.3917C14.1408 12.5021 14.7419 11.4398 15.0858 10.2847C15.4297 9.12958 15.5075 7.91156 15.3133 6.72207C15.1192 5.53259 14.6581 4.40253 13.9647 3.41673C13.2713 2.43093 12.3636 1.61499 11.3098 1.03016C10.256 0.445331 9.08337 0.106802 7.87999 0.0399846C7.78813 0.0362517 7.69664 0.0536776 7.61259 0.0909168C7.52853 0.128156 7.45416 0.184213 7.39521 0.254759C7.33626 0.325306 7.29431 0.408455 7.2726 0.497789C7.25088 0.587123 7.24999 0.680251 7.26999 0.769985C7.95999 3.58998 7.69999 5.64998 6.71999 7.52998C5.77999 9.30998 4.16999 10.56 1.16999 11.63C1.08358 11.6603 1.00525 11.71 0.941003 11.7752C0.876759 11.8405 0.828302 11.9196 0.799345 12.0064C0.770388 12.0933 0.761698 12.1857 0.773943 12.2764C0.786188 12.3672 0.819041 12.4539 0.869986 12.53C1.54364 13.5104 2.42872 14.3271 3.45999 14.92H3.44999Z" />
+              d="M13.5 11.5C12.934 12.4859 12.1357 13.3187 11.1746 13.9258C10.2135 14.533 9.11863 14.8963 7.98518 14.984C6.85173 15.0717 5.714 14.8813 4.67092 14.4292C3.62783 13.9771 2.71095 13.2771 1.99999 12.39C4.82999 11.3 6.55999 9.96998 7.59999 7.98998C8.63999 5.98998 8.92999 3.82998 8.34999 1.08998C9.4894 1.23749 10.5748 1.66398 11.5098 2.33161C12.4449 2.99923 13.2007 3.88734 13.7101 4.91714C14.2196 5.94693 14.4669 7.08657 14.4303 8.2349C14.3936 9.38324 14.0741 10.5048 13.5 11.5ZM3.44999 14.92C4.49396 15.5222 5.66079 15.8802 6.86289 15.967C8.06499 16.0538 9.27114 15.8672 10.3908 15.4211C11.5105 14.9751 12.5146 14.2813 13.3277 13.3917C14.1408 12.5021 14.7419 11.4398 15.0858 10.2847C15.4297 9.12958 15.5075 7.91156 15.3133 6.72207C15.1192 5.53259 14.6581 4.40253 13.9647 3.41673C13.2713 2.43093 12.3636 1.61499 11.3098 1.03016C10.256 0.445331 9.08337 0.106802 7.87999 0.0399846C7.78813 0.0362517 7.69664 0.0536776 7.61259 0.0909168C7.52853 0.128156 7.45416 0.184213 7.39521 0.254759C7.33626 0.325306 7.29431 0.408455 7.2726 0.497789C7.25088 0.587123 7.24999 0.680251 7.26999 0.769985C7.95999 3.58998 7.69999 5.64998 6.71999 7.52998C5.77999 9.30998 4.16999 10.56 1.16999 11.63C1.08358 11.6603 1.00525 11.71 0.941003 11.7752C0.876759 11.8405 0.828302 11.9196 0.799345 12.0064C0.770388 12.0933 0.761698 12.1857 0.773943 12.2764C0.786188 12.3672 0.819041 12.4539 0.869986 12.53C1.54364 13.5104 2.42872 14.3271 3.45999 14.92H3.44999Z">
+            </path>
           </svg>
         </span>
         <span class="light-icon">
           <svg width="16" height="16" viewBox="0 0 17 16">
             <path
-              d="M8.99996 0C9.27996 0 9.49996 0.22 9.49996 0.5V1.5C9.49996 1.63261 9.44728 1.75979 9.35351 1.85355C9.25975 1.94732 9.13257 2 8.99996 2C8.86735 2 8.74018 1.94732 8.64641 1.85355C8.55264 1.75979 8.49996 1.63261 8.49996 1.5V0.5C8.49996 0.22 8.71996 0 8.99996 0ZM8.99996 12C10.0608 12 11.0782 11.5786 11.8284 10.8284C12.5785 10.0783 13 9.06087 13 8C13 6.93913 12.5785 5.92172 11.8284 5.17157C11.0782 4.42143 10.0608 4 8.99996 4C7.93909 4 6.92168 4.42143 6.17153 5.17157C5.42139 5.92172 4.99996 6.93913 4.99996 8C4.99996 9.06087 5.42139 10.0783 6.17153 10.8284C6.92168 11.5786 7.93909 12 8.99996 12ZM8.99996 11C8.20431 11 7.44125 10.6839 6.87864 10.1213C6.31603 9.55871 5.99996 8.79565 5.99996 8C5.99996 7.20435 6.31603 6.44129 6.87864 5.87868C7.44125 5.31607 8.20431 5 8.99996 5C9.79561 5 10.5587 5.31607 11.1213 5.87868C11.6839 6.44129 12 7.20435 12 8C12 8.79565 11.6839 9.55871 11.1213 10.1213C10.5587 10.6839 9.79561 11 8.99996 11ZM16.5 8.5C16.6326 8.5 16.7597 8.44732 16.8535 8.35355C16.9473 8.25979 17 8.13261 17 8C17 7.86739 16.9473 7.74021 16.8535 7.64645C16.7597 7.55268 16.6326 7.5 16.5 7.5H15.5C15.3674 7.5 15.2402 7.55268 15.1464 7.64645C15.0526 7.74021 15 7.86739 15 8C15 8.13261 15.0526 8.25979 15.1464 8.35355C15.2402 8.44732 15.3674 8.5 15.5 8.5H16.5ZM8.99996 14C9.27996 14 9.49996 14.22 9.49996 14.5V15.5C9.49996 15.6326 9.44728 15.7598 9.35351 15.8536C9.25975 15.9473 9.13257 16 8.99996 16C8.86735 16 8.74018 15.9473 8.64641 15.8536C8.55264 15.7598 8.49996 15.6326 8.49996 15.5V14.5C8.49996 14.22 8.71996 14 8.99996 14ZM2.49996 8.5C2.63257 8.5 2.75975 8.44732 2.85351 8.35355C2.94728 8.25979 2.99996 8.13261 2.99996 8C2.99996 7.86739 2.94728 7.74021 2.85351 7.64645C2.75975 7.55268 2.63257 7.5 2.49996 7.5H1.45996C1.32735 7.5 1.20018 7.55268 1.10641 7.64645C1.01264 7.74021 0.959961 7.86739 0.959961 8C0.959961 8.13261 1.01264 8.25979 1.10641 8.35355C1.20018 8.44732 1.32735 8.5 1.45996 8.5H2.49996ZM3.14996 2.15C3.34996 1.95 3.64996 1.95 3.84996 2.15L4.84996 3.15C4.90727 3.19298 4.95467 3.24778 4.98896 3.31067C5.02325 3.37357 5.04362 3.4431 5.0487 3.51456C5.05378 3.58601 5.04345 3.65772 5.0184 3.72484C4.99335 3.79195 4.95417 3.8529 4.90351 3.90355C4.85286 3.95421 4.79191 3.99339 4.7248 4.01844C4.65768 4.04348 4.58597 4.05382 4.51452 4.04874C4.44306 4.04366 4.37353 4.02329 4.31063 3.989C4.24774 3.95471 4.19294 3.90731 4.14996 3.85L3.14996 2.85C3.05835 2.75654 3.00703 2.63088 3.00703 2.5C3.00703 2.36912 3.05835 2.24346 3.14996 2.15ZM3.84996 13.85C3.75367 13.9222 3.63457 13.9573 3.51452 13.9487C3.39446 13.9402 3.28151 13.8887 3.19641 13.8036C3.1113 13.7184 3.05975 13.6055 3.05122 13.4854C3.04269 13.3654 3.07775 13.2463 3.14996 13.15L4.14996 12.15C4.24625 12.0778 4.36535 12.0427 4.48541 12.0513C4.60546 12.0598 4.71841 12.1113 4.80351 12.1964C4.88862 12.2816 4.94017 12.3945 4.9487 12.5146C4.95723 12.6346 4.92218 12.7537 4.84996 12.85L3.84996 13.85ZM14.85 2.15C14.7565 2.05839 14.6308 2.00707 14.5 2.00707C14.3691 2.00707 14.2434 2.05839 14.15 2.15L13.15 3.15C13.0777 3.24629 13.0427 3.36539 13.0512 3.48544C13.0598 3.6055 13.1113 3.71845 13.1964 3.80355C13.2815 3.88866 13.3945 3.94021 13.5145 3.94874C13.6346 3.95727 13.7537 3.92221 13.85 3.85L14.85 2.85C14.9416 2.75654 14.9929 2.63088 14.9929 2.5C14.9929 2.36912 14.9416 2.24346 14.85 2.15ZM14.15 13.85C14.2462 13.9222 14.3654 13.9573 14.4854 13.9487C14.6055 13.9402 14.7184 13.8887 14.8035 13.8036C14.8886 13.7184 14.9402 13.6055 14.9487 13.4854C14.9572 13.3654 14.9222 13.2463 14.85 13.15L13.85 12.15C13.7537 12.0778 13.6346 12.0427 13.5145 12.0513C13.3945 12.0598 13.2815 12.1113 13.1964 12.1964C13.1113 12.2816 13.0598 12.3945 13.0512 12.5146C13.0427 12.6346 13.0777 12.7537 13.15 12.85L14.15 13.85Z" />
+              d="M8.99996 0C9.27996 0 9.49996 0.22 9.49996 0.5V1.5C9.49996 1.63261 9.44728 1.75979 9.35351 1.85355C9.25975 1.94732 9.13257 2 8.99996 2C8.86735 2 8.74018 1.94732 8.64641 1.85355C8.55264 1.75979 8.49996 1.63261 8.49996 1.5V0.5C8.49996 0.22 8.71996 0 8.99996 0ZM8.99996 12C10.0608 12 11.0782 11.5786 11.8284 10.8284C12.5785 10.0783 13 9.06087 13 8C13 6.93913 12.5785 5.92172 11.8284 5.17157C11.0782 4.42143 10.0608 4 8.99996 4C7.93909 4 6.92168 4.42143 6.17153 5.17157C5.42139 5.92172 4.99996 6.93913 4.99996 8C4.99996 9.06087 5.42139 10.0783 6.17153 10.8284C6.92168 11.5786 7.93909 12 8.99996 12ZM8.99996 11C8.20431 11 7.44125 10.6839 6.87864 10.1213C6.31603 9.55871 5.99996 8.79565 5.99996 8C5.99996 7.20435 6.31603 6.44129 6.87864 5.87868C7.44125 5.31607 8.20431 5 8.99996 5C9.79561 5 10.5587 5.31607 11.1213 5.87868C11.6839 6.44129 12 7.20435 12 8C12 8.79565 11.6839 9.55871 11.1213 10.1213C10.5587 10.6839 9.79561 11 8.99996 11ZM16.5 8.5C16.6326 8.5 16.7597 8.44732 16.8535 8.35355C16.9473 8.25979 17 8.13261 17 8C17 7.86739 16.9473 7.74021 16.8535 7.64645C16.7597 7.55268 16.6326 7.5 16.5 7.5H15.5C15.3674 7.5 15.2402 7.55268 15.1464 7.64645C15.0526 7.74021 15 7.86739 15 8C15 8.13261 15.0526 8.25979 15.1464 8.35355C15.2402 8.44732 15.3674 8.5 15.5 8.5H16.5ZM8.99996 14C9.27996 14 9.49996 14.22 9.49996 14.5V15.5C9.49996 15.6326 9.44728 15.7598 9.35351 15.8536C9.25975 15.9473 9.13257 16 8.99996 16C8.86735 16 8.74018 15.9473 8.64641 15.8536C8.55264 15.7598 8.49996 15.6326 8.49996 15.5V14.5C8.49996 14.22 8.71996 14 8.99996 14ZM2.49996 8.5C2.63257 8.5 2.75975 8.44732 2.85351 8.35355C2.94728 8.25979 2.99996 8.13261 2.99996 8C2.99996 7.86739 2.94728 7.74021 2.85351 7.64645C2.75975 7.55268 2.63257 7.5 2.49996 7.5H1.45996C1.32735 7.5 1.20018 7.55268 1.10641 7.64645C1.01264 7.74021 0.959961 7.86739 0.959961 8C0.959961 8.13261 1.01264 8.25979 1.10641 8.35355C1.20018 8.44732 1.32735 8.5 1.45996 8.5H2.49996ZM3.14996 2.15C3.34996 1.95 3.64996 1.95 3.84996 2.15L4.84996 3.15C4.90727 3.19298 4.95467 3.24778 4.98896 3.31067C5.02325 3.37357 5.04362 3.4431 5.0487 3.51456C5.05378 3.58601 5.04345 3.65772 5.0184 3.72484C4.99335 3.79195 4.95417 3.8529 4.90351 3.90355C4.85286 3.95421 4.79191 3.99339 4.7248 4.01844C4.65768 4.04348 4.58597 4.05382 4.51452 4.04874C4.44306 4.04366 4.37353 4.02329 4.31063 3.989C4.24774 3.95471 4.19294 3.90731 4.14996 3.85L3.14996 2.85C3.05835 2.75654 3.00703 2.63088 3.00703 2.5C3.00703 2.36912 3.05835 2.24346 3.14996 2.15ZM3.84996 13.85C3.75367 13.9222 3.63457 13.9573 3.51452 13.9487C3.39446 13.9402 3.28151 13.8887 3.19641 13.8036C3.1113 13.7184 3.05975 13.6055 3.05122 13.4854C3.04269 13.3654 3.07775 13.2463 3.14996 13.15L4.14996 12.15C4.24625 12.0778 4.36535 12.0427 4.48541 12.0513C4.60546 12.0598 4.71841 12.1113 4.80351 12.1964C4.88862 12.2816 4.94017 12.3945 4.9487 12.5146C4.95723 12.6346 4.92218 12.7537 4.84996 12.85L3.84996 13.85ZM14.85 2.15C14.7565 2.05839 14.6308 2.00707 14.5 2.00707C14.3691 2.00707 14.2434 2.05839 14.15 2.15L13.15 3.15C13.0777 3.24629 13.0427 3.36539 13.0512 3.48544C13.0598 3.6055 13.1113 3.71845 13.1964 3.80355C13.2815 3.88866 13.3945 3.94021 13.5145 3.94874C13.6346 3.95727 13.7537 3.92221 13.85 3.85L14.85 2.85C14.9416 2.75654 14.9929 2.63088 14.9929 2.5C14.9929 2.36912 14.9416 2.24346 14.85 2.15ZM14.15 13.85C14.2462 13.9222 14.3654 13.9573 14.4854 13.9487C14.6055 13.9402 14.7184 13.8887 14.8035 13.8036C14.8886 13.7184 14.9402 13.6055 14.9487 13.4854C14.9572 13.3654 14.9222 13.2463 14.85 13.15L13.85 12.15C13.7537 12.0778 13.6346 12.0427 13.5145 12.0513C13.3945 12.0598 13.2815 12.1113 13.1964 12.1964C13.1113 12.2816 13.0598 12.3945 13.0512 12.5146C13.0427 12.6346 13.0777 12.7537 13.15 12.85L14.15 13.85Z">
+            </path>
           </svg>
         </span>
         <span class="system-icon">
           <svg width="16" height="16" viewBox="0 0 16 16">
             <path
-              d="M8 1C8.91925 1 9.82951 1.18106 10.6788 1.53284C11.5281 1.88463 12.2997 2.40024 12.9497 3.05025C13.5998 3.70026 14.1154 4.47194 14.4672 5.32122C14.8189 6.1705 15 7.08075 15 8C15 8.91925 14.8189 9.82951 14.4672 10.6788C14.1154 11.5281 13.5998 12.2997 12.9497 12.9497C12.2997 13.5998 11.5281 14.1154 10.6788 14.4672C9.82951 14.8189 8.91925 15 8 15V1ZM8 0C5.87827 0 3.84344 0.842855 2.34315 2.34315C0.842855 3.84344 0 5.87827 0 8C0 10.1217 0.842855 12.1566 2.34315 13.6569C3.84344 15.1571 5.87827 16 8 16C10.1217 16 12.1566 15.1571 13.6569 13.6569C15.1571 12.1566 16 10.1217 16 8C16 5.87827 15.1571 3.84344 13.6569 2.34315C12.1566 0.842855 10.1217 0 8 0Z" />
+              d="M8 1C8.91925 1 9.82951 1.18106 10.6788 1.53284C11.5281 1.88463 12.2997 2.40024 12.9497 3.05025C13.5998 3.70026 14.1154 4.47194 14.4672 5.32122C14.8189 6.1705 15 7.08075 15 8C15 8.91925 14.8189 9.82951 14.4672 10.6788C14.1154 11.5281 13.5998 12.2997 12.9497 12.9497C12.2997 13.5998 11.5281 14.1154 10.6788 14.4672C9.82951 14.8189 8.91925 15 8 15V1ZM8 0C5.87827 0 3.84344 0.842855 2.34315 2.34315C0.842855 3.84344 0 5.87827 0 8C0 10.1217 0.842855 12.1566 2.34315 13.6569C3.84344 15.1571 5.87827 16 8 16C10.1217 16 12.1566 15.1571 13.6569 13.6569C15.1571 12.1566 16 10.1217 16 8C16 5.87827 15.1571 3.84344 13.6569 2.34315C12.1566 0.842855 10.1217 0 8 0Z">
+            </path>
           </svg>
         </span>
       </span>
@@ -708,7 +704,6 @@
   <div class="content">
     <about-content id="about-content">
       <script>
-        let isLoaded = false;
         if (!success) {
           let isLoading = false;
           function loadReadmeAsync(message, readme) {
