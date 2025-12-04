@@ -6,8 +6,16 @@
 <meta name="description" content="哔哩哔哩卡片生成器">
 <meta name="theme-color" content="#ca3e00" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#ffc57a" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="96x96"
+  href="https://s1.hdslb.com/bfs/static/jinkela/article-web/asserts/icon_video_logo.png" />
 
 <style>
+  @font-face {
+    font-family: "DinkieBitmap 9px";
+    src: local("DinkieBitmap 9px"), local("丁卯点阵体 9px"),
+      url("https://cdn.jsdelivr.net/gh/haldai/org-slides@master/style/fonts/DinkieBitmap-9px.woff2") format("woff2");
+  }
+
   :root {
     --control-corner-radius: 4;
     --stroke-width: 1;
@@ -60,30 +68,6 @@
   }
 </style>
 
-<script src="../components/bilibili-card/bilibili-card.js" async></script>
-
-<script type="module">
-  import {
-    provideFluentDesignSystem,
-    fluentProgressRing,
-    accentBaseColor,
-    SwatchRGB,
-    fillColor,
-    neutralLayerFloating,
-    baseLayerLuminance,
-    StandardLuminance
-  } from "https://cdn.jsdelivr.net/npm/@fluentui/web-components/+esm";
-  provideFluentDesignSystem().register(fluentProgressRing());
-  accentBaseColor.withDefault(SwatchRGB.create(0xFC / 0xFF, 0x64 / 0xFF, 0x23 / 0xFF));
-  fillColor.withDefault(neutralLayerFloating);
-  const scheme = matchMedia("(prefers-color-scheme: dark)");
-  if (typeof scheme !== "undefined") {
-    if (scheme.matches) {
-      baseLayerLuminance.withDefault(StandardLuminance.DarkMode);
-    }
-  }
-</script>
-
 <script type="module" data-pjax>
   import { marked } from "https://cdn.jsdelivr.net/npm/marked/+esm";
   function getContent(raw) {
@@ -126,14 +110,12 @@
       }
       set isLoading(value) {
         if (this._isLoading !== value) {
-          const style = document.documentElement.style;
+          const style = document.body.classList.add("loading");
           if (value) {
-            style.setProperty("--loading-display", 'unset');
-            style.setProperty("--loaded-display", 'none');
+            document.body.classList.add("loading");
           }
           else {
-            style.setProperty("--loading-display", 'none');
-            style.setProperty("--loaded-display", 'unset');
+            document.body.classList.remove("loading");
           }
           this._isLoading = value;
         }
@@ -225,20 +207,18 @@
 <link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script>
   const highlightCss = document.querySelector('link[title="highlight"]');
-  {
-    const scheme = matchMedia("(prefers-color-scheme: dark)");
-    if (typeof scheme !== "undefined") {
-      scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
-      if (scheme.matches) {
-        hljs_ColorSwitcher(true);
+  const scheme = matchMedia("(prefers-color-scheme: dark)");
+  if (typeof scheme !== "undefined") {
+    scheme.addListener(function (e) { hljs_ColorSwitcher(e.matches) });
+    if (scheme.matches) {
+      hljs_ColorSwitcher(true);
+    }
+    function hljs_ColorSwitcher(isDark) {
+      if (isDark) {
+        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
       }
-      function hljs_ColorSwitcher(isDark) {
-        if (isDark) {
-          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs2015.min.css";
-        }
-        else {
-          highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
-        }
+      else {
+        highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
       }
     }
   }
@@ -251,8 +231,6 @@
     --font-monospace: "Cascadia Code NF", "Cascadia Code PL", "Cascadia Code", "Cascadia Next SC", "Cascadia Next TC", "Cascadia Next JP", Consolas, "Courier New", "Liberation Mono", SFMono-Regular, Menlo, Monaco, monospace;
     --highlight-bg: #fff3cd;
     --content-padding: 1rem;
-    --loading-display: none;
-    --loaded-display: unset;
   }
 
   @media (min-width: 767px) {
@@ -311,22 +289,18 @@
     fill: var(--fill-color);
   }
 
-  .header .header-refresh .header-refresh-icon {
-    display: var(--loaded-display);
-  }
-
   .header .header-refresh .header-refresh-ring {
-    display: var(--loading-display);
+    display: none;
     width: 16px;
     height: 16px;
   }
 
-  .header .header-refresh .header-refresh-ring::part(indeterminate-indicator-1) {
-    stroke: var(--fill-color);
+  .loading .header .header-refresh .header-refresh-icon {
+    display: none;
   }
 
-  .header .header-refresh .header-refresh-ring .indeterminate-indicator-1 {
-    stroke: var(--fill-color);
+  .loading .header .header-refresh .header-refresh-ring {
+    display: inline-block;
   }
 
   .content {
@@ -388,6 +362,34 @@
     font-size: var(--type-ramp-minus-1-font-size);
     line-height: var(--type-ramp-minus-1-line-height);
   }
+
+  .indeterminate-indicator {
+    stroke: var(--fill-color);
+    fill: none;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+    transition: 0.2s ease-in-out;
+    animation: 2s linear 0s infinite normal none spin-infinite;
+  }
+
+  @keyframes spin-infinite {
+    0% {
+      stroke-dasharray: 0.01px, 43.97px;
+      transform: rotate(0deg);
+    }
+
+    50% {
+      stroke-dasharray: 21.99px, 21.99px;
+      transform: rotate(450deg);
+    }
+
+    100% {
+      stroke-dasharray: 0.01px, 43.97px;
+      transform: rotate(1080deg);
+    }
+  }
 </style>
 
 <script>
@@ -422,7 +424,9 @@
           d="M9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 8.6236 16.4723 8.2538 16.4188 7.8923C16.3515 7.4382 16.6839 7 17.1429 7C17.5138 7 17.839 7.2562 17.8953 7.6228C17.9642 8.0718 18 8.5317 18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0C11.3051 0 13.4077 0.86656 15 2.29168V1.25C15 0.83579 15.3358 0.5 15.75 0.5C16.1642 0.5 16.5 0.83579 16.5 1.25V4.25C16.5 4.66421 16.1642 5 15.75 5H12.75C12.3358 5 12 4.66421 12 4.25C12 3.83579 12.3358 3.5 12.75 3.5H14.0991C12.7609 2.25883 10.9691 1.5 9 1.5Z">
         </path>
       </svg>
-      <fluent-progress-ring class="header-refresh-ring"></fluent-progress-ring>
+      <svg class="header-refresh-ring" width="16" height="16" viewBox="0 0 16 16">
+        <circle class="indeterminate-indicator" cx="8px" cy="8px" r="7px"></circle>
+      </svg>
     </a>
   </div>
   <div class="content">

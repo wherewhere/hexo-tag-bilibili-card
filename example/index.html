@@ -10,6 +10,12 @@
   href="https://s1.hdslb.com/bfs/static/jinkela/article-web/asserts/icon_video_logo.png" />
 
 <style>
+  @font-face {
+    font-family: "DinkieBitmap 9px";
+    src: local("DinkieBitmap 9px"), local("丁卯点阵体 9px"),
+      url("https://cdn.jsdelivr.net/gh/haldai/org-slides@master/style/fonts/DinkieBitmap-9px.woff2") format("woff2");
+  }
+
   :root {
     --control-corner-radius: 4;
     --stroke-width: 1;
@@ -34,15 +40,37 @@
     --neutral-layer-4: #e0e0e0;
     --fill-color: #fbfbfb;
     --accent-fill-rest: #036ac4;
+    --accent-fill-hover: #0473ce;
+    --accent-fill-active: #0481e0;
+    --accent-fill-focus: #036ac4;
     --accent-foreground-rest: #023b8f;
     --accent-foreground-hover: #012e7f;
     --accent-foreground-active: #0360b9;
     --accent-foreground-focus: #023b8f;
+    --neutral-fill-rest: #ffffff;
+    --neutral-fill-hover: #f7f7f7;
+    --neutral-fill-active: #fbfbfb;
+    --neutral-fill-focus: #fbfbfb;
     --neutral-fill-input-rest: #ffffff;
     --neutral-fill-layer-rest: #ffffff;
+    --neutral-fill-secondary-rest: #efefef;
     --neutral-fill-stealth-rest: #fbfbfb;
+    --neutral-fill-strong-rest: #717171;
+    --neutral-fill-strong-hover: #4b4b4b;
+    --neutral-fill-strong-active: #868686;
+    --neutral-fill-strong-focus: #717171;
     --neutral-foreground-rest: #1a1a1a;
+    --neutral-foreground-active: #a8a8a8;
+    --neutral-foreground-focus: #1a1a1a;
     --neutral-stroke-rest: #d6d6d6;
+    --neutral-stroke-layer-rest: #efefef;
+    --neutral-stroke-layer-hover: #efefef;
+    --neutral-stroke-layer-active: #efefef;
+    --neutral-stroke-input-rest: linear-gradient(#efefef calc(100% - 1px), #929292 calc(100% - 1px), #929292);
+    --elevation-shadow-card-rest: 0 0 2px rgba(0, 0, 0, 0.12), 0 calc(4 * 0.5px) calc((4 * 1px)) rgba(0, 0, 0, 0.14);
+    --elevation-shadow-card-hover: 0 0 2px rgba(0, 0, 0, 0.12), 0 calc(8 * 0.5px) calc((8 * 1px)) rgba(0, 0, 0, 0.14);
+    --elevation-shadow-card-active: 0 0 2px rgba(0, 0, 0, 0.12), 0 calc(0 * 0.5px) calc((0 * 1px)) rgba(0, 0, 0, 0.14);
+    --elevation-shadow-card-focus: 0 0 2px rgba(0, 0, 0, 0.12), 0 calc(8 * 0.5px) calc((8 * 1px)) rgba(0, 0, 0, 0.14);
     color-scheme: light;
   }
 
@@ -51,15 +79,33 @@
       --neutral-layer-4: #000000;
       --fill-color: #272727;
       --accent-fill-rest: #60c9fc;
+      --accent-fill-hover: #4fc0fc;
+      --accent-fill-active: #34b0fb;
+      --accent-fill-focus: #60c9fc;
       --accent-foreground-rest: #82ddfd;
       --accent-foreground-hover: #9eecfd;
       --accent-foreground-active: #3db5fb;
       --accent-foreground-focus: #82ddfd;
+      --neutral-fill-rest: #333333;
+      --neutral-fill-hover: #383838;
+      --neutral-fill-active: #2d2d2d;
+      --neutral-fill-focus: #333333;
       --neutral-fill-input-rest: #333333;
       --neutral-fill-layer-rest: #333333;
+      --neutral-fill-secondary-rest: #383838;
       --neutral-fill-stealth-rest: #272727;
+      --neutral-fill-strong-rest: #8e8e8e;
+      --neutral-fill-strong-hover: #b3b3b3;
+      --neutral-fill-strong-active: #7a7a7a;
+      --neutral-fill-strong-focus: #8e8e8e;
       --neutral-foreground-rest: #ffffff;
+      --neutral-foreground-active: #7a7a7a;
+      --neutral-foreground-focus: #ffffff;
       --neutral-stroke-rest: #505050;
+      --neutral-stroke-layer-rest: #383838;
+      --neutral-stroke-layer-hover: #383838;
+      --neutral-stroke-layer-active: #383838;
+      --neutral-stroke-input-rest: linear-gradient(#383838 calc(100% - 1px), #929292 calc(100% - 1px), #929292);
       color-scheme: dark;
     }
   }
@@ -69,15 +115,33 @@
       --neutral-layer-4: light-dark(#e0e0e0, #000000);
       --fill-color: light-dark(#fbfbfb, #272727);
       --accent-fill-rest: light-dark(#036ac4, #60c9fc);
+      --accent-fill-hover: light-dark(#0473ce, #4fc0fc);
+      --accent-fill-active: light-dark(#0481e0, #34b0fb);
+      --accent-fill-focus: light-dark(#036ac4, #60c9fc);
       --accent-foreground-rest: light-dark(#023b8f, #82ddfd);
       --accent-foreground-hover: light-dark(#012e7f, #9eecfd);
       --accent-foreground-active: light-dark(#0360b9, #3db5fb);
       --accent-foreground-focus: light-dark(#023b8f, #82ddfd);
+      --neutral-fill-rest: light-dark(#ffffff, #333333);
+      --neutral-fill-hover: light-dark(#f7f7f7, #383838);
+      --neutral-fill-active: light-dark(#fbfbfb, #2d2d2d);
+      --neutral-fill-focus: light-dark(#fbfbfb, #333333);
       --neutral-fill-input-rest: light-dark(#ffffff, #333333);
       --neutral-fill-layer-rest: light-dark(#ffffff, #333333);
+      --neutral-fill-secondary-rest: light-dark(#efefef, #383838);
       --neutral-fill-stealth-rest: light-dark(#fbfbfb, #272727);
+      --neutral-fill-strong-rest: light-dark(#717171, #8e8e8e);
+      --neutral-fill-strong-hover: light-dark(#4b4b4b, #b3b3b3);
+      --neutral-fill-strong-active: light-dark(#868686, #7a7a7a);
+      --neutral-fill-strong-focus: light-dark(#717171, #8e8e8e);
       --neutral-foreground-rest: light-dark(#1a1a1a, #ffffff);
+      --neutral-foreground-active: light-dark(#a8a8a8, #7a7a7a);
+      --neutral-foreground-focus: light-dark(#1a1a1a, #ffffff);
       --neutral-stroke-rest: light-dark(#d6d6d6, #505050);
+      --neutral-stroke-layer-rest: light-dark(#efefef, #383838);
+      --neutral-stroke-layer-hover: light-dark(#efefef, #383838);
+      --neutral-stroke-layer-active: light-dark(#efefef, #383838);
+      --neutral-stroke-input-rest: light-dark(linear-gradient(#efefef calc(100% - 1px), #929292 calc(100% - 1px), #929292), linear-gradient(#383838 calc(100% - 1px), #929292 calc(100% - 1px), #929292));
       color-scheme: light dark;
     }
   }
@@ -186,20 +250,17 @@
   }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/color-scheme-checker/dist/index.global.js" defer></script>
 <script type="module">
   import {
     baseLayerLuminance,
     StandardLuminance
   } from "https://cdn.jsdelivr.net/npm/@fluentui/web-components/+esm";
-  import {
-    isDarkTheme,
-    registerColorSchemeListener
-  } from "https://cdn.jsdelivr.net/npm/color-scheme-checker/+esm";
   function updateTheme(isDark) {
     baseLayerLuminance.withDefault(isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
   }
-  registerColorSchemeListener(updateTheme);
-  updateTheme(isDarkTheme());
+  colorSchemeChecker.registerColorSchemeListener(updateTheme);
+  updateTheme(colorSchemeChecker.isDarkTheme());
 </script>
 
 <script>
@@ -320,7 +381,7 @@
       const fluentTextArea = this.textArea = document.createElement(customElements.get("fluent-text-area") ? "fluent-text-area" : "textarea");
       fluentTextArea.placeholder = "<bilibili-card></bilibili-card>";
       fluentTextArea.resize = "vertical";
-      fluentTextArea.wrap = "off";
+      fluentTextArea.setAttribute("wrap", "off");
       fluentTextArea.setAttribute("rows", '4');
       fluentTextArea.style.width = "100%";
       fluentTextArea.style.fontFamily = "var(--font-monospace)";
@@ -394,10 +455,6 @@
 
 <link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script type="module">
-  import {
-    isDarkTheme,
-    registerColorSchemeListener
-  } from "https://cdn.jsdelivr.net/npm/color-scheme-checker/+esm";
   const highlightCss = document.querySelector('link[title="highlight"]');
   function hljs_ColorSwitcher(isDark) {
     if (isDark) {
@@ -407,8 +464,8 @@
       highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
     }
   }
-  registerColorSchemeListener(hljs_ColorSwitcher);
-  hljs_ColorSwitcher(isDarkTheme());
+  colorSchemeChecker.registerColorSchemeListener(hljs_ColorSwitcher);
+  hljs_ColorSwitcher(colorSchemeChecker.isDarkTheme());
 </script>
 
 <style>
@@ -418,8 +475,6 @@
     --font-monospace: "Cascadia Code NF", "Cascadia Code PL", "Cascadia Code", "Cascadia Next SC", "Cascadia Next TC", "Cascadia Next JP", Consolas, "Courier New", "Liberation Mono", SFMono-Regular, Menlo, Monaco, monospace;
     --highlight-bg: #fff3cd;
     --content-padding: 1rem;
-    --loading-display: none;
-    --loaded-display: unset;
   }
 
   @media (min-width: 767px) {
@@ -542,7 +597,7 @@
     width: 100%;
   }
 
-  fluent-text-area[wrap='off']::part(control) {
+  fluent-text-area[wrap="off"]::part(control) {
     white-space-collapse: preserve;
     text-wrap-mode: nowrap;
     overflow-wrap: normal;

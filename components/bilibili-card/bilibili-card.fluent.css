@@ -11,6 +11,10 @@
     --bilibili-card-background-color-hover: var(--neutral-fill-hover);
     --bilibili-card-background-color-active: var(--neutral-fill-active);
     --bilibili-card-background-color-focus: var(--neutral-fill-focus);
+    --bilibili-card-shadow-color: var(--elevation-shadow-card-rest);
+    --bilibili-card-shadow-color-hover: var(--elevation-shadow-card-hover);
+    --bilibili-card-shadow-color-active: var(--elevation-shadow-card-active);
+    --bilibili-card-shadow-color-focus: var(--elevation-shadow-card-focus);
     --bilibili-card-cover-color: var(--neutral-fill-stealth-rest);
     --bilibili-card-cover-background-color: var(--neutral-fill-secondary-rest);
     --bilibili-card-title-color: var(--neutral-foreground-rest);
@@ -119,21 +123,27 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    -webkit-box-shadow: var(--elevation-shadow-card-rest);
-    -moz-box-shadow: var(--elevation-shadow-card-rest);
-    box-shadow: var(--elevation-shadow-card-rest);
+    -webkit-box-shadow: var(--bilibili-card-shadow-color);
+    -moz-box-shadow: var(--bilibili-card-shadow-color);
+    box-shadow: var(--bilibili-card-shadow-color);
 }
 
 .video-holder:hover {
-    -webkit-box-shadow: var(--elevation-shadow-card-hover);
-    -moz-box-shadow: var(--elevation-shadow-card-hover);
-    box-shadow: var(--elevation-shadow-card-hover);
+    -webkit-box-shadow: var(--bilibili-card-shadow-color-hover);
+    -moz-box-shadow: var(--bilibili-card-shadow-color-hover);
+    box-shadow: var(--bilibili-card-shadow-color-hover);
 }
 
 .video-holder:active {
-    -webkit-box-shadow: var(--elevation-shadow-card-pressed);
-    -moz-box-shadow: var(--elevation-shadow-card-pressed);
-    box-shadow: var(--elevation-shadow-card-pressed);
+    -webkit-box-shadow: var(--bilibili-card-shadow-color-active);
+    -moz-box-shadow: var(--bilibili-card-shadow-color-active);
+    box-shadow: var(--bilibili-card-shadow-color-active);
+}
+
+.video-holder:focus {
+    -webkit-box-shadow: var(--bilibili-card-shadow-color-focus);
+    -moz-box-shadow: var(--bilibili-card-shadow-color-focus);
+    box-shadow: var(--bilibili-card-shadow-color-focus);
 }
 
 .video-holder a {
