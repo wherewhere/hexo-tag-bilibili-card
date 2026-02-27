@@ -1,6 +1,6 @@
 name: Bug report
 description: Create a report to help us improve
-title: "Bug title"
+title: Bug title
 labels: [bug]
 body:
   - type: textarea
@@ -31,28 +31,28 @@ body:
       label: Package version
       description: Specify the version of hexo-tag-bilibili-card you're using.
       options:
-        - "Latest Source"
-        - "0.9.9"
-        - "0.9.8"
-        - "0.9.7"
-        - "0.9.6"
-        - "0.9.5"
-        - "0.8.4"
-        - "0.8.3"
-        - "0.7.2"
-        - "0.7.1"
-        - "0.7.0"
-        - "Others"
+        - Latest Source
+        - 0.9.9
+        - 0.9.8
+        - 0.9.7
+        - 0.9.6
+        - 0.9.5
+        - 0.8.4
+        - 0.8.3
+        - 0.7.2
+        - 0.7.1
+        - 0.7.0
+        - Others
   - type: dropdown
     attributes:
       label: Platform type
       description: Please specify the platform you're using when you encountered the issue.
       multiple: true
       options:
-        - "Windows"
-        - "Linux"
-        - "MacOS"
-        - "Others"
+        - Windows
+        - Linux
+        - MacOS
+        - Others
   - type: textarea
     attributes:
       label: System version
