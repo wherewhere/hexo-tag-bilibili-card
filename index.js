@@ -1,10 +1,6 @@
+/// <reference types="hexo" />
 /* global hexo */
 "use strict";
-
-/** @typedef {import("@types/hexo")} */
-
-const path = require("path");
-const createCardAsync = require("./lib/create-card");
 
 function setSettings(obj, set) {
     if (typeof set === "undefined") {
@@ -103,6 +99,7 @@ if (generator_assets.has("message")) {
 generator_assets.delete("default");
 
 const isComponent = bilibili_card.mode == "component";
+const path = require("path");
 
 if (isComponent) {
     generator_assets.add("components/bilibili-card/bilibili-card.js");
@@ -157,4 +154,5 @@ hexo.extend.generator.register("bilibili_card_asset", () => [...generator_assets
     }
 }));
 
+const createCardAsync = require("./lib/create-card");
 hexo.extend.tag.register("bilibili_card", args => createCardAsync(bilibili_card.image_proxy, args, isComponent, hexo.log), { async: true });

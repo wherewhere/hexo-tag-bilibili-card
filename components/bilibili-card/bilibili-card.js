@@ -1,12 +1,54 @@
+/// <reference types="@types/systemjs" />
+/// <reference path="../types/requirejs.ts" />
 (() => {
     /**
-     * @typedef {"video" | "article" | "user" | "live" | "bangumi" | "audio" | "dynamic" | "favorite" | "album"} cardType
-     * @typedef {"views" | "danmakus" | "comments" | "favorites" | "coins" | "likes" | "time"} infoType
-     * @typedef {"system" | "light" | "dark"} themeType
-     * @typedef {{vid: string, type: cardType, title: string, author: string, cover: string, duration: string, views: string | number, danmakus: string | number, comments: string | number, favorites: string | number, coins: string | number, likes: string | number}} cardInfo
+     * @typedef {import('../types').CardType} CardType
+     * @typedef {import('../types').InfoType} InfoType
+     * @typedef {import('../types').ThemeType} ThemeType
      */
 
-    if (customElements.get("bilibili-card")) { return; }
+    /** @type {globalThis} */
+    const global =
+        typeof this !== "undefined" ? this
+            : typeof globalThis !== "undefined" ? globalThis
+                : typeof window !== "undefined" ? window : {};
+
+    const isCommonJS = typeof module === "object" && !!module.exports;
+    const isESM = typeof this === "undefined";
+    const isSystemJS = typeof System === "object" && typeof System.register === "function";
+
+    if (!isCommonJS) {
+        if (isESM) {
+            if (global.BiliBiliCard) {
+                global.$BiliBiliCard = global.BiliBiliCard;
+                return;
+            }
+        }
+        else {
+            if (global.BiliBiliCard) {
+                if (isSystemJS) {
+                    System.register([], _export => {
+                        return {
+                            execute() {
+                                _export(global.BiliBiliCard);
+                            }
+                        };
+                    });
+                }
+                return;
+            }
+        }
+    }
+
+    let { window, document, customElements, HTMLElement } = global;
+
+    if (typeof require === "function" && typeof document === "undefined") {
+        const { JSDOM } = require("jsdom");
+        window = new JSDOM().window;
+        document = window.document;
+        customElements = window.customElements;
+        HTMLElement = window.HTMLElement;
+    }
 
     function getLocation() {
         const scripts = document.scripts;
@@ -27,14 +69,14 @@
 
     if (!String.prototype.trimStart) {
         if (!String.prototype.trimLeft) {
-            String.prototype.trimLeft = function () { return this.replace(/^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/, ''); }
+            String.prototype.trimLeft = function () { return this.replace(/^[\x09-\x0D\x20\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]+/, ''); }
         }
         String.prototype.trimStart = String.prototype.trimLeft;
     }
 
     if (!String.prototype.trimEnd) {
         if (!String.prototype.trimRight) {
-            String.prototype.trimRight = function () { return this.replace(/[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+$/, ''); }
+            String.prototype.trimRight = function () { return this.replace(/[\x09-\x0D\x20\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]+$/, ''); }
         }
         String.prototype.trimEnd = String.prototype.trimRight;
     }
@@ -59,21 +101,21 @@
     }
 
     /**
-     * @param {cardType} type
+     * @type {import('../types').canPlay}
      */
     function canPlay(type) {
         return type === "video" || type === "live" || type === "bangumi" || type === "audio";
     }
 
     /**
-     * @param {cardType} type
+     * @type {import('../types').hasDuration}
      */
     function hasDuration(type) {
         return type === "video" || type === "audio";
     }
 
     /**
-     * @param {infoType} type
+     * @param {InfoType} type
      */
     function getIcon(type, isVideo = true) {
         switch (type) {
@@ -126,7 +168,7 @@
     }
 
     /**
-     * @param {infoType} type
+     * @param {InfoType} type
      * @param {string} text
      */
     function createInfoItem(type, text, isVideo = true) {
@@ -148,7 +190,7 @@
 
     /**
      * @param {Element} info
-     * @param {infoType} type
+     * @param {InfoType} type
      * @param {string} text
      */
     function addInfoItem(info, type, text, isVideo = true) {
@@ -166,7 +208,7 @@
 
     /**
      * @param {Element} info
-     * @param {infoType[]} types
+     * @param {InfoType[]} types
      * @param {BiliBiliCard} card
      */
     function addInfoItems(info, types, card) {
@@ -178,7 +220,7 @@
 
     /**
      * @param {Element} cover
-     * @param {cardType} type
+     * @param {CardType} type
      */
     function setCoverType(cover, type) {
         if (!cover) { return; }
@@ -191,7 +233,7 @@
     }
 
     /**
-     * @param {cardType} type
+     * @param {CardType} type
      */
     function getTypeName(type) {
         switch (type) {
@@ -220,7 +262,7 @@
 
     /**
      * @param {string} id
-     * @param {cardType} type
+     * @param {CardType} type
      */
     function getUrl(id, type) {
         if (typeof id !== "string" || !id.length) { return; }
@@ -249,7 +291,7 @@
     }
 
     /**
-     * @param {cardType} value
+     * @param {CardType} value
      */
     function getDefaultInfoTypes(value) {
         switch (value) {
@@ -273,7 +315,7 @@
     }
 
     /**
-     * @param {themeType} theme
+     * @param {ThemeType} theme
      */
     function getTheme(theme) {
         if (baseUrl) {
@@ -663,7 +705,7 @@
         }
 
         /**
-         * @param {infoType} name
+         * @param {InfoType} name
          */
         getInfo(name) {
             /** @type {string | null} */
@@ -677,16 +719,27 @@
 
     customElements.define("bilibili-card", BiliBiliCard);
 
-    if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+    if (isCommonJS) {
         module.exports = BiliBiliCard;
     }
-    else if (typeof this === "undefined") {
-        const global =
-            typeof globalThis !== "undefined" ? globalThis
-                : typeof window !== "undefined" ? window : {};
+    else if (isESM) {
         global.$BiliBiliCard = BiliBiliCard;
     }
     else {
+        if (isSystemJS) {
+            System.register([], (_export, _context) => {
+                return {
+                    execute() {
+                        const url = _context.meta.url;
+                        BiliBiliCard.baseUrl = `${url.substring(0, url.lastIndexOf('/') + 1)}bilibili-card`;
+                        _export({ BiliBiliCard });
+                    }
+                };
+            });
+        }
+        if (typeof define === "function" && define.amd) {
+            define(() => BiliBiliCard);
+        }
         this.BiliBiliCard = BiliBiliCard;
     }
 })();

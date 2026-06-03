@@ -151,6 +151,12 @@
   if (!window.globalThis) {
     window.globalThis = window;
   }
+  if (!String.prototype.includes) {
+    String.prototype.includes = function (searchString, position) {
+      position = position || 0;
+      return this.indexOf(searchString, position) !== -1;
+    };
+  }
 </script>
 
 <meta name="google-site-verification" content="TPDbPzhpaqYCFwTabtkmyHbwnULZEHrAihJNMsmpsks">
@@ -163,17 +169,17 @@
   gtag("js", new Date());
   gtag("config", "G-6FDQ56LCDG");
 </script>
-<script src="https://www.googletagmanager.com/gtag/js?id=G-6FDQ56LCDG" async></script>
+<script src="https://www.googletagmanager.com/gtag/js?id=G-6FDQ56LCDG" defer></script>
 <script>
   window._hmt = window._hmt || [];
 </script>
-<script src="https://hm.baidu.com/hm.js?271f5d3abe652ce0122880579c66289e" async></script>
+<script src="https://hm.baidu.com/hm.js?271f5d3abe652ce0122880579c66289e" defer></script>
 <script>
   window.clarity = window.clarity || function () {
     (window.clarity.q = window.clarity.q || []).push(arguments);
   };
 </script>
-<script src="https://www.clarity.ms/tag/m7ua7korsz" async></script>
+<script src="https://www.clarity.ms/tag/m7ua7korsz" defer></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 <script src="../components/bilibili-card/bilibili-card.js" async></script>
@@ -621,6 +627,7 @@
   }
 
   textarea {
+    padding: calc(var(--design-unit) * 1.5px) calc(var(--design-unit) * 2px + 1px);
     background: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)), border-box var(--neutral-stroke-input-rest);
     border: calc(var(--stroke-width) * 1px) solid transparent;
     border-radius: calc(var(--control-corner-radius) * 1px);

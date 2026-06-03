@@ -1,9 +1,11 @@
+/// <reference types="@types/systemjs" />
+/// <reference path="../types/requirejs.ts" />
 (() => {
     /**
-     * @typedef {"video" | "article" | "user" | "live" | "bangumi" | "audio" | "dynamic" | "favorite" | "album"} cardType
-     * @typedef {"views" | "danmakus" | "comments" | "favorites" | "coins" | "likes" | "time"} infoType
-     * @typedef {"system" | "light" | "dark"} themeType
-     * @typedef {{vid: string, type: cardType, title: string, author: string, cover: string, duration: string, views: string | number, danmakus: string | number, comments: string | number, favorites: string | number, coins: string | number, likes: string | number}} cardInfo
+     * @typedef {import('../types').CardType} CardType
+     * @typedef {import('../types').InfoType} InfoType
+     * @typedef {import('../types').ThemeType} ThemeType
+     * @typedef {import('../types').CardInfo} CardInfo
      */
 
     /** @type {globalThis} */
@@ -12,20 +14,39 @@
             : typeof globalThis !== "undefined" ? globalThis
                 : typeof window !== "undefined" ? window : {};
 
-    let window = global.window;
-    let document = global.document;
+    const isCommonJS = typeof module === "object" && !!module.exports;
+    const isESM = typeof this === "undefined";
+    const isSystemJS = typeof System === "object" && typeof System.register === "function";
 
-    const isModule = typeof module !== "undefined" && typeof module.exports !== "undefined";
-    if (isModule) {
-        if (typeof document === "undefined") {
-            const { JSDOM } = require("jsdom");
-            window = new JSDOM().window;
-            document = window.document;
+    if (!isCommonJS) {
+        if (isESM) {
+            if (global.bilibiliCardBuilder) {
+                global.$bilibiliCardBuilder = global.bilibiliCardBuilder;
+                return;
+            }
+        }
+        else {
+            if (global.bilibiliCardBuilder) {
+                if (isSystemJS) {
+                    System.register([], _export => {
+                        return {
+                            execute() {
+                                _export(global.bilibiliCardBuilder);
+                            }
+                        };
+                    });
+                }
+                return;
+            }
         }
     }
-    else if ((typeof this !== "undefined" && global.bilibiliCardBuilder)
-        || global.$bilibiliCardBuilder) {
-        return;
+
+    let { window, document } = global;
+
+    if (typeof require === "function" && typeof document === "undefined") {
+        const { JSDOM } = require("jsdom");
+        window = new JSDOM().window;
+        document = window.document;
     }
 
     if (!Array.prototype.includes) {
@@ -34,14 +55,14 @@
 
     if (!String.prototype.trimStart) {
         if (!String.prototype.trimLeft) {
-            String.prototype.trimLeft = function () { return this.replace(/^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/, ''); }
+            String.prototype.trimLeft = function () { return this.replace(/^[\x09-\x0D\x20\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]+/, ''); }
         }
         String.prototype.trimStart = String.prototype.trimLeft;
     }
 
     if (!String.prototype.trimEnd) {
         if (!String.prototype.trimRight) {
-            String.prototype.trimRight = function () { return this.replace(/[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+$/, ''); }
+            String.prototype.trimRight = function () { return this.replace(/[\x09-\x0D\x20\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]+$/, ''); }
         }
         String.prototype.trimEnd = String.prototype.trimRight;
     }
@@ -66,21 +87,21 @@
     }
 
     /**
-     * @param {cardType} type
+     * @type {import('../types').canPlay}
      */
     function canPlay(type) {
         return type === "video" || type === "live" || type === "bangumi" || type === "audio";
     }
 
     /**
-     * @param {cardType} type
+     * @type {import('../types').hasDuration}
      */
     function hasDuration(type) {
         return type === "video" || type === "audio";
     }
 
     /**
-     * @param {infoType} type
+     * @param {InfoType} type
      */
     function getIcon(type, isVideo = true) {
         switch (type) {
@@ -133,7 +154,7 @@
     }
 
     /**
-     * @param {infoType} type
+     * @param {InfoType} type
      * @param {string} text
      */
     function createInfoItem(type, text, isVideo = true) {
@@ -155,7 +176,7 @@
 
     /**
      * @param {Element} info
-     * @param {infoType} type
+     * @param {InfoType} type
      * @param {string} text
      */
     function addInfoItem(info, type, text, isVideo = true) {
@@ -173,8 +194,8 @@
 
     /**
      * @param {Element} info
-     * @param {infoType[]} types
-     * @param {{getInfo: function(infoType): string}} card
+     * @param {InfoType[]} types
+     * @param {{getInfo: function(InfoType): string}} card
      */
     function addInfoItems(info, types, card) {
         if (!Array.isArray(types)) { return; }
@@ -185,7 +206,7 @@
 
     /**
      * @param {Element} info
-     * @param {cardType} type
+     * @param {CardType} type
      */
     function setCoverType(cover, type) {
         if (!cover) { return; }
@@ -198,7 +219,7 @@
     }
 
     /**
-     * @param {cardType} type
+     * @param {CardType} type
      */
     function getTypeName(type) {
         switch (type) {
@@ -227,7 +248,7 @@
 
     /**
      * @param {string} id
-     * @param {cardType} type
+     * @param {CardType} type
      */
     function getUrl(id, type) {
         if (typeof id !== "string" || !id.length) { return; }
@@ -256,7 +277,7 @@
     }
 
     /**
-     * @param {cardType} value
+     * @param {CardType} value
      */
     function getDefaultInfoTypes(value) {
         switch (value) {
@@ -298,21 +319,26 @@
     const defaultProxy = "https://images.weserv.nl/?url=";
 
     /**
-     * @param {string} imageProxy
-     * @param {string} infoTypes
-     * @param {cardInfo}
-     * @param {themeType} theme
+     * 生成哔哩哔哩卡片控件外壳
+     * @param {string} imageProxy 图片代理地址
+     * @param {string} infoTypes 显示信息
+     * @param {CardInfo} 卡片信息
+     * @param {ThemeType} theme 样式
+     * @returns 卡片控件
      */
     function createHost(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
         return createHostWithTagName("bilibili-card", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
     }
 
     /**
-     * @param {string} tagName
-     * @param {string} imageProxy
-     * @param {string} infoTypes
-     * @param {cardInfo}
-     * @param {themeType} theme
+     * 使用自定义标签名生成哔哩哔哩卡片控件外壳
+     * @template {string} K
+     * @param {K} tagName 自定义标签名
+     * @param {string} imageProxy 图片代理地址
+     * @param {string} infoTypes 显示信息
+     * @param {CardInfo} 卡片信息
+     * @param {ThemeType} theme 样式
+     * @returns {K extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[K] : HTMLElement} 卡片控件
      */
     function createHostWithTagName(tagName, imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
         const bilibiliCard = document.createElement(tagName);
@@ -693,21 +719,26 @@
     }
 
     /**
-     * @param {string} imageProxy
-     * @param {string} infoTypes
-     * @param {cardInfo}
-     * @param {themeType} theme
+     * 生成哔哩哔哩卡片控件
+     * @param {string} imageProxy 图片代理地址
+     * @param {string} infoTypes 显示信息
+     * @param {CardInfo} 卡片信息
+     * @param {ThemeType} theme 样式
+     * @returns 卡片控件
      */
     function createCard(imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
         return createCardWithTagName("div", imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
     }
 
     /**
-     * @param {string} tagName
-     * @param {string} imageProxy
-     * @param {string} infoTypes
-     * @param {cardInfo}
-     * @param {themeType} theme
+     * 使用自定义标签名生成哔哩哔哩卡片控件
+     * @template {string} K
+     * @param {K} tagName 自定义标签名
+     * @param {string} imageProxy 图片代理地址
+     * @param {string} infoTypes 显示信息
+     * @param {CardInfo} 卡片信息
+     * @param {ThemeType} theme 样式
+     * @returns {K extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[K] : HTMLElement} 卡片控件
      */
     function createCardWithTagName(tagName, imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme) {
         const bilibiliCard = createHostWithTagName(tagName, imageProxy, infoTypes, { vid, type, title, author, cover, duration, views, danmakus, comments, favorites, coins, likes }, theme);
@@ -716,7 +747,8 @@
     }
 
     /**
-     * @param {Element} element
+     * 为哔哩哔哩卡片控件外壳生成卡片内容
+     * @param {Element} element 控件外壳
      */
     function praseElement(element) {
         if (element) {
@@ -726,7 +758,8 @@
     }
 
     /**
-     * @param {Node} element
+     * 注册哔哩哔哩卡片控件属性变化观察器
+     * @param {Node} element 卡片控件
      */
     function registerObserver(element) {
         const observer = new MutationObserver(mutationsList => {
@@ -750,13 +783,25 @@
         window
     };
 
-    if (isModule) {
+    if (isCommonJS) {
         module.exports = exports;
     }
-    else if (typeof this === "undefined") {
+    else if (isESM) {
         global.$bilibiliCardBuilder = exports;
     }
     else {
-        global.bilibiliCardBuilder = exports;
+        if (isSystemJS) {
+            System.register([], _export => {
+                return {
+                    execute() {
+                        _export(exports);
+                    }
+                };
+            });
+        }
+        if (typeof define === "function" && define.amd) {
+            define(exports);
+        }
+        this.bilibiliCardBuilder = exports;
     }
 })();

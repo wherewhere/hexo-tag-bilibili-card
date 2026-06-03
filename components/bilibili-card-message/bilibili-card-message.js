@@ -1,5 +1,9 @@
+/// <reference types="@types/systemjs" />
+/// <reference path="../types/requirejs.ts" />
 (() => {
-    /** @typedef {"video" | "article" | "user" | "live" | "bangumi" | "audio" | "dynamic" | "favorite" | "album"} cardType */
+    /**
+     * @typedef {import('../types').CardType} CardType
+     */
 
     /** @type {globalThis} */
     const global =
@@ -7,10 +11,31 @@
             : typeof globalThis !== "undefined" ? globalThis
                 : typeof window !== "undefined" ? window : {};
 
-    const isModule = typeof module !== "undefined" && typeof module.exports !== "undefined";
-    if (!isModule && ((typeof this !== "undefined" && global.bilibiliCardMessage)
-        || global.$bilibiliCardMessage)) {
-        return;
+    const isCommonJS = typeof module === "object" && !!module.exports;
+    const isESM = typeof this === "undefined";
+    const isSystemJS = typeof System === "object" && typeof System.register === "function";
+
+    if (!isCommonJS) {
+        if (isESM) {
+            if (global.bilibiliCardMessage) {
+                global.$bilibiliCardMessage = global.bilibiliCardMessage;
+                return;
+            }
+        }
+        else {
+            if (global.bilibiliCardMessage) {
+                if (isSystemJS) {
+                    System.register([], _export => {
+                        return {
+                            execute() {
+                                _export(global.bilibiliCardMessage);
+                            }
+                        };
+                    });
+                }
+                return;
+            }
+        }
     }
 
     /**
@@ -64,7 +89,7 @@
 
     /**
      * @param {string} id
-     * @param {cardType} type
+     * @param {CardType} type
      */
     function getApi(id, type) {
         switch (type) {
@@ -702,7 +727,7 @@
     }
 
     /**
-     * @param {cardType} type
+     * @param {CardType} type
      * @param {string} id
      * @param {{warn: function(string): void}} log
      */
@@ -744,7 +769,7 @@
     }
 
     /**
-     * @param {cardType} type
+     * @param {CardType} type
      * @param {string} id
      * @param {{warn: function(string): void}} log
      */
@@ -799,13 +824,25 @@
         getMessageAsync
     };
 
-    if (isModule) {
+    if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
         module.exports = exports;
     }
-    else if (typeof this === "undefined") {
+    else if (isESM) {
         global.$bilibiliCardMessage = exports;
     }
     else {
-        global.bilibiliCardMessage = exports;
+        if (isSystemJS) {
+            System.register([], _export => {
+                return {
+                    execute() {
+                        _export(exports);
+                    }
+                };
+            });
+        }
+        if (typeof define === "function" && define.amd) {
+            define(exports);
+        }
+        this.bilibiliCardMessage = exports;
     }
 })();
