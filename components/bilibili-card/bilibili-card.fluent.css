@@ -1,32 +1,32 @@
 .video-holder {
-    --bilibili-accent-color: var(--accent-fill-rest);
-    --bilibili-accent-color-hover: var(--accent-fill-hover);
-    --bilibili-accent-color-active: var(--accent-fill-active);
-    --bilibili-accent-color-focus: var(--accent-fill-focus);
-    --bilibili-card-border-color: var(--neutral-stroke-layer-rest);
-    --bilibili-card-border-color-hover: var(--neutral-stroke-layer-hover);
-    --bilibili-card-border-color-active: var(--neutral-stroke-layer-active);
-    --bilibili-card-border-color-focus: var(--neutral-stroke-layer-focus);
-    --bilibili-card-background-color: var(--neutral-fill-rest);
-    --bilibili-card-background-color-hover: var(--neutral-fill-hover);
-    --bilibili-card-background-color-active: var(--neutral-fill-active);
-    --bilibili-card-background-color-focus: var(--neutral-fill-focus);
-    --bilibili-card-shadow-color: var(--elevation-shadow-card-rest);
-    --bilibili-card-shadow-color-hover: var(--elevation-shadow-card-hover);
-    --bilibili-card-shadow-color-active: var(--elevation-shadow-card-active);
-    --bilibili-card-shadow-color-focus: var(--elevation-shadow-card-focus);
-    --bilibili-card-cover-color: var(--neutral-fill-stealth-rest);
-    --bilibili-card-cover-background-color: var(--neutral-fill-secondary-rest);
-    --bilibili-card-title-color: var(--neutral-foreground-rest);
-    --bilibili-card-title-color-hover: var(--neutral-foreground-rest);
-    --bilibili-card-title-color-active: var(--neutral-foreground-active);
-    --bilibili-card-title-color-focus: var(--neutral-foreground-focus);
+    --bilibili-accent-color: var(--accent-fill-rest, var(--colorBrandForegroundLink));
+    --bilibili-accent-color-hover: var(--accent-fill-hover, var(--colorBrandForegroundLinkHover));
+    --bilibili-accent-color-active: var(--accent-fill-active, var(--colorBrandForegroundLinkPressed));
+    --bilibili-accent-color-focus: var(--accent-fill-focus, var(--colorBrandForegroundLink));
+    --bilibili-card-border-color: var(--neutral-stroke-layer-rest, var(--colorNeutralStroke1));
+    --bilibili-card-border-color-hover: var(--neutral-stroke-layer-hover, var(--colorNeutralStroke1Hover));
+    --bilibili-card-border-color-active: var(--neutral-stroke-layer-active, var(--colorNeutralStroke1Pressed));
+    --bilibili-card-border-color-focus: var(--neutral-stroke-layer-focus, var(--colorNeutralStroke1));
+    --bilibili-card-background-color: var(--neutral-fill-rest, var(--colorNeutralBackground1));
+    --bilibili-card-background-color-hover: var(--neutral-fill-hover, var(--colorNeutralBackground1Hover));
+    --bilibili-card-background-color-active: var(--neutral-fill-active, var(--colorNeutralBackground1Pressed));
+    --bilibili-card-background-color-focus: var(--neutral-fill-focus, var(--colorNeutralBackground1));
+    --bilibili-card-shadow-color: var(--elevation-shadow-card-rest, none);
+    --bilibili-card-shadow-color-hover: var(--elevation-shadow-card-hover, none);
+    --bilibili-card-shadow-color-active: var(--elevation-shadow-card-active, none);
+    --bilibili-card-shadow-color-focus: var(--elevation-shadow-card-focus, none);
+    --bilibili-card-cover-color: var(--neutral-fill-stealth-rest, var(--colorNeutralBackground5));
+    --bilibili-card-cover-background-color: var(--neutral-fill-secondary-rest, var(--colorNeutralBackground2));
+    --bilibili-card-title-color: var(--neutral-foreground-rest, var(--colorNeutralForeground1));
+    --bilibili-card-title-color-hover: var(--neutral-foreground-rest, var(--colorNeutralForeground1Hover));
+    --bilibili-card-title-color-active: var(--neutral-foreground-active, var(--colorNeutralForeground1Pressed));
+    --bilibili-card-title-color-focus: var(--neutral-foreground-focus, var(--colorNeutralForeground1));
     --bilibili-card-subtitle-color: white;
     --bilibili-card-subtitle-background-color: rgba(0, 0, 0, .4);
-    --bilibili-card-content-color: var(--neutral-fill-strong-rest);
-    --bilibili-card-content-color-hover: var(--neutral-fill-strong-hover);
-    --bilibili-card-content-color-active: var(--neutral-fill-strong-active);
-    --bilibili-card-content-color-focus: var(--neutral-fill-strong-focus);
+    --bilibili-card-content-color: var(--neutral-fill-strong-rest, var(--colorNeutralForeground2));
+    --bilibili-card-content-color-hover: var(--neutral-fill-strong-hover, var(--colorNeutralForeground2Hover));
+    --bilibili-card-content-color-active: var(--neutral-fill-strong-active, var(--colorNeutralForeground2Pressed));
+    --bilibili-card-content-color-focus: var(--neutral-fill-strong-focus, var(--colorNeutralForeground2));
 }
 
 .video-holder a {

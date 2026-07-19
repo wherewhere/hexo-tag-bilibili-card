@@ -262,7 +262,6 @@
   }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/color-scheme-checker/dist/index.global.js" defer></script>
 <script type="module">
   import {
     provideFluentDesignSystem,
@@ -280,11 +279,15 @@
       }
     }
   }
+  import {
+    isDarkTheme,
+    registerColorSchemeListener
+  } from "https://cdn.jsdelivr.net/npm/color-scheme-checker/+esm";
   function updateTheme(isDark) {
     baseLayerLuminance.withDefault(isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
   }
-  colorSchemeChecker.registerColorSchemeListener(updateTheme);
-  updateTheme(colorSchemeChecker.isDarkTheme());
+  registerColorSchemeListener(updateTheme);
+  updateTheme(isDarkTheme());
 </script>
 
 <script>
@@ -479,6 +482,10 @@
 
 <link title="highlight" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css">
 <script type="module">
+  import {
+    isDarkTheme,
+    registerColorSchemeListener
+  } from "https://cdn.jsdelivr.net/npm/color-scheme-checker/+esm";
   const highlightCss = document.querySelector('link[title="highlight"]');
   function hljs_ColorSwitcher(isDark) {
     if (isDark) {
@@ -488,8 +495,8 @@
       highlightCss.href = "https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/styles/vs.min.css";
     }
   }
-  colorSchemeChecker.registerColorSchemeListener(hljs_ColorSwitcher);
-  hljs_ColorSwitcher(colorSchemeChecker.isDarkTheme());
+  registerColorSchemeListener(hljs_ColorSwitcher);
+  hljs_ColorSwitcher(isDarkTheme());
 </script>
 
 <style>
