@@ -32,5 +32,9 @@ export type CardInfo = {
     likes?: string;
 };
 
+export interface IStyleHost {
+    setStyle(style: string): void;
+}
+
 export declare function canPlay<T extends CardType>(type: T): T extends "video" | "live" | "bangumi" | "audio" ? true : false;
 export declare function hasDuration<T extends CardType>(type: T): T extends "video" | "audio" ? true : false;

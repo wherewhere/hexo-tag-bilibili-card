@@ -110,6 +110,7 @@ SVG 预览
 | info-types | 显示信息 | 根据卡片类型分配 |
 | image-proxy | 图片代理地址 | https://images.weserv.nl/?url= |
 | theme | 样式 | system |
+| shadow-style | 影子 DOM 样式 | 空 |
 
 ### 使用 Builder
 

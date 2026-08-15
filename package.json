@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "hexo-fs": "^5.0.0",
-    "jsdom": "^29.0.0"
+    "jsdom": "^30.0.0"
   },
   "devDependencies": {
     "@types/systemjs": "^6.0.0",

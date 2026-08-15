@@ -5,6 +5,7 @@
      * @typedef {import('../types').CardType} CardType
      * @typedef {import('../types').InfoType} InfoType
      * @typedef {import('../types').ThemeType} ThemeType
+     * @typedef {import('../types').IStyleHost} IStyleHost
      */
 
     /** @type {globalThis} */
@@ -367,6 +368,50 @@
     const defaultProxy = "https://images.weserv.nl/?url=";
     const defaultTheme = "default";
 
+    /**
+     * @implements {IStyleHost}
+     */
+    class SheetStyleHost {
+        /**
+         * @param {ShadowRoot} shadowRoot
+         */
+        constructor(shadowRoot) {
+            const style = this.style = new CSSStyleSheet();
+            shadowRoot.adoptedStyleSheets = [style];
+        }
+        /**
+         * @param {string} style
+         */
+        setStyle(style) {
+            return this.style.replace(style);
+        }
+    }
+
+    class ElementStyleHost {
+        /**
+         * @param {ShadowRoot} shadowRoot
+         */
+        constructor(shadowRoot) {
+            const style = this.style = document.createElement("style");
+            shadowRoot.appendChild(style);
+        }
+        /**
+         * @param {string} style
+         */
+        setStyle(style) {
+            this.style.textContent = style;
+        }
+    }
+
+    /**
+     * @param {ShadowRoot} shadowRoot
+     */
+    function createStyleHost(shadowRoot) {
+        return "adoptedStyleSheets" in shadowRoot
+            ? new SheetStyleHost(shadowRoot)
+            : new ElementStyleHost(shadowRoot);
+    }
+
     class BiliBiliCard extends HTMLElement {
         /**
          * @param {string} value
@@ -376,7 +421,7 @@
         }
 
         static get observedAttributes() {
-            return ["vid", "type", "title", "author", "cover", "duration", "views", "danmakus", "comments", "favorites", "coins", "likes", "info-types", "image-proxy", "theme"];
+            return ["vid", "type", "title", "author", "cover", "duration", "views", "danmakus", "comments", "favorites", "coins", "likes", "info-types", "image-proxy", "theme", "shadow-style"];
         }
 
         constructor() {
@@ -388,6 +433,8 @@
             const theme = document.createElement("link");
             theme.rel = "stylesheet";
             shadowRoot.appendChild(theme);
+
+            const style = createStyleHost(shadowRoot);
 
             const card = document.createElement("div");
             card.className = "video-holder";
@@ -474,7 +521,8 @@
                 info: info,
                 type: type,
                 author: author,
-                theme: theme
+                theme: theme,
+                style: style
             };
         }
 
@@ -593,8 +641,16 @@
             this.setAttribute("theme", value);
         }
 
+        get shadowStyle() {
+            return this.getAttribute("shadow-style") || '';
+        }
+        set shadowStyle(value) {
+            this.setAttribute("shadow-style", value);
+        }
+
         connectedCallback() {
             this.contents.theme.href = getTheme(this.theme);
+            this.contents.style.setStyle(this.shadowStyle);
             const type = this.type;
             this.contents.link.href = getUrl(this.vid, type);
             const cover = this.cover;
@@ -701,6 +757,9 @@
                 case "theme":
                     this.contents.theme.href = getTheme(newValue || defaultTheme);
                     break;
+                case "shadow-style":
+                    this.contents.style.setStyle(newValue || '');
+                    break;
             }
         }
 
@@ -708,7 +767,7 @@
          * @param {InfoType} name
          */
         getInfo(name) {
-            /** @type {string | null} */
+            /** @type {?string} */
             let info = this[name];
             if (typeof info === "undefined") {
                 info = this.getAttribute(name);
